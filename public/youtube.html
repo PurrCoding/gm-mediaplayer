@@ -13,8 +13,7 @@
 	<link rel="preconnect" href="https://www.youtube-nocookie.com" crossorigin>
 
 	<style>
-		html,
-		body {
+		html, body {
 			margin: 0;
 			padding: 0;
 			width: 100%;
@@ -46,6 +45,9 @@
 
 		const tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
+		tag.onerror = function() {
+			console.log("ERROR:Failed to load YouTube IFrame API");
+		};
 		document.head.appendChild(tag);
 
 		let player = null;
@@ -63,11 +65,12 @@
 
 		function onYouTubeIframeAPIReady() {
 			const vid = getUrlParameter('v') || 'dQw4w9WgXcQ';
+			const startTime = parseFloat(getUrlParameter('t')) || 0;
 
-			createPlayer(vid);
+			createPlayer(vid, startTime);
 		}
 
-		function createPlayer(videoId) {
+		function createPlayer(videoId, startTime) {
 			if (player && typeof player.destroy === 'function') {
 				player.destroy();
 				player = null;
@@ -78,11 +81,19 @@
 				height: '100%',
 				width: '100%',
 				videoId: videoId,
-				playerVars: defaultPlayerVars,
+				playerVars: {
+					...defaultPlayerVars,
+					start: Math.floor(startTime)  // YouTube API supports start parameter
+				},
 				host: 'https://www.youtube-nocookie.com',
 				events: {
 					onReady: () => {
-						wrapper._ready = true
+						wrapper._ready = true;
+
+						// Additional seek if needed (for more precise timing)
+						if (startTime > 0) {
+							player.seekTo(startTime, true);
+						}
 
 						window.MediaPlayer = wrapper;
 					},
@@ -108,7 +119,7 @@
 				},
 
 				get volume() {
-					return this._ready ? player.getVolume() : 100;
+					return this._ready ? player.getVolume() / 100 : 1;
 				},
 				set volume(v) {
 					if (this._ready) {
@@ -130,7 +141,11 @@
 		 * Handle edge case if API already loaded
 		 */
 		if (window.YT && window.YT.Player && !player) {
-			setTimeout(() => { onYouTubeIframeAPIReady(); }, 0);
+			if (document.readyState === 'complete') {
+				onYouTubeIframeAPIReady();
+			} else {
+				window.addEventListener('load', onYouTubeIframeAPIReady);
+			}
 		}
 
 	</script>

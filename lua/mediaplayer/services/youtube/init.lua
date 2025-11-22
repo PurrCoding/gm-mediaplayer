@@ -40,7 +40,7 @@ function SERVICE:GetMetadata( callback )
 			metadata.duration = math.Round(self._metaDuration)
 		end
 
-		metadata.thumbnail = ("https://img.youtube.com/vi/(%s)/hqdefault.jpg"):format(videoId)
+		metadata.thumbnail = ("https://img.youtube.com/vi/%s/mqdefault.jpg"):format(videoId)
 
 		self:SetMetadata(metadata, true)
 		MediaPlayer.Metadata:Save(self)

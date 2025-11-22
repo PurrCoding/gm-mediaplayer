@@ -44,15 +44,14 @@ function SERVICE:OnBrowserReady( browser )
 	BaseClass.OnBrowserReady( self, browser )
 
 	local videoId = self:GetYouTubeVideoId()
-	-- local curTime = self:CurrentTime()
+	local curTime = self:CurrentTime()
 
-	local url = MediaPlayer.GetConfigValue( "youtube.url" )
-	url = url .. ("?v=%s"):format(videoId)
+	local url = MediaPlayer.GetConfigValue( "youtube.url" ) ..
+		("?v=%s"):format(videoId)
 
-	-- Add start time to URL if the video didn't just begin
-	-- if self:IsTimed() and curTime > 3 then
-	-- 	url = url .. "&t=" .. math.Round(curTime)
-	-- end
+	if self.IsTimed then
+		url = url .. ("&t=%d"):format(curTime)
+	end
 
 	browser:OpenURL( url )
 

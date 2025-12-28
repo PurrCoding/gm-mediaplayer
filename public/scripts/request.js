@@ -17,8 +17,7 @@ let hasCodecSupport = false;
 function checkCodecSupport() {
 	return new Promise((resolve) => {
 		const video = document.createElement('video');
-		// const support = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === "probably";
-		const support = false
+		const support = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === "probably";
 		hasCodecSupport = support;
 		resolve({ hasCodecSupport: support });
 	});

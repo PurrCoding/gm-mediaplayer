@@ -1,37 +1,85 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset=utf-8>
-    <title>Media Player - Request</title>
-    <meta name=description content="Garry's Mod Media Player request page.">
-    <meta name=author content="pixelTail Games">
-    <link rel=stylesheet href=styles/request.css>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Media Player - Request Media</title>
+	<link rel="stylesheet" href="./styles/request.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div style=position:absolute;top:0;left:0;right:0;bottom:0>
-        <section class=content-container>
-            <h1>Share media from one of the selected services</h1>
+	<!-- Codec requirements popup -->
+	<div id="codec-popup" class="codec-popup hidden">
+		<div class="popup-overlay" onclick="closeCodecPopup()"></div>
+		<div class="popup-content">
+			<div class="popup-header">
+				<h3>GModPatchTool Required</h3>
+				<button class="close-btn" onclick="closeCodecPopup()">×</button>
+			</div>
+			<div class="popup-body">
+				<div class="popup-icon">🎥</div>
+				<p><strong id="service-name-popup"></strong> requires GModPatchTool to function properly.</p>
+				<div class="instructions">
+					<h4>To enable this service:</h4>
+					<ol>
+						<li>Download and apply GModPatchTool</li>
+						<li>Restart Garry's Mod completely</li>
+						<li>Return to Media Player and try again</li>
+					</ol>
+				</div>
+			</div>
+			<div class="popup-actions">
+				<button onclick="closeCodecPopup()" class="btn-secondary">Cancel</button>
+				<button onclick="openCodecInstructions()" class="btn-primary">Get GModPatchTool</button>
+			</div>
+		</div>
+	</div>
 
-            <div class=services>
-                <span class="media-service logo-youtube" data-href="https://www.youtube.com/" data-name="YouTube" data-service="yt" onclick=selectService(this) onmouseover=hoverService()>&nbsp;</span>
-                <span class="media-service logo-tiktok" data-href="https://www.tiktok.com/" data-name="TikTok" data-service="tt" onclick=selectService(this) onmouseover=hoverService()>&nbsp;</span>
-                <span class="media-service subtext logo-twitch" data-href="https://www.twitch.tv/" data-name="Twitch" data-service="twl" onclick=selectService(this) onmouseover=hoverService()>&nbsp;</span>
-                <span class="media-service subtext logo-soundcloud" data-href="https://soundcloud.com/discover" data-name="SoundCloud" data-service="sc" onclick=selectService(this) onmouseover=hoverService()>&nbsp;</span>
-                <span class="media-service subtext logo-dailymotion" data-href="https://www.dailymotion.com/" data-name="Dailymotion" data-service="dm" onclick=selectService(this) onmouseover=hoverService()>&nbsp;</span>
-                <span class="media-service subtext logo-archive" data-href="https://archive.org/details/movies" data-name="Internet Archive" data-service="ia" onclick=selectService(this) onmouseover=hoverService()>&nbsp;</span>
-                <span class="media-service subtext logo-odysee" data-href="https://odysee.com/" data-name="Odysee" data-service="odysee" onclick=selectService(this) onmouseover=hoverService()>Odysee</span>
-            </div>
-            <div class=url-container>
-                <h1 class=url-notice>Or request a supported URL</h1><input type="url" id=urlinput class=url-input placeholder="GDrive, mp3, wav, ogg, jpg, png, webm, mp4" autofocus onkeydown=onUrlKeyDown(event)><a href=javascript:requestUrl(); class=url-submit>Request</a>
-            </div>
-            <div class=url-container><a href=./privacy.html>Privacy Policy</a> </div>
-        </section>
-    </div>
-    <link href="https://fonts.googleapis.com/css?family=Oswald" rel=stylesheet>
-    <script src=scripts/request.js>
-    </script>
+	<!-- Main container -->
+	<div class="app-container">
+		<!-- Services grid -->
+		<section class="services-section">
+			<div class="services-grid" id="services-grid">
+				<!-- Service cards populated by JavaScript -->
+			</div>
+		</section>
+
+		<!-- URL input section -->
+		<section class="url-section">
+			<div class="url-container">
+				<h2 class="url-title">Or paste a direct URL</h2>
+				<div class="input-group">
+					<input
+						id="urlinput"
+						type="url"
+						class="url-input"
+						placeholder="Paste your video URL here..."
+						autocomplete="off"
+						spellcheck="false"
+					>
+					<button onclick="requestUrl()" class="submit-btn" id="submit-btn">
+						<span class="btn-text">Request</span>
+						<span class="btn-icon">→</span>
+					</button>
+				</div>
+				<div class="supported-formats">
+					<span>Supports common share links from supported services, images (JPG, PNG, GIF), video files (MP4, MOV, MKV, WebM), audio files (MP3, WAV, OGG), also Google Drive links</span>
+				</div>
+			</div>
+		</section>
+
+		<!-- Status indicator -->
+		<div id="status-indicator" class="status-indicator hidden">
+			<div class="status-content">
+				<div class="spinner"></div>
+				<span id="status-text">Checking URL...</span>
+			</div>
+		</div>
+	</div>
+
+	<script src="./scripts/request.js"></script>
 </body>
-
 </html>

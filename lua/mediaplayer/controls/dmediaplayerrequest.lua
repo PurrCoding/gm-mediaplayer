@@ -64,6 +64,7 @@ function PANEL:Init()
 
 	-- Listen for all mouse press events
 	hook.Add( "GUIMousePressed", self, self.OnGUIMousePressed )
+	hook.Add( "VGUIMousePressed", self.Browser, self.OnVGUIMousePressed)
 
 end
 
@@ -102,6 +103,7 @@ end
 
 function PANEL:OnRemove()
 	hook.Remove( "GUIMousePressed", self )
+	hook.Remove( "VGUIMousePressed", self.Browser )
 end
 
 function PANEL:Close()
@@ -142,6 +144,22 @@ function PANEL:OnGUIMousePressed( key )
 
 	if key == MOUSE_LEFT then
 		self:CheckClose()
+	end
+
+end
+
+---
+-- Listen for mouse button presses within the browser panel.
+--
+function PANEL:OnVGUIMousePressed( pnl, key )
+	if not IsValid(pnl) then return end
+
+	if key == MOUSE_4 then
+		pnl:RunJavascript( "history.back();" )
+	end
+
+	if key == MOUSE_5 then
+		pnl:RunJavascript( "history.forward();" )
 	end
 
 end

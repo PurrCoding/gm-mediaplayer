@@ -67,6 +67,21 @@ function MediaPlayer.ValidUrl( url )
 
 end
 
+function MediaPlayer.GetServiceByUrl( url )
+
+	local service
+
+	for id, s in pairs(MediaPlayer.Services) do
+		if s:Match( url ) then
+			service = s
+			break
+		end
+	end
+
+	return service
+
+end
+
 function MediaPlayer.GetMediaForUrl( url, webpageFallback )
 
 	local service

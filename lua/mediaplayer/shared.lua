@@ -57,10 +57,3 @@ include "sh_metadata.lua"
 hook.Add("Initialize", "InitMediaPlayer", function()
 	hook.Run("InitMediaPlayer", MediaPlayer)
 end)
-
--- No fun allowed
-hook.Add( "CanDrive", "DisableMediaPlayerDriving", function(ply, ent)
-	if IsValid(ent) and ent.IsMediaPlayerEntity then
-		return IsValid(ply) and ply:IsAdmin()
-	end
-end)

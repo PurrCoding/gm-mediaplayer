@@ -13,7 +13,9 @@ local VALID_FORMATS = {
 	["MP4"] = true,
 	["AVI"] = true,
 	["MOV"] = true,
-	["MKV"] = true
+	["MKV"] = true,
+	["Flac"] = true,
+	["VBR MP3"] = true,
 }
 
 -- file selection logic
@@ -108,7 +110,6 @@ function SERVICE:GetMetadata( callback )
 		metadata.title = cache.title
 		metadata.duration = tonumber(cache.duration)
 		metadata.thumbnail = cache.thumbnail
-		metadata.newdata = cache.newdata
 
 		self:SetMetadata(metadata)
 		MediaPlayer.Metadata:Save(self)
@@ -139,7 +140,6 @@ function SERVICE:GetMetadata( callback )
 				title = GenerateTitle(response, bestMatch, identifier),
 				duration = math.Round(bestMatch.length or 0),
 				thumbnail = GetThumbnail(response.files, bestMatch.name),
-				newdata = identifier .. "," .. bestMatch.name
 			}
 
 			self:SetMetadata(info)

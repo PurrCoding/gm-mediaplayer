@@ -4,14 +4,33 @@ SERVICE.Name 	= "Internet Archive"
 SERVICE.Id 		= "ia"
 SERVICE.Base 	= "browser"
 
+local urllib = url
+
 function SERVICE:New( url )
 	local obj = BaseClass.New(self, url)
 	obj._data = obj:GetArchiveVideoId()
 	return obj
 end
 
+local function parseURL(url)
+	local success, urlinfo = pcall(urllib.parse2, url)
+	if not success then return false end
+
+	return urlinfo
+end
+
 function SERVICE:Match( url )
-	return string.find( url, "archive.org" )
+
+	local info = parseURL(url)
+	if info then
+		if info.host and info.host:match("archive%.org") and
+		   		info.path and info.path:match("^/details/(.+)$") then
+			return true
+		end
+	end
+
+
+	return false
 end
 
 function SERVICE:GetArchiveVideoId()
@@ -35,7 +54,10 @@ function SERVICE:GetArchiveVideoId()
 
 			-- Handle URL encoding
 			if file then
-				file = url.unescape(file)
+				local success, decoded = pcall(urllib.unescape, file)
+				if success then
+					file = decoded
+				end
 			end
 
 			self.videoId = identifier .. (file and "," .. file or "")

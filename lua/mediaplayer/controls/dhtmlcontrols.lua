@@ -138,10 +138,30 @@ function PANEL:SetHTML( html )
 		local isValidUrl = MediaPlayer.ValidUrl( url )
 		self.RequestButton:SetDisabled( not isValidUrl )
 
+		-- Check whether the RequestButton should remain deactivated
+		local service = MediaPlayer.GetServiceByUrl( url )
+		if service and service.OverrideRequestButton then
+			self.RequestButton:SetDisabled( true )
+		end
+
 		if ( OnURLChanged ) then
 			OnURLChanged( panel, url )
 		end
 
+	end
+
+	local OnDocumentReady = self.HTML.OnDocumentReady
+	self.HTML.OnDocumentReady = function ( panel, url )
+
+		local service = MediaPlayer.GetServiceByUrl( url )
+
+		if service and service.OnRequestReady then
+			service:OnRequestReady(panel, self)
+		end
+
+		if ( OnDocumentReady ) then
+			OnDocumentReady( panel, url )
+		end
 	end
 
 end

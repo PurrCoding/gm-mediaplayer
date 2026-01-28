@@ -16,12 +16,12 @@ local TableName = "mediaplayer_history"
 --
 local TableStruct = string.format([[
 CREATE TABLE %s (
-	id				INTEGER PRIMARY KEY AUTOINCREMENT,
-	mediaid			VARCHAR(48),
-	url				VARCHAR(512),
-	player_name		VARCHAR(32),
-	steamid			VARCHAR(32),
-	time			DATETIME DEFAULT CURRENT_TIMESTAMP
+	id              INTEGER PRIMARY KEY AUTOINCREMENT,
+	mediaid         VARCHAR(48),
+	url             VARCHAR(512),
+	player_name     VARCHAR(32),
+	steamid         VARCHAR(32),
+	time            DATETIME DEFAULT CURRENT_TIMESTAMP
 )]], TableName)
 
 ---
@@ -33,8 +33,8 @@ local DefaultResultLimit = 100
 ---
 -- Log the given media as a request.
 --
--- @param media		Media service object.
--- @return table	SQL query results.
+-- @param media     Media service object.
+-- @return table    SQL query results.
 --
 function MediaPlayer.History:LogRequest( media )
 	local id = media:UniqueID()
@@ -45,9 +45,9 @@ function MediaPlayer.History:LogRequest( media )
 
 	local query = string.format( "INSERT INTO `%s` " ..
 			"(mediaid,url,player_name,steamid) " ..
-			"VALUES ('%s',%s,%s,'%s')",
+			"VALUES (%s,%s,%s,'%s')",
 			TableName,
-			media:UniqueID(),
+			sql.SQLStr( media:UniqueID() ),
 			sql.SQLStr( media:Url() ),
 			sql.SQLStr( ply:Nick() ),
 			ply:SteamID64() or -1 )

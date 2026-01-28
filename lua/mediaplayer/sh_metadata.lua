@@ -19,15 +19,15 @@ local TableName = "mediaplayer_metadata"
 --
 local TableStruct = string.format([[
 CREATE TABLE %s (
-	id				VARCHAR(48) PRIMARY KEY,
-	title			VARCHAR(128),
-	duration		INTEGER NOT NULL DEFAULT 0,
-	thumbnail		VARCHAR(512),
-	extra 			VARCHAR(2048),
-	request_count	INTEGER NOT NULL DEFAULT 1,
-	last_request	INTEGER NOT NULL DEFAULT 0,
-	last_updated	INTEGER NOT NULL DEFAULT 0,
-	expired			BOOLEAN NOT NULL DEFAULT 0
+	id              VARCHAR(48) PRIMARY KEY,
+	title           VARCHAR(128),
+	duration        INTEGER NOT NULL DEFAULT 0,
+	thumbnail       VARCHAR(512),
+	extra           VARCHAR(2048),
+	request_count   INTEGER NOT NULL DEFAULT 1,
+	last_request    INTEGER NOT NULL DEFAULT 0,
+	last_updated    INTEGER NOT NULL DEFAULT 0,
+	expired         BOOLEAN NOT NULL DEFAULT 0
 )]], TableName)
 
 ---
@@ -41,14 +41,14 @@ local MaxCacheAge = 604800
 -- If the metadata is older than one week, it is ignored and replaced upon
 -- saving.
 --
--- @param media		Media service object.
--- @return table	Cached metadata results.
+-- @param media     Media service object.
+-- @return table    Cached metadata results.
 --
 function MediaPlayer.Metadata:Query( media )
 	local id = media:UniqueID()
 	if not id then return end
 
-	local query = ("SELECT * FROM `%s` WHERE id='%s'"):format(TableName, id)
+	local query = ("SELECT * FROM `%s` WHERE id=%s"):format(TableName, sql.SQLStr(id))
 
 	if MediaPlayer.DEBUG then
 		print("MediaPlayer.Metadata.Query")
@@ -71,8 +71,8 @@ function MediaPlayer.Metadata:Query( media )
 		if timediff > MaxCacheAge then
 
 			-- Set metadata entry as expired
-			query = "UPDATE `%s` SET expired=1 WHERE id='%s'"
-			query = query:format( TableName, id )
+			query = "UPDATE `%s` SET expired=1 WHERE id=%s"
+			query = query:format( TableName, sql.SQLStr(id) )
 
 			if MediaPlayer.DEBUG then
 				print("MediaPlayer.Metadata.Query: Setting entry as expired")
@@ -97,14 +97,14 @@ end
 ---
 -- Save or update the given media object into the metadata table.
 --
--- @param media		Media service object.
--- @return table	SQL query results.
+-- @param media     Media service object.
+-- @return table    SQL query results.
 --
 function MediaPlayer.Metadata:Save( media )
 	local id = media:UniqueID()
 	if not id then return end
 
-	local query = ("SELECT expired FROM `%s` WHERE id='%s'"):format(TableName, id)
+	local query = ("SELECT expired FROM `%s` WHERE id=%s"):format(TableName, sql.SQLStr(id))
 	local results = sql.Query(query)
 
 	if istable(results) then -- update
@@ -121,7 +121,7 @@ function MediaPlayer.Metadata:Save( media )
 		if expired then
 
 			-- Update possible new metadata
-			query = "UPDATE `%s` SET request_count=request_count+1, title=%s, duration=%s, thumbnail=%s, extra=%s, last_request=%s, last_updated=%s, expired=0 WHERE id='%s'"
+			query = "UPDATE `%s` SET request_count=request_count+1, title=%s, duration=%s, thumbnail=%s, extra=%s, last_request=%s, last_updated=%s, expired=0 WHERE id=%s"
 			query = query:format( TableName,
 						sql.SQLStr( media:Title() ),
 						media:Duration(),
@@ -129,12 +129,12 @@ function MediaPlayer.Metadata:Save( media )
 						sql.SQLStr( util.TableToJSON(media._metadata.extra or {}) ),
 						os.time(),
 						os.time(),
-						id )
+						sql.SQLStr(id) )
 
 		else
 
-			query = "UPDATE `%s` SET request_count=request_count+1, last_request=%s WHERE id='%s'"
-			query = query:format( TableName, os.time(), id )
+			query = "UPDATE `%s` SET request_count=request_count+1, last_request=%s WHERE id=%s"
+			query = query:format( TableName, os.time(), sql.SQLStr(id) )
 
 		end
 
@@ -142,7 +142,7 @@ function MediaPlayer.Metadata:Save( media )
 
 		query = string.format( "INSERT INTO `%s` ", TableName ) ..
 			"(id,title,duration,thumbnail,extra,last_request,last_updated) VALUES (" ..
-			string.format( "'%s',", id ) ..
+			string.format( "%s,", sql.SQLStr(id) ) ..
 			string.format( "%s,", sql.SQLStr( media:Title() ) ) ..
 			string.format( "%s,", media:Duration() ) ..
 			string.format( "%s,", sql.SQLStr( media:Thumbnail() ) ) ..

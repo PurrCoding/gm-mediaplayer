@@ -62,7 +62,7 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 	local ent = self.Entity
 
 	if --bDrawingSkybox or
-			FullscreenCvar:GetBool() or -- Don't draw if we're drawing fullscreen
+			self._isFullscreen or -- Don't draw if we're drawing fullscreen
 			not IsValid(ent) or
 			(ent.IsDormant and ent:IsDormant()) then
 		return

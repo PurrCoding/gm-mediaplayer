@@ -31,9 +31,9 @@ include "sh_snapshot.lua"
 -- Initialize the media player object.
 --
 function MEDIAPLAYER:Init(params)
-	self._Queue = {}		-- media queue
-	self._Media = nil		-- current media
-	self._Owner = nil		-- media player owner
+	self._Queue = {}        -- media queue
+	self._Media = nil       -- current media
+	self._Owner = nil       -- media player owner
 
 	self._State = MP_STATE_ENDED -- waiting for new media
 
@@ -47,6 +47,7 @@ function MEDIAPLAYER:Init(params)
 	else
 
 		self._LastMediaUpdate = 0
+		self._isFullscreen = false  -- Per-instance fullscreen state
 		inputhook.Add( KEY_Q, self, self.OnQueueKeyPressed )
 		inputhook.Add( KEY_C, self, self.OnQueueKeyPressed )
 
@@ -468,6 +469,15 @@ function MEDIAPLAYER:Remove()
 		end
 
 	else
+
+		-- Clean up fullscreen state
+		if self._isFullscreen then
+			self._isFullscreen = false
+			local media = self:CurrentMedia()
+			if IsValid(media) and IsValid(media.Browser) then
+				media.Browser:SetSize(nil, nil, false)
+			end
+		end
 
 		local media = self:CurrentMedia()
 

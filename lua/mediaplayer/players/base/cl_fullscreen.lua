@@ -15,27 +15,24 @@ local function OnFullscreenConVarChanged( name, old, new )
 	new = (new == "1.00")
 	old = (old == "1.00")
 
-	local media
-
-	for _, mp in pairs(MediaPlayer.List) do
-
-		mp._LastMediaUpdate = RealTime()
-
-		media = mp:CurrentMedia()
-
-		if IsValid(media) and IsValid(media.Browser) then
-			MediaPlayer.SetBrowserSize( media.Browser )
-		end
-
+	if new ~= old then
+		print("=====================================")
+		print("MediaPlayer Fullscreen - Updated Behavior")
+		print("=====================================")
+		print("")
+		print("The 'mediaplayer_fullscreen' ConVar is no longer used.")
+		print("")
+		print("NEW INSTRUCTIONS:")
+		print("  • Look directly at a media player screen")
+		print("  • Press F11 to toggle fullscreen for that specific screen")
+		print("  • Only the targeted screen will enter fullscreen mode")
+		print("  • Other screens will continue playing normally")
+		print("")
+		print("=====================================")
 	end
-
-	MediaPlayer.SetBrowserSize( MediaPlayer.GetIdlescreen() )
-
-	hook.Run( "MediaPlayerFullscreenToggled", new, old )
 
 end
 cvars.AddChangeCallback( FullscreenCvar:GetName(), OnFullscreenConVarChanged )
-
 
 --[[---------------------------------------------------------
 	Client controls for toggling fullscreen
@@ -43,16 +40,32 @@ cvars.AddChangeCallback( FullscreenCvar:GetName(), OnFullscreenConVarChanged )
 
 inputhook.AddKeyPress( KEY_F11, "Toggle MediaPlayer Fullscreen", function()
 
-	local isFullscreen = FullscreenCvar:GetBool()
-	local numMp = #MediaPlayer.GetAll()
+	local targetMP = nil
 
-	-- only toggle if there's an active media player or we're in fullscreen mode
-	if numMp == 0 and not isFullscreen then
+	-- Find which media player we're looking at
+	MediaPlayer.DispatchScreenTrace(function(mp, x, y)
+		if not targetMP then
+			targetMP = mp
+		end
+	end)
+
+	-- only toggle if there's an active media player
+	if not targetMP then
 		return
 	end
 
-	local value = isFullscreen and 0 or 1
-	RunConsoleCommand( "mediaplayer_fullscreen", value )
+	-- Toggle fullscreen for this specific player
+	targetMP._isFullscreen = not targetMP._isFullscreen
+	targetMP._LastMediaUpdate = RealTime()
+
+	-- Update browser size
+	local media = targetMP:CurrentMedia()
+	if IsValid(media) and IsValid(media.Browser) then
+		local w, h = targetMP._isFullscreen and ScrW() or nil, targetMP._isFullscreen and ScrH() or nil
+		media.Browser:SetSize(w, h, targetMP._isFullscreen)
+	end
+
+	hook.Run(MP.EVENTS.FULLSCREEN_STATE_CHANGED, targetMP._isFullscreen, not targetMP._isFullscreen)
 
 end )
 
@@ -64,7 +77,7 @@ end )
 function MEDIAPLAYER:DrawFullscreen()
 
 	-- Don't draw if we're not fullscreen
-	if not FullscreenCvar:GetBool() then return end
+	if not self._isFullscreen then return end
 
 	local w, h = ScrW(), ScrH()
 	local media = self:CurrentMedia()

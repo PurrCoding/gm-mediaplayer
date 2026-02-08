@@ -7,7 +7,8 @@ MP.EVENTS = {
 if CLIENT then
 
 	table.Merge( MP.EVENTS, {
-		VOLUME_CHANGED = "mp.events.volumeChanged"
+		VOLUME_CHANGED = "mp.events.volumeChanged",
+		FULLSCREEN_STATE_CHANGED = "mp.events.fullscreenStateChanged"
 	} )
 
 end

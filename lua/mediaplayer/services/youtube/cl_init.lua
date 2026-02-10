@@ -46,13 +46,14 @@ function SERVICE:OnBrowserReady( browser )
 	local videoId = self:GetYouTubeVideoId()
 	local curTime = self:CurrentTime()
 
-	local url = MediaPlayer.GetConfigValue( "youtube.url" ) ..
-		("?v=%s"):format(videoId)
+	local baseUrl = MediaPlayer.GetConfigValue( "youtube.url" )
+	local hash = ("v=%s"):format(videoId)
 
 	if self.IsTimed then
-		url = url .. ("&t=%d"):format(curTime)
+		hash = hash .. ("&t=%d"):format(curTime)
 	end
 
+	local url = baseUrl .. "#" .. hash
 	browser:OpenURL( url )
 
 end

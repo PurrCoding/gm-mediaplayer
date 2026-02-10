@@ -118,9 +118,11 @@ do	-- Metadata Prefech
 			end
 		end
 
-		panel:OpenURL(MediaPlayer.GetConfigValue( "youtube.url_meta" ) ..
-			("?v=%s"):format(videoId)
-		)
+		local baseUrl = MediaPlayer.GetConfigValue( "youtube.url_meta" )
+		local hash = ("v=%s"):format(videoId)
+
+		local url = baseUrl .. "#" .. hash
+		panel:OpenURL(url)
 
 		timer.Simple(10, function()
 			if IsValid(panel) then

@@ -203,7 +203,7 @@ do -- Request Override
 	]]
 
 	SERVICE.OverrideRequestButton = true
-	function SERVICE:OnRequestReady( browser, parent )
+	function SERVICE:OnRequestBrowserReady( browser, parent )
 		if not IsValid(browser) or not IsValid(parent) then return end
 
 		browser:RunJavascript(JS_REQUEST)

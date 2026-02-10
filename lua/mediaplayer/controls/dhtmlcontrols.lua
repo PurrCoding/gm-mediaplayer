@@ -138,10 +138,19 @@ function PANEL:SetHTML( html )
 		local isValidUrl = MediaPlayer.ValidUrl( url )
 		self.RequestButton:SetDisabled( not isValidUrl )
 
-		-- Check whether the RequestButton should remain deactivated
 		local service = MediaPlayer.GetServiceByUrl( url )
-		if service and service.OverrideRequestButton then
-			self.RequestButton:SetDisabled( true )
+		if service then
+
+			-- Check whether the RequestButton should remain deactivated
+			if service.OverrideRequestButton then
+				self.RequestButton:SetDisabled( true )
+			end
+
+			-- Trigger when the request browser if the link has changed. (On the same service created)
+			if service.OnRequestBrowserURLChanged then
+				service:OnRequestBrowserURLChanged(panel, self)
+			end
+
 		end
 
 		if ( OnURLChanged ) then
@@ -155,8 +164,9 @@ function PANEL:SetHTML( html )
 
 		local service = MediaPlayer.GetServiceByUrl( url )
 
-		if service and service.OnRequestReady then
-			service:OnRequestReady(panel, self)
+		-- Trigger when the request browser if when the document was loaded for the first time.
+		if service and service.OnRequestBrowserReady then
+			service:OnRequestBrowserReady(panel, self)
 		end
 
 		if ( OnDocumentReady ) then

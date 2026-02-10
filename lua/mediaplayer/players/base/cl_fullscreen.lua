@@ -42,12 +42,22 @@ inputhook.AddKeyPress( KEY_F11, "Toggle MediaPlayer Fullscreen", function()
 
 	local targetMP = nil
 
-	-- Find which media player we're looking at
-	MediaPlayer.DispatchScreenTrace(function(mp, x, y)
-		if not targetMP then
+	-- First, check if any media player is already in fullscreen
+	for _, mp in pairs(MediaPlayer.List) do
+		if mp._isFullscreen then
 			targetMP = mp
+			break
 		end
-	end)
+	end
+
+	-- If no fullscreen player found, find which media player we're looking at
+	if not targetMP then
+		MediaPlayer.DispatchScreenTrace(function(mp, x, y)
+			if not targetMP then
+				targetMP = mp
+			end
+		end)
+	end
 
 	-- only toggle if there's an active media player
 	if not targetMP then

@@ -135,6 +135,24 @@ AddMediaPlayerProperty( "mp-copy-url", {
 	end
 })
 
+AddMediaPlayerProperty( "mp-fullscreen", {
+	MenuLabel   =   "Toggle Fullscreen (F11)",
+	MenuIcon    =   "icon16/arrow_out.png",
+
+	Filter      =   function( self, ent, ply )
+		if not IsMediaPlayer(self, ent, ply) then return end
+		local mp = ent:GetMediaPlayer()
+		return IsValid(mp)
+	end,
+
+	Action      =   function( self, ent )
+		local mp = ent:GetMediaPlayer()
+		if IsValid(mp) then
+			MediaPlayer.ToggleFullscreen(mp)
+		end
+	end
+})
+
 AddMediaPlayerProperty( "mp-enable", {
 	MenuLabel	=	"Turn On",
 	MenuIcon	=	"icon16/lightbulb.png",

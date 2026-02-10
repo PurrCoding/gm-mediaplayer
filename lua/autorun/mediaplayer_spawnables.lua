@@ -13,6 +13,10 @@ local function AddMediaPlayerModel(classname, printname, model, icon, config)
 	list.Set("MediaPlayerModelConfigs", model, config)
 end
 
+if CLIENT then
+	list.Set("ContentCategoryIcons", "Media Player", "icon16/monitor.png")
+end
+
 AddMediaPlayerModel(
 	"huge_billboard",
 	"Huge Billboard",

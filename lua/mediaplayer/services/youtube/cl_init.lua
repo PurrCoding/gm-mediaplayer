@@ -42,10 +42,12 @@ do -- Request browser extensions
 	function SERVICE:OnRequestBrowserURLChanged( browser, parent )
 		if not IsValid(browser) or not IsValid(parent) then return end
 
-		if not browser.alreadyInjected then
+		-- Temporarily disables it, as it supposedly triggers the 
+		-- "Sign in to confirm you're not a bot" prompt.
+		--[[ if not browser.alreadyInjected then
 			browser:RunJavascript(JS_REQUEST)
 			browser.alreadyInjected = true
-		end
+		end -- ]]
 	end
 end
 

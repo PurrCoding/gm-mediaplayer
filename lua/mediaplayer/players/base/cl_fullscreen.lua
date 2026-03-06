@@ -61,6 +61,15 @@ function MediaPlayer.ToggleFullscreen( targetMP )
 		if not targetMP then
 			return false
 		end
+	else
+		-- targetMP was provided (e.g. context menu). If a different player
+		-- is already fullscreen, exit it first.
+		for _, mp in pairs(MediaPlayer.List) do
+			if mp._isFullscreen and mp ~= targetMP then
+				MediaPlayer.ToggleFullscreen(mp)
+				break
+			end
+		end
 	end
 
 	-- Toggle fullscreen for this specific player

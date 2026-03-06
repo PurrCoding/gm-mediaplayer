@@ -14,6 +14,7 @@ if CLIENT then
 		local resolution = MediaPlayer.Resolution()
 		local w = resolution * 16 / 9
 		local h = resolution
+		local mp = nil
 
 		if IsValid(self.Entity) then
 			-- normalize resolution to the entity screen size
@@ -21,9 +22,10 @@ if CLIENT then
 			local entwidth = config.width or w
 			local entheight = config.height or resolution
 			w = resolution * (entwidth / entheight)
+			mp = self.Entity:GetMediaPlayer()
 		end
 
-		MediaPlayer.SetBrowserSize( browser, w, h )
+		MediaPlayer.SetBrowserSize( browser, w, h, mp )
 
 		-- Implement this in a child service
 	end

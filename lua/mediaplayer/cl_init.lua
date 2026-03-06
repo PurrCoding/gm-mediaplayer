@@ -65,18 +65,15 @@ end
 	Utility functions
 -----------------------------------------------------------]]
 
-local FullscreenCvar = MediaPlayer.Cvars.Fullscreen
+function MediaPlayer.SetBrowserSize( browser, w, h, mp )
 
-function MediaPlayer.SetBrowserSize( browser, w, h )
-
-	local fullscreen = FullscreenCvar:GetBool()
+	local fullscreen = IsValid(mp) and mp._isFullscreen
 
 	if fullscreen then
 		w, h = ScrW(), ScrH()
 	end
 
 	browser:SetSize( w, h, fullscreen )
-
 end
 
 function MediaPlayer.OpenRequestMenu( mp )

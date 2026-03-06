@@ -231,14 +231,14 @@ function MEDIAPLAYER:CanPlayerRequestMedia( ply, media )
 		) then
 		local names = MediaPlayer.GetValidServiceNames(self.ServiceWhitelist)
 
-		local msg = "The requested media isn't supported; accepted services are as followed:\n"
+		local msg = MediaPlayer.L("mp.error.service_whitelist")
 		msg = msg .. table.concat( names, ", " )
 
 		return false, msg
 	end
 
 	if self:GetQueueLocked() and not self:IsPlayerPrivileged(ply) then
-		return false, "The requested media couldn't be added as the queue is locked."
+		return false, MediaPlayer.L("mp.error.queue_locked")
 	end
 
 	return true
@@ -265,7 +265,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 	local allowed, msg = self:CanPlayerRequestMedia(ply, media)
 
 	if not allowed then
-		self:NotifyPlayer( ply, msg and msg or "Your media request has been denied." )
+		self:NotifyPlayer( ply, msg and msg or MediaPlayer.L("mp.error.request_denied") )
 		return
 	end
 
@@ -275,7 +275,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 
 	-- Queue must have space for the request
 	if #self._Queue == self:GetQueueLimit() then
-		self:NotifyPlayer( ply, "The media player queue is full." )
+		self:NotifyPlayer( ply, MediaPlayer.L("mp.error.queue_full") )
 		return
 	end
 
@@ -287,7 +287,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 				print(media)
 				print(s)
 			end
-			self:NotifyPlayer( ply, "The requested media was already in the queue" )
+			self:NotifyPlayer( ply, MediaPlayer.L("mp.error.duplicate_request") )
 			return
 		end
 	end
@@ -301,7 +301,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 	media:GetMetadata(function(data, err)
 
 		if not data then
-			err = err and err or "There was a problem fetching the requested media's metadata."
+			err = err and err or MediaPlayer.L("mp.error.metadata_fetch")
 			print(err)
 			self:NotifyPlayer( ply, "[Request Error] " .. err )
 			return
@@ -313,7 +313,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 
 		if not queueMedia then
 			self:NotifyPlayer( ply,
-				msg and msg or "The requested media couldn't be queued." )
+				msg and msg or MediaPlayer.L("mp.error.queue_denied") )
 			return
 		end
 
@@ -321,7 +321,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 		self:AddMedia( media )
 		self:QueueUpdated()
 
-		local msg = string.format( "Added '%s' to the queue", media:Title() )
+		local msg = MediaPlayer.L("mp.success.added_to_queue", media:Title())
 		self:NotifyPlayer( ply, msg )
 
 		self:BroadcastUpdate()
@@ -343,7 +343,7 @@ function MEDIAPLAYER:RequestPause( ply )
 
 	-- Check player priviledges
 	if not self:IsPlayerPrivileged(ply) then
-		self:NotifyPlayer(ply, "You don't have permission to do that.")
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 
@@ -366,7 +366,7 @@ function MEDIAPLAYER:RequestSkip( ply )
 
 	-- Check player priviledges
 	if not self:IsPlayerPrivileged(ply) then
-		self:NotifyPlayer(ply, "You don't have permission to do that.")
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 
@@ -389,7 +389,7 @@ function MEDIAPLAYER:RequestSeek( ply, seekTime )
 
 	-- Check player priviledges
 	if not self:IsPlayerPrivileged(ply) then
-		self:NotifyPlayer(ply, "You don't have permission to do that.")
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 
@@ -406,7 +406,7 @@ function MEDIAPLAYER:RequestSeek( ply, seekTime )
 
 	-- Ignore request if time is past the end of the video
 	if seekTime > media:Duration() then
-		self:NotifyPlayer( ply, "Request seek time was past the end of the media duration." )
+		self:NotifyPlayer( ply, MediaPlayer.L("mp.error.seek_past_duration") )
 		return
 	end
 
@@ -442,7 +442,7 @@ function MEDIAPLAYER:RequestRemove( ply, mediaUID )
 		if privileged then
 			self:NextMedia()
 		else
-			self:NotifyPlayer(ply, "You don't have permission to do that.")
+			self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		end
 	else
 		local idx, media
@@ -469,7 +469,7 @@ function MEDIAPLAYER:RequestRepeat( ply )
 	end
 
 	if not self:IsPlayerPrivileged(ply) then
-		self:NotifyPlayer(ply, "You don't have permission to do that.")
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 
@@ -485,7 +485,7 @@ function MEDIAPLAYER:RequestShuffle( ply )
 	end
 
 	if not self:IsPlayerPrivileged(ply) then
-		self:NotifyPlayer(ply, "You don't have permission to do that.")
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 
@@ -501,7 +501,7 @@ function MEDIAPLAYER:RequestLock( ply )
 	end
 
 	if not self:IsPlayerPrivileged(ply) then
-		self:NotifyPlayer(ply, "You don't have permission to do that.")
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 

@@ -8,8 +8,8 @@ local DefaultIdlescreen = [[
 	html, body {
 		margin: 0;
 		padding: 0;
-		width: 100%%;
-		height: 100%%;
+		width: 100%;
+		height: 100%;
 	}
 	html {
 		background: #fff;
@@ -25,7 +25,7 @@ local DefaultIdlescreen = [[
 		-webkit-box-pack: center;
 		-webkit-box-align: center;
 		background: -webkit-radial-gradient(center, ellipse cover,
-			transparent 0%%, rgba(0, 0, 0, 0.7) 100%%);
+			transparent 0%, rgba(0, 0, 0, 0.7) 100%);
 	}
 	h1 {
 		margin: 0;
@@ -34,7 +34,7 @@ local DefaultIdlescreen = [[
 	.background {
 		position: absolute;
 		display: block;
-		width: 100%%;
+		width: 100%;
 		z-index: -1;
 		-webkit-filter: blur(8px);
 		-webkit-transform: scale(1.2);
@@ -54,8 +54,8 @@ local DefaultIdlescreen = [[
 <body>
 	<img src="asset://mapimage/gm_construct" class="background">
 	<div class="content">
-		<h1>No media playing</h1>
-		<p>Hold %s while looking at the media player to reveal the queue menu.</p>
+		<h1>{{title}}</h1>
+		<p>{{hint}}</p>
 
 	</div>
 </body>
@@ -65,7 +65,11 @@ local DefaultIdlescreen = [[
 local function GetIdlescreenHTML()
 	local contextMenuBind = input.LookupBinding( "+menu_context" ) or "C"
 	contextMenuBind = contextMenuBind:upper()
-	return DefaultIdlescreen:format( contextMenuBind )
+
+	local html = DefaultIdlescreen
+	html = string.Replace(html, "{{title}}", MediaPlayer.L("mp.idle.no_media"))
+	html = string.Replace(html, "{{hint}}", MediaPlayer.L("mp.idle.hint", contextMenuBind))
+	return html
 end
 
 function MediaPlayer.GetIdlescreen()

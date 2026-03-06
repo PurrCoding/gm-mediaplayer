@@ -3,6 +3,7 @@ MP = MediaPlayer
 
 include "utils.lua"
 include "sh_cvars.lua"
+include "i18n/sh_i18n.lua"
 
 --[[---------------------------------------------------------
 	Config

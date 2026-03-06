@@ -299,9 +299,9 @@ end
 
 function RequestButton:SetDisabled( disabled )
 	if disabled then
-		self:SetText( "SEARCH FOR MEDIA" )
+		self:SetText( MediaPlayer.L("mp.ui.search_for_media") )
 	else
-		self:SetText( "REQUEST URL" )
+		self:SetText( MediaPlayer.L("mp.ui.request_url") )
 	end
 
 	DButton.SetDisabled( self, disabled )

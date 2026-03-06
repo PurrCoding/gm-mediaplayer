@@ -24,6 +24,7 @@ AddCSLuaFile "sh_services.lua"
 AddCSLuaFile "sh_history.lua"
 AddCSLuaFile "sh_metadata.lua"
 AddCSLuaFile "sh_cvars.lua"
+AddCSLuaFile "i18n/sh_i18n.lua"
 
 include "shared.lua"
 include "sv_requests.lua"

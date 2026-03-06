@@ -191,7 +191,7 @@ local REPEAT_BTN = {}
 function REPEAT_BTN:Init()
 	self.BaseClass.Init( self )
 	self:SetIcon( "mp-repeat" )
-	self:SetTooltip( "Repeat" )
+	self:SetTooltip( MediaPlayer.L("mp.ui.repeat") )
 end
 
 function REPEAT_BTN:DoClick()
@@ -207,7 +207,7 @@ local SHUFFLE_BTN = {}
 function SHUFFLE_BTN:Init()
 	self.BaseClass.Init( self )
 	self:SetIcon( "mp-shuffle" )
-	self:SetTooltip( "Shuffle" )
+	self:SetTooltip( MediaPlayer.L("mp.ui.shuffle") )
 end
 
 function SHUFFLE_BTN:DoClick()
@@ -223,7 +223,7 @@ local LOCK_BTN = {}
 function LOCK_BTN:Init()
 	self.BaseClass.Init( self )
 	self:SetIcon( "mp-lock-open" )
-	self:SetTooltip( "Toggle Queue Lock" )
+	self:SetTooltip( MediaPlayer.L("mp.ui.toggle_queue_lock") )
 end
 
 function LOCK_BTN:DoClick()

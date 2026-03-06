@@ -41,7 +41,7 @@ function QUEUE_HEADER:Init()
 	self:SetTall( self.Height )
 
 	self.Label = vgui.Create( "DLabel", self )
-	self.Label:SetText( "NEXT UP" )
+	self.Label:SetText( MediaPlayer.L("mp.ui.next_up") )
 	self.Label:SetFont( "MP.QueueHeader" )
 
 	self.AddVidBtn = vgui.Create( "MP.AddVideoButton", self )
@@ -57,6 +57,7 @@ end
 
 function QUEUE_HEADER:PerformLayout()
 
+	self.Label:SizeToContents()
 	self.Label:CenterVertical()
 	self.Label:AlignLeft( self.Padding )
 
@@ -88,7 +89,7 @@ function ADD_VIDEO_BTN:Init()
 	self:SetPadding( 4 )
 
 	self.BtnLbl:SetFont( "MP.QueueHeader" )
-	self.BtnLbl:SetText( "ADD MEDIA" )
+	self.BtnLbl:SetText( MediaPlayer.L("mp.ui.add_media") )
 	self.BtnLbl:SetTextColor( color_white )
 
 	self:SetIcon( "mp-plus" )

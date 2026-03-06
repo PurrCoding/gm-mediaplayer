@@ -72,8 +72,7 @@ function SERVICE:Play()
 				self:emit("channelReady", channel)
 			end,
 			function()
-				local msg = ("Failed to load media player audio '%s'"):format( self.url )
-				LocalPlayer():ChatPrint( msg )
+				LocalPlayer():ChatPrint(MediaPlayer.L("mp.error.audio_load_failed", self.url))
 			end,
 			MAX_LOAD_ATTEMPTS
 		)
@@ -164,7 +163,7 @@ function SERVICE:PreRequest( callback )
 			callback()
 		end,
 		function()
-			callback( "There was a problem receiving the audio stream, please try again." )
+			callback(MediaPlayer.L("mp.error.audio_stream"))
 		end,
 		MAX_LOAD_ATTEMPTS
 	)

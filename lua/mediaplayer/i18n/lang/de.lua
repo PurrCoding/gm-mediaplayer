@@ -1,0 +1,63 @@
+-- German / Deutsch
+MediaPlayer.i18n.RegisterLanguage("de", {
+
+	-- Idle screen
+	["mp.idle.no_media"]                = "Keine Wiedergabe",
+	["mp.idle.hint"]                    = "Halte %s gedrückt, während du auf den Mediaplayer schaust, um das Warteschlangenmenü zu öffnen.",
+
+	-- Sidebar UI
+	["mp.ui.currently_playing"]         = "AKTUELLE WIEDERGABE",
+	["mp.ui.no_media"]                  = "Keine Wiedergabe",
+	["mp.ui.next_up"]                   = "ALS NÄCHSTES",
+	["mp.ui.add_media"]                 = "MEDIEN HINZUFÜGEN",
+	["mp.ui.added_by"]                  = "HINZUGEFÜGT VON",
+	["mp.ui.unknown"]                   = "Unbekannt",
+
+	-- Playback control tooltips
+	["mp.ui.repeat"]                    = "Wiederholen",
+	["mp.ui.shuffle"]                   = "Zufallswiedergabe",
+	["mp.ui.toggle_queue_lock"]         = "Warteschlangensperre umschalten",
+
+	-- Browser controls
+	["mp.ui.search_for_media"]          = "NACH MEDIEN SUCHEN",
+	["mp.ui.request_url"]               = "URL ANFRAGEN",
+
+	-- Context menu properties
+	["mp.property.pause"]               = "Pause",
+	["mp.property.resume"]              = "Fortsetzen",
+	["mp.property.skip"]                = "Überspringen",
+	["mp.property.seek"]                = "Spulen",
+	["mp.property.seek_title"]          = "Mediaplayer",
+	["mp.property.seek_prompt"]         = "Gib eine Zeit im Format HH:MM:SS ein (Stunden, Minuten, Sekunden):",
+	["mp.property.seek_confirm"]        = "Spulen",
+	["mp.property.seek_cancel"]         = "Abbrechen",
+	["mp.property.request_url"]         = "URL anfragen",
+	["mp.property.copy_url"]            = "URL in die Zwischenablage kopieren",
+	["mp.property.fullscreen"]          = "Vollbild umschalten (F11)",
+	["mp.property.turn_on"]             = "Einschalten",
+	["mp.property.turn_off"]            = "Ausschalten",
+
+	-- Top menu bar
+	["mp.menu.title"]                   = "▶  Mediaplayer",
+	["mp.menu.fullscreen"]              = "Vollbild",
+	["mp.menu.turn_off_all"]            = "Alle ausschalten",
+
+	-- Client-side chat notifications
+	["mp.error.invalid_url"]            = "Die angeforderte URL war ungültig.",
+	["mp.error.request_failed"]         = "Anfrage fehlgeschlagen: %s",
+	["mp.error.audio_load_failed"]      = "Audio '%s' konnte nicht geladen werden",
+	["mp.error.audio_stream"]           = "Es gab ein Problem beim Empfang des Audio-Streams, bitte versuche es erneut.",
+	["mp.success.url_copied"]           = "Die Medien-URL wurde in die Zwischenablage kopiert.",
+
+	-- Server notifications
+	["mp.error.service_whitelist"]      = "Das angeforderte Medium wird nicht unterstützt; akzeptierte Dienste sind:\n",
+	["mp.error.queue_locked"]           = "Das angeforderte Medium konnte nicht hinzugefügt werden, da die Warteschlange gesperrt ist.",
+	["mp.error.request_denied"]         = "Deine Medienanfrage wurde abgelehnt.",
+	["mp.error.queue_full"]             = "Die Wiedergabeliste ist voll.",
+	["mp.error.duplicate_request"]      = "Das angeforderte Medium befindet sich bereits in der Warteschlange.",
+	["mp.error.metadata_fetch"]         = "Beim Abrufen der Metadaten des angeforderten Mediums ist ein Problem aufgetreten.",
+	["mp.error.queue_denied"]           = "Das angeforderte Medium konnte nicht zur Warteschlange hinzugefügt werden.",
+	["mp.success.added_to_queue"]       = "'%s' zur Warteschlange hinzugefügt",
+	["mp.error.no_permission"]          = "Du hast keine Berechtigung dazu.",
+	["mp.error.seek_past_duration"]     = "Die angeforderte Sprungzeit liegt nach dem Ende der Mediendauer.",
+})

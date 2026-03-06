@@ -29,7 +29,7 @@ local function HasMedia( mp )
 end
 
 AddMediaPlayerProperty( "mp-pause", {
-	MenuLabel	=	"Pause",
+	MenuLabel	=	MediaPlayer.L("mp.property.pause"),
 	MenuIcon	=	"icon16/control_pause_blue.png",
 
 	Filter		=	function( self, ent, ply )
@@ -44,7 +44,7 @@ AddMediaPlayerProperty( "mp-pause", {
 })
 
 AddMediaPlayerProperty( "mp-resume", {
-	MenuLabel	=	"Resume",
+	MenuLabel	=	MediaPlayer.L("mp.property.resume"),
 	MenuIcon	=	"icon16/control_play_blue.png",
 
 	Filter		=	function( self, ent, ply )
@@ -59,7 +59,7 @@ AddMediaPlayerProperty( "mp-resume", {
 })
 
 AddMediaPlayerProperty( "mp-skip", {
-	MenuLabel	=	"Skip",
+	MenuLabel	=	MediaPlayer.L("mp.property.skip"),
 	MenuIcon	=	"icon16/control_end_blue.png",
 
 	Filter		=	function( self, ent, ply )
@@ -74,7 +74,7 @@ AddMediaPlayerProperty( "mp-skip", {
 })
 
 AddMediaPlayerProperty( "mp-seek", {
-	MenuLabel	=	"Seek",
+	MenuLabel	=	MediaPlayer.L("mp.property.seek"),
 	-- MenuIcon	=	"icon16/timeline_marker.png",
 	MenuIcon	=	"icon16/control_fastforward_blue.png",
 
@@ -87,22 +87,22 @@ AddMediaPlayerProperty( "mp-seek", {
 	Action		=	function( self, ent )
 
 		Derma_StringRequest(
-			"Media Player",
-			"Enter a time in HH:MM:SS format (hours, minutes, seconds):",
+			MediaPlayer.L("mp.property.seek_title"),
+			MediaPlayer.L("mp.property.seek_prompt"),
 			"", -- Default text
 			function( time )
 				MediaPlayer.Seek( ent, time )
 			end,
 			function() end,
-			"Seek",
-			"Cancel"
+			MediaPlayer.L("mp.property.seek_confirm"),
+			MediaPlayer.L("mp.property.seek_cancel")
 		)
 
 	end
 })
 
 AddMediaPlayerProperty( "mp-request-url", {
-	MenuLabel	=	"Request URL",
+	MenuLabel	=	MediaPlayer.L("mp.property.request_url"),
 	MenuIcon	=	"icon16/link_add.png",
 	Filter		=	IsMediaPlayer,
 
@@ -114,7 +114,7 @@ AddMediaPlayerProperty( "mp-request-url", {
 })
 
 AddMediaPlayerProperty( "mp-copy-url", {
-	MenuLabel	=	"Copy URL to clipboard",
+	MenuLabel	=	MediaPlayer.L("mp.property.copy_url"),
 	MenuIcon	=	"icon16/paste_plain.png",
 
 	Filter		=	function( self, ent, ply )
@@ -130,13 +130,13 @@ AddMediaPlayerProperty( "mp-copy-url", {
 		if not IsValid(media) then return end
 
 		SetClipboardText( media:Url() )
-		LocalPlayer():ChatPrint( "Media URL has been copied into your clipboard." )
+		LocalPlayer():ChatPrint(MediaPlayer.L("mp.success.url_copied"))
 
 	end
 })
 
 AddMediaPlayerProperty( "mp-fullscreen", {
-	MenuLabel   =   "Toggle Fullscreen (F11)",
+	MenuLabel   =   MediaPlayer.L("mp.property.fullscreen"),
 	MenuIcon    =   "icon16/arrow_out.png",
 
 	Filter      =   function( self, ent, ply )
@@ -154,7 +154,7 @@ AddMediaPlayerProperty( "mp-fullscreen", {
 })
 
 AddMediaPlayerProperty( "mp-enable", {
-	MenuLabel	=	"Turn On",
+	MenuLabel	=	MediaPlayer.L("mp.property.turn_on"),
 	MenuIcon	=	"icon16/lightbulb.png",
 
 	Filter		=	function( self, ent, ply )
@@ -170,7 +170,7 @@ AddMediaPlayerProperty( "mp-enable", {
 })
 
 AddMediaPlayerProperty( "mp-disable", {
-	MenuLabel	=	"Turn Off",
+	MenuLabel	=	MediaPlayer.L("mp.property.turn_off"),
 	MenuIcon	=	"icon16/lightbulb_off.png",
 
 	Filter		=	function( self, ent, ply )

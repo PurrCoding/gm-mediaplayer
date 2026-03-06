@@ -33,7 +33,7 @@ end
 net.Receive( "MEDIAPLAYER.RequestListen", RequestWrapper(function(mp, ply)
 
 	if MediaPlayer.DEBUG then
-		print("MEDIAPLAYER.RequestListen:", mpId, ply)
+		print("MEDIAPLAYER.RequestListen:", mp:GetId(), ply)
 	end
 
 	-- TODO: check if listener can actually be a listener
@@ -55,7 +55,7 @@ end) )
 net.Receive( "MEDIAPLAYER.RequestUpdate", RequestWrapper(function(mp, ply)
 
 	if MediaPlayer.DEBUG then
-		print("MEDIAPLAYER.RequestUpdate:", mpId, ply)
+		print("MEDIAPLAYER.RequestUpdate:", mp:GetId(), ply)
 	end
 
 	mp:SendMedia( mp:GetMedia(), ply )

@@ -1,8 +1,6 @@
 AddCSLuaFile "shared.lua"
 include "shared.lua"
 
-local MaxTitleLength = 128
-
 function SERVICE:SetOwner( ply )
 	self._Owner = ply
 	self._OwnerName = ply:Nick()

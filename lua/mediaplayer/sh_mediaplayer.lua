@@ -137,7 +137,7 @@ function MediaPlayer.Create( id, type )
 		MediaPlayer._count = MediaPlayer._count + 1
 		mp.id = MediaPlayer._count
 	else
-		mp.id = id or -1
+		mp.id = -1
 	end
 
 	mp:Init()

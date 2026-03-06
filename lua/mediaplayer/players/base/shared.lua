@@ -51,8 +51,6 @@ function MEDIAPLAYER:Init(params)
 
 	end
 
-	-- Merge in any passed in params
-	-- table.Merge(self, params or {})
 end
 
 --

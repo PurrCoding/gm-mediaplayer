@@ -217,8 +217,8 @@ function VoteManager:Invalidate()
 	for uid, votes in pairs(self._votes) do
 		local numVotes = 0
 
-		for k, vote in ipairs(votes) do
-			-- check for valid player in case they may have disconnected
+		for k = #votes, 1, -1 do
+			local vote = votes[k]
 			if not (IsValid(vote) and self._mp:HasListener(vote:GetPlayer())) then
 				table.remove( votes, k )
 				changed = true

@@ -2,7 +2,7 @@ if SERVER then
 	AddCSLuaFile "shared.lua"
 	AddCSLuaFile "cl_init.lua"
 
-	resource.AddFile "materials/theater/STATIC.vmt"
+	resource.AddFile "materials/mediaplayer/static.vmt"
 end
 include "shared.lua"
 

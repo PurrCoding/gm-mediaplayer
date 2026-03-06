@@ -54,7 +54,7 @@ else -- CLIENT
 	local TEXT_ALIGN_CENTER = TEXT_ALIGN_CENTER
 	local color_white = color_white
 
-	local StaticMaterial = Material( "theater/STATIC" )
+	local StaticMaterial = Material( "mediaplayer/static" )
 	local TextScale = 700
 
 	function ENT:Draw()

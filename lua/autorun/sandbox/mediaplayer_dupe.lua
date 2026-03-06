@@ -293,7 +293,7 @@ local function RenderMediaPlayerDupe( Dupe )
 				local w, h, pos, ang = ent:GetMediaPlayerPosition()
 				cam.Start3D2D( pos, ang, 1 )
 					surface.SetDrawColor( color_white )
-					surface.SetMaterial( Material( "theater/STATIC" ) )
+					surface.SetMaterial( Material( "mediaplayer/static" ) )
 					surface.DrawTexturedRect( 0, 0, w, h )
 				cam.End3D2D()
 			end

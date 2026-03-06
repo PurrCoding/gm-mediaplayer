@@ -2,8 +2,6 @@ local PANEL = {}
 PANEL.HistoryWidth = 300
 PANEL.BackgroundColor = Color(22, 22, 22)
 
-local CloseTexture = Material( "theater/close.png" )
-
 AccessorFunc( PANEL, "m_MediaPlayer", "MediaPlayer" )
 
 function PANEL:Init()

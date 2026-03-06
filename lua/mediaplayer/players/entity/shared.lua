@@ -70,13 +70,6 @@ function MEDIAPLAYER:GetPos()
 	return IsValid(self.Entity) and self.Entity:GetPos() or Vector(0,0,0)
 end
 
-function MEDIAPLAYER:GetLocation()
-	if IsValid(self.Entity) and self.Entity.Location then
-		return self.Entity:Location()
-	end
-	return self._Location
-end
-
 function MEDIAPLAYER:Think()
 	BaseClass.Think(self)
 

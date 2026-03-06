@@ -22,10 +22,15 @@ jobs:
 
           # Determine commit range: since last tag, or all commits
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          BEFORE_SHA="${{ github.event.before }}"
+          NULL_SHA="0000000000000000000000000000000000000000"
+
           if [ -n "$LAST_TAG" ]; then
             RANGE="${LAST_TAG}..HEAD"
+          elif [ "${{ github.event_name }}" = "push" ] && [ "$BEFORE_SHA" != "$NULL_SHA" ]; then
+            RANGE="${BEFORE_SHA}..HEAD"
           else
-            RANGE="HEAD"
+            RANGE="HEAD -n 20"
           fi
 
           # Collect commits (hash + full subject)

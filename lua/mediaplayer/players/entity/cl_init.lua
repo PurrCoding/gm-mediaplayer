@@ -8,8 +8,6 @@ local cam = cam
 local Start3D2D = cam.Start3D2D
 local End3D2D = cam.End3D2D
 
-local FullscreenCvar = MediaPlayer.Cvars.Fullscreen
-
 MEDIAPLAYER.Enable3DAudio = true
 
 function MEDIAPLAYER:NetReadUpdate()

@@ -27,7 +27,7 @@ img {
 }, HTMLMAT_STYLE_COVER_IMG )
 
 surface.CreateFont( "DupeMediaText", {
-	font		= "Clear Sans Medium",
+	font		= "Roboto Medium",
 	antialias	= true,
 	weight		= 400,
 	size        = 80

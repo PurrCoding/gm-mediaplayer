@@ -124,9 +124,7 @@ end
 -----------------------------------------------------------]]
 
 local common = {
-	-- font		= "Open Sans Condensed",
-	-- font		= "Oswald",
-	font		= "Clear Sans Medium",
+	font		= "Roboto Medium",
 	antialias	= true,
 	weight		= 400
 }

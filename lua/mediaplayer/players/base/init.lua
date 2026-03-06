@@ -6,9 +6,6 @@ AddCSLuaFile "net.lua"
 include "shared.lua"
 include "net.lua"
 
--- Additional transmit states
-TRANSMIT_LOCATION = 4
-
 -- Media player network strings
 util.AddNetworkString( "MEDIAPLAYER.Update" )
 util.AddNetworkString( "MEDIAPLAYER.Media" )
@@ -51,22 +48,6 @@ function MEDIAPLAYER:UpdateListeners()
 	elseif transmitState == TRANSMIT_PVS then
 
 		listeners = player.GetInPVS( self.Entity and self.Entity or self:GetPos() )
-
-	elseif transmitState == TRANSMIT_LOCATION then
-
-		local loc = self:GetLocation()
-
-		if not Location then
-			ErrorNoHalt("'Location' module not defined in mediaplayer!\n")
-			debug.Trace()
-			return
-		elseif loc == -1 then
-			ErrorNoHalt("Invalid location assigned to mediaplayer!\n")
-			debug.Trace()
-			return
-		end
-
-		listeners = Location.GetPlayersInLocation( loc )
 
 	else
 		ErrorNoHalt("Invalid transmit state for mediaplayer\n")

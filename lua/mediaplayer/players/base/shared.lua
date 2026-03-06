@@ -42,8 +42,6 @@ function MEDIAPLAYER:Init(params)
 		self._TransmitState = TRANSMIT_ALWAYS
 		self._Listeners = {}
 
-		self._Location = -1
-
 	else
 
 		self._LastMediaUpdate = 0
@@ -154,15 +152,6 @@ function MEDIAPLAYER:GetPos()
 		self._pos = Vector(0,0,0)
 	end
 	return self._pos
-end
-
---
--- Get the media player's location ID.
---
--- @return Number	Media player's location ID
---
-function MEDIAPLAYER:GetLocation()
-	return self._Location
 end
 
 function MEDIAPLAYER:GetOwner()

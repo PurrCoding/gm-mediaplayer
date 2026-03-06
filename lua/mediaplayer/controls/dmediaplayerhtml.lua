@@ -302,17 +302,6 @@ function PANEL:ConsoleMessage( ... )
 			msg = "*js variable* (" .. type(msg) .. ": " .. tostring(msg) .. ")"
 		end
 
-		-- Run Lua from JavaScript console logging (POTENTIALLY HARMFUL!)
-		--[[if msg:StartWith( "RUNLUA:" ) then
-			local strLua = msg:sub( 8 )
-
-			SELF = self
-			RunString( strLua )
-			SELF = nil
-
-			return
-		end]]
-
 		-- Play a sound from JavaScript console logging
 		if msg:StartWith( "PLAY:" ) then
 			local soundpath = msg:sub( 7 )

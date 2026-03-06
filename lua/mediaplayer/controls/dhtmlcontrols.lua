@@ -278,8 +278,6 @@ derma.DefineControl( "MPHTMLControls", "", PANEL, "Panel" )
 
 local RequestButton = {}
 
--- RequestButton.DisabledColor = Color(189, 195, 199)
--- RequestButton.DepressedColor = Color(192, 57, 43)
 RequestButton.HoverColor = Color(192, 57, 43)
 RequestButton.DefaultColor = Color(231, 76, 60)
 RequestButton.DisabledColor = RequestButton.DefaultColor

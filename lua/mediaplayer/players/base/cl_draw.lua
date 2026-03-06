@@ -34,7 +34,7 @@ local function DrawTextBox( text, font, x, y, xalign, yalign )
 	yalign = yalign or TEXT_ALIGN_TOP
 
 	surface.SetFont( font )
-	tw, th = surface.GetTextSize( text )
+	local tw, th = surface.GetTextSize( text )
 
 	if xalign == TEXT_ALIGN_CENTER then
 		x = x - tw / 2
@@ -107,9 +107,6 @@ function MEDIAPLAYER:DrawMediaInfo( media, w, h )
 		return
 	end
 
-	-- Text dimensions
-	local tw, th
-
 	-- Title background
 	local titleStr = RestrictStringWidth( media:Title(), "MediaTitle",
 		w - (TextPaddingX * 2 + TextBoxPaddingX * 2) )
@@ -156,15 +153,5 @@ function MEDIAPLAYER:DrawMediaInfo( media, w, h )
 			TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM )
 
 	end
-
-	-- Volume
-	local volume = MediaPlayer.Volume()
-	local volumeStr = tostring( math.Round( volume * 100 ) )
-
-	-- DrawText( volumeStr, "MediaTitle", w - TextPaddingX, h/2,
-		-- TEXT_ALIGN_CENTER )
-
-
-	-- Loading indicator
 
 end

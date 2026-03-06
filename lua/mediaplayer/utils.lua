@@ -45,7 +45,7 @@ end
 
 ---
 -- Formats the number of seconds to a string.
--- e.g. 3612 => 24:12
+-- e.g. 3612 => 1:00:12
 --
 function utils.FormatSeconds(sec)
 	sec = Round(sec)
@@ -270,7 +270,7 @@ if CLIENT then
 		end )
 	end
 
-	--- 
+	---
 	-- Gathers the Duration from URI
 	-- Works only with URIs that lead directly to the video
 	do
@@ -307,9 +307,9 @@ if CLIENT then
 
 				if msg:StartWith("DURATION:") then
 					local str_duration = string.sub(msg, 10)
-					
+
 					local duration
-					if str_duration == "Infinity" then // Edgecase from fragmented webm
+					if str_duration == "Infinity" then -- Edgecase from fragmented webm
 						duration = math.huge
 					else
 						duration = math.ceil(tonumber(str_duration))

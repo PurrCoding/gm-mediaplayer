@@ -3,8 +3,6 @@ include "cl_draw.lua"
 include "cl_fullscreen.lua"
 include "net.lua"
 
-local CeilPower2 = MediaPlayerUtils.CeilPower2
-
 function MEDIAPLAYER:NetReadUpdate()
 	-- Allows for another media player type to extend update net messages
 end

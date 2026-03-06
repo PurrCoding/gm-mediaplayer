@@ -8,8 +8,6 @@ local cam = cam
 local Start3D2D = cam.Start3D2D
 local End3D2D = cam.End3D2D
 
-MEDIAPLAYER.Enable3DAudio = true
-
 function MEDIAPLAYER:NetReadUpdate()
 	local entIndex = net.ReadUInt(16)
 	local ent = Entity(entIndex)

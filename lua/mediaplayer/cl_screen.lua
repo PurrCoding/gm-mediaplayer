@@ -81,7 +81,7 @@ hook.Add( "GUIMouseReleased", "MediaPlayer.ScreenIntersect", mousePressed )
 local mouseScroll = MediaPlayerUtils.Throttle(function( dt )
 	MediaPlayer.DispatchScreenTrace(function(mp)
 		mp:OnMouseWheeled(dt)
-	end, aimVector)
+	end)
 end, 0.01, { trailing = false })
 
 hook.Add( "ContextMenuCreated", "MediaPlayer.Scroll", function( contextMenu )
@@ -90,15 +90,6 @@ hook.Add( "ContextMenuCreated", "MediaPlayer.Scroll", function( contextMenu )
 		mouseScroll(scrollDelta)
 	end
 end )
-
---[[
-local function checkMouseScroll( ply, cmd )
-	local scrollDelta = cmd:GetMouseWheel()
-	if scrollDelta == 0 then return end
-	mouseScroll(scrollDelta)
-end
-hook.Add( "StartCommand", "MediaPlayer.Scroll", checkMouseScroll )
-]]
 
 --[[---------------------------------------------------------
 	Prevent weapons from firing while the context menu is

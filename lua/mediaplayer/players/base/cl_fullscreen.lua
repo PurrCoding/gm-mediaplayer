@@ -106,6 +106,9 @@ function MEDIAPLAYER:DrawFullscreen()
 	-- Don't draw if we're not fullscreen
 	if not self._isFullscreen then return end
 
+	-- Signal to Draw() that HUDPaint is firing properly
+	self._hudPaintFired = true
+
 	local w, h = ScrW(), ScrH()
 	local media = self:CurrentMedia()
 

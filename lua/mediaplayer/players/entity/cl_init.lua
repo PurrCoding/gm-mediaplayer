@@ -57,9 +57,18 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 
 	local ent = self.Entity
 
-	if --bDrawingSkybox or
-			self._isFullscreen or -- Don't draw if we're drawing fullscreen
-			not IsValid(ent) or
+	-- When fullscreen is active, check if HUDPaint is actually rendering.
+	-- If it isn't (e.g. gmod_camera suppresses HUD), fall back to 3D rendering.
+	if self._isFullscreen then
+		if self._hudPaintFired then
+			-- HUDPaint is working, let DrawFullscreen handle it
+			self._hudPaintFired = false
+			return
+		end
+		-- HUDPaint didn't fire since last frame, fall through to 3D rendering
+	end
+
+	if not IsValid(ent) or
 			(ent.IsDormant and ent:IsDormant()) then
 		return
 	end

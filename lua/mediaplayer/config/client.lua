@@ -1,6 +1,17 @@
 --[[----------------------------------------------------------------------------
 	Media Player client configuration
 ------------------------------------------------------------------------------]]
+
+--[[
+Note to developers: Although this fork is (unofficially) actively maintained by PurrCoding, 
+you can of course use your own domain or Github Pages at your own risk. You will have to push updates yourself.
+
+Special note to workshop uploaders: Adding more media players to the workshop will only lead to more complications. 
+	Everyone is welcome to participate in this PurrCoding fork instead.
+]]--
+
+local baseUrl = "https://mediaplayer.purrcoding.com/"
+
 MediaPlayer.SetConfig({
 
 	---
@@ -12,7 +23,7 @@ MediaPlayer.SetConfig({
 		-- Base URL where HTML content is located.
 		-- @type String
 		--
-		base_url = "https://purrcoding.github.io/gm-mediaplayer/"
+		base_url = baseUrl
 
 	},
 
@@ -25,7 +36,7 @@ MediaPlayer.SetConfig({
 		-- URL of the request menu.
 		-- @type String
 		--
-		url = "https://purrcoding.github.io/gm-mediaplayer/request.html"
+		url = baseUrl .. "request.html"
 
 	},
 
@@ -38,11 +49,8 @@ MediaPlayer.SetConfig({
 		-- URL where the YouTube player is located.
 		-- @type String
 		--
-		url = "https://purrcoding.b-cdn.net/mediaplayer/youtube.html",
-		url_meta = "https://purrcoding.b-cdn.net/mediaplayer/youtube_meta.html",
-
-		-- Note to developers: if you want to host it yourself, 
-		-- don't use GitHub Pages for this, otherwise the ads may appear more frequently!
+		url = baseUrl .. "youtube.html",
+		url_meta = baseUrl .. "youtube_meta.html",
 	}
 
 })

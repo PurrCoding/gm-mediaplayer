@@ -104,6 +104,7 @@ local function OnMediaSet( len )
 		media:StartTime( startTime )
 
 		mp:OnNetReadMedia(media)
+		mp:SetMedia( media )
 
 		local state = mp:GetPlayerState()
 
@@ -112,9 +113,9 @@ local function OnMediaSet( len )
 		else
 			media:Pause()
 		end
+	else
+		mp:SetMedia( media )
 	end
-
-	mp:SetMedia( media )
 
 end
 net.Receive( "MEDIAPLAYER.Media", OnMediaSet )

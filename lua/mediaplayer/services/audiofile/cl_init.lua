@@ -40,16 +40,17 @@ function SERVICE:Play()
 	else
 		local settings = table.Copy(self.StreamOptions)
 
-		-- .ogg files can't seem to use 3d?
-		if Audio3DCvar:GetBool() and IsValid(self.Entity) and
-				not self.url:match(".ogg") then
+		if Audio3DCvar:GetBool() and IsValid(self.Entity) then
 			table.insert(settings, "3d")
 		end
 
 		settings = table.concat(settings, " ")
 
 		local function loadAudio( callback )
-			if not self:IsPlaying() or IsValid( self.Channel ) then return end
+			if not self:IsPlaying() or IsValid( self.Channel ) then
+				callback( nil )
+				return
+			end
 			MediaPlayerUtils.LoadStreamChannel( self.url, settings, callback )
 		end
 
@@ -67,6 +68,9 @@ function SERVICE:Play()
 					self:Sync()
 
 					self.Channel:Play()
+				else
+					channel:Stop()
+					self.Channel = nil
 				end
 
 				self:emit("channelReady", channel)
@@ -94,6 +98,9 @@ function SERVICE:Stop()
 	if IsValid(self.Channel) then
 		self.Channel:Stop()
 	end
+
+	self.Channel = nil
+	self._3DFadeSet = nil
 end
 
 function SERVICE:Sync()
@@ -111,13 +118,13 @@ function SERVICE:SyncTime()
 
 	if state ~= GMOD_CHANNEL_STALLED then
 		local duration = self.Channel:GetLength()
-		local seekTime = math.min(duration, self:CurrentTime())
+		if duration <= 0 then return end
+
+		local seekTime = math.max(0, math.min(duration, self:CurrentTime()))
 		local curTime = self.Channel:GetTime()
 		local diffTime = math.abs(curTime - seekTime)
 
 		if diffTime > 5 then
-			-- SetTime can fail on block-streamed channels even when the
-			-- 'noblock' flag was requested, so handle the error gracefully.
 			local ok, err = pcall(self.Channel.SetTime, self.Channel, seekTime)
 			if not ok and MediaPlayer.DEBUG then
 				print("MediaPlayer: Failed to SetTime on audio channel - " .. tostring(err))
@@ -130,17 +137,12 @@ function SERVICE:SyncEntityPos()
 	if IsValid(self.Entity) then
 
 		if self.Channel:Is3D() then
-			-- apparently these are the default values?
-			self.Channel:Set3DFadeDistance( 500, 1000 )
+			if not self._3DFadeSet then
+				self.Channel:Set3DFadeDistance( 500, 1000 )
+				self._3DFadeSet = true
+			end
 
 			self.Channel:SetPos( self.Entity:GetPos() )
-		else
-			-- TODO: Fake 3D volume
-			-- https://facepunch.com/showthread.php?t=1302124&p=41975238&viewfull=1#post41975238
-
-			-- local volume = BaseClass.Volume( self, volume )
-			-- local vol = volume > 1 and volume/100 or volume
-			-- self.Channel:SetVolume( vol )
 		end
 
 	end
@@ -151,7 +153,7 @@ end
 function SERVICE:PreRequest( callback )
 
 	local function preload( callback )
-		MediaPlayerUtils.LoadStreamChannel( self.url, nil, callback )
+		MediaPlayerUtils.LoadStreamChannel( self.url, "noplay noblock", callback )
 	end
 
 	-- Preloading audio can fail the first time, so let's retry a few times
@@ -177,7 +179,7 @@ end
 
 function SERVICE:NetWriteRequest()
 	net.WriteString( self:Title() )
-	net.WriteUInt( self:Duration(), 16 )
+	net.WriteUInt( math.max(0, self:Duration()), 16 )
 end
 
 --[[---------------------------------------------------------
@@ -209,7 +211,7 @@ local function DrawSpectrumAnalyzer( fft, w, h )
 		if (b1 <= b0) then b1 = b0 + 1 end
 		sc = 10 + b1-b0;
 		while b0 < b1 do
-			sum = sum + fft[b0]
+			sum = sum + (fft[b0] or 0)
 			b0 = b0 + 1
 		end
 
@@ -230,9 +232,6 @@ local function DrawSpectrumAnalyzer( fft, w, h )
 
 end
 
-
-local HTMLMaterial = HTMLMaterial
-local color_white = color_white
 local FFT_2048 = FFT_2048
 local GMOD_CHANNEL_PLAYING = GMOD_CHANNEL_PLAYING
 

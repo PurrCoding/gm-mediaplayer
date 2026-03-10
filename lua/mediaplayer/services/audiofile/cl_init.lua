@@ -100,7 +100,6 @@ function SERVICE:Stop()
 	end
 
 	self.Channel = nil
-	self._3DFadeSet = nil
 end
 
 function SERVICE:Sync()
@@ -135,20 +134,15 @@ end
 
 function SERVICE:SyncEntityPos()
 	if IsValid(self.Entity) then
-
 		if self.Channel:Is3D() then
-			if not self._3DFadeSet then
-				self.Channel:Set3DFadeDistance( 500, 1000 )
-				self._3DFadeSet = true
-			end
+			local minDist = MediaPlayer.Cvars.ProximityMin:GetFloat()
+			local maxDist = MediaPlayer.Cvars.ProximityMax:GetFloat()
+			self.Channel:Set3DFadeDistance( minDist, maxDist )
 
 			self.Channel:SetPos( self.Entity:GetPos() )
 		end
-
 	end
 end
-
-
 
 function SERVICE:PreRequest( callback )
 

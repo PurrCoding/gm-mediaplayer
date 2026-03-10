@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	["mp.success.added_to_queue"]       = "'%s' přidáno do fronty",
 	["mp.error.no_permission"]          = "Na toto nemáte oprávnění.",
 	["mp.error.seek_past_duration"]     = "Požadovaný čas přetočení přesáhl délku média.",
+
+	-- Settings
+	["mp.settings.title"]               = "NASTAVENÍ",
+	["mp.settings.audio"]               = "Zvuk",
+	["mp.settings.3d_audio"]            = "3D prostorový zvuk",
+	["mp.settings.proximity_min"]       = "Minimální vzdálenost",
+	["mp.settings.proximity_max"]       = "Maximální vzdálenost",
+	["mp.settings.mute_unfocused"]      = "Ztlumit při ztrátě fokusu",
 })

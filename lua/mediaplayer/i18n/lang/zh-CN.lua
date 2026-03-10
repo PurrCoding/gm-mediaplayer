@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("zh-CN", {
 	["mp.success.added_to_queue"]       = "已将 '%s' 添加到队列",
 	["mp.error.no_permission"]          = "您没有权限执行此操作。",
 	["mp.error.seek_past_duration"]     = "请求的跳转时间超过了媒体时长。",
+
+	-- Settings
+	["mp.settings.title"]               = "设置",
+	["mp.settings.audio"]               = "音频",
+	["mp.settings.3d_audio"]            = "3D空间音频",
+	["mp.settings.proximity_min"]       = "最小距离",
+	["mp.settings.proximity_max"]       = "最大距离",
+	["mp.settings.mute_unfocused"]      = "失去焦点时静音",
 })

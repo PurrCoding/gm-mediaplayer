@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("ko", {
 	["mp.success.added_to_queue"]       = "'%s'이(가) 대기열에 추가되었습니다",
 	["mp.error.no_permission"]          = "해당 작업을 수행할 권한이 없습니다.",
 	["mp.error.seek_past_duration"]     = "요청한 탐색 시간이 미디어 재생 시간을 초과했습니다.",
+
+	-- Settings
+	["mp.settings.title"]               = "설정",
+	["mp.settings.audio"]               = "오디오",
+	["mp.settings.3d_audio"]            = "3D 공간 오디오",
+	["mp.settings.proximity_min"]       = "최소 거리",
+	["mp.settings.proximity_max"]       = "최대 거리",
+	["mp.settings.mute_unfocused"]      = "비활성 시 음소거",
 })

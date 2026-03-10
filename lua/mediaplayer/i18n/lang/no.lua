@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("no", {
 	["mp.success.added_to_queue"]       = "'%s' lagt til i køen",
 	["mp.error.no_permission"]          = "Du har ikke tillatelse til å gjøre det.",
 	["mp.error.seek_past_duration"]     = "Den forespurte spoletiden var forbi slutten av mediets varighet.",
+
+	-- Settings
+	["mp.settings.title"]               = "INNSTILLINGER",
+	["mp.settings.audio"]               = "Lyd",
+	["mp.settings.3d_audio"]            = "3D romlig lyd",
+	["mp.settings.proximity_min"]       = "Minimumsavstand",
+	["mp.settings.proximity_max"]       = "Maksimumsavstand",
+	["mp.settings.mute_unfocused"]      = "Demp når ufokusert",
 })

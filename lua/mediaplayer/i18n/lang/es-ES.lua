@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("es-ES", {
 	["mp.success.added_to_queue"]       = "'%s' añadido a la cola",
 	["mp.error.no_permission"]          = "No tienes permiso para hacer eso.",
 	["mp.error.seek_past_duration"]     = "El tiempo de búsqueda solicitado supera la duración del medio.",
+
+	-- Settings
+	["mp.settings.title"]               = "AJUSTES",
+	["mp.settings.audio"]               = "Audio",
+	["mp.settings.3d_audio"]            = "Audio espacial 3D",
+	["mp.settings.proximity_min"]       = "Distancia mínima",
+	["mp.settings.proximity_max"]       = "Distancia máxima",
+	["mp.settings.mute_unfocused"]      = "Silenciar sin foco",
 })

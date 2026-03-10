@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 	["mp.success.added_to_queue"]       = "'%s' zur Warteschlange hinzugefügt",
 	["mp.error.no_permission"]          = "Du hast keine Berechtigung dazu.",
 	["mp.error.seek_past_duration"]     = "Die angeforderte Sprungzeit liegt nach dem Ende der Mediendauer.",
+
+	-- Settings
+	["mp.settings.title"]               = "EINSTELLUNGEN",
+	["mp.settings.audio"]               = "Audio",
+	["mp.settings.3d_audio"]            = "3D-Raumklang",
+	["mp.settings.proximity_min"]       = "Mindestentfernung",
+	["mp.settings.proximity_max"]       = "Höchstentfernung",
+	["mp.settings.mute_unfocused"]      = "Stumm wenn nicht fokussiert",
 })

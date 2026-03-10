@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("en-PT", {
 	["mp.success.added_to_queue"]       = "'%s' added to the queue, yo ho!",
 	["mp.error.no_permission"]          = "Ye don't have permission to do that, landlubber!",
 	["mp.error.seek_past_duration"]     = "Yer seek time sailed past the end of the media, arr!",
+
+	-- Settings
+	["mp.settings.title"]               = "SETTIN'S",
+	["mp.settings.audio"]               = "Audio",
+	["mp.settings.3d_audio"]            = "3D Spatial Audio",
+	["mp.settings.proximity_min"]       = "Proximity Min Distance",
+	["mp.settings.proximity_max"]       = "Proximity Max Distance",
+	["mp.settings.mute_unfocused"]      = "Mute When Unfocused",
 })

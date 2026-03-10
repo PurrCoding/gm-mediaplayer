@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("pt-BR", {
 	["mp.success.added_to_queue"]       = "'%s' adicionado à fila",
 	["mp.error.no_permission"]          = "Você não tem permissão para fazer isso.",
 	["mp.error.seek_past_duration"]     = "O tempo de busca solicitado ultrapassou a duração da mídia.",
+
+	-- Settings
+	["mp.settings.title"]               = "CONFIGURAÇÕES",
+	["mp.settings.audio"]               = "Áudio",
+	["mp.settings.3d_audio"]            = "Áudio espacial 3D",
+	["mp.settings.proximity_min"]       = "Distância mínima",
+	["mp.settings.proximity_max"]       = "Distância máxima",
+	["mp.settings.mute_unfocused"]      = "Silenciar quando desfocado",
 })

@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("ru", {
 	["mp.success.added_to_queue"]       = "'%s' добавлено в очередь",
 	["mp.error.no_permission"]          = "У вас нет прав для выполнения этого действия.",
 	["mp.error.seek_past_duration"]     = "Запрошенное время перемотки превышает длительность медиа.",
+
+	-- Settings
+	["mp.settings.title"]               = "НАСТРОЙКИ",
+	["mp.settings.audio"]               = "Аудио",
+	["mp.settings.3d_audio"]            = "3D пространственный звук",
+	["mp.settings.proximity_min"]       = "Минимальное расстояние",
+	["mp.settings.proximity_max"]       = "Максимальное расстояние",
+	["mp.settings.mute_unfocused"]      = "Без звука при потере фокуса",
 })

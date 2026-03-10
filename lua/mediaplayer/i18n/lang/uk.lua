@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("uk", {
 	["mp.success.added_to_queue"]       = "'%s' додано до черги",
 	["mp.error.no_permission"]          = "У вас немає дозволу на цю дію.",
 	["mp.error.seek_past_duration"]     = "Запитаний час перемотки перевищує тривалість медіа.",
+
+	-- Settings
+	["mp.settings.title"]               = "НАЛАШТУВАННЯ",
+	["mp.settings.audio"]               = "Аудіо",
+	["mp.settings.3d_audio"]            = "3D просторовий звук",
+	["mp.settings.proximity_min"]       = "Мінімальна відстань",
+	["mp.settings.proximity_max"]       = "Максимальна відстань",
+	["mp.settings.mute_unfocused"]      = "Вимкнути звук без фокусу",
 })

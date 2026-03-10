@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("nl", {
 	["mp.success.added_to_queue"]       = "'%s' is aan de wachtrij toegevoegd",
 	["mp.error.no_permission"]          = "Je hebt geen toestemming om dat te doen.",
 	["mp.error.seek_past_duration"]     = "De opgevraagde spoeltijd lag voorbij het einde van de mediaduur.",
+
+	-- Settings
+	["mp.settings.title"]               = "INSTELLINGEN",
+	["mp.settings.audio"]               = "Audio",
+	["mp.settings.3d_audio"]            = "3D ruimtelijk geluid",
+	["mp.settings.proximity_min"]       = "Minimale afstand",
+	["mp.settings.proximity_max"]       = "Maximale afstand",
+	["mp.settings.mute_unfocused"]      = "Dempen wanneer niet gefocust",
 })

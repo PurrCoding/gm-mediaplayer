@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("tr", {
 	["mp.success.added_to_queue"]       = "'%s' sıraya eklendi",
 	["mp.error.no_permission"]          = "Bunu yapmaya yetkiniz yok.",
 	["mp.error.seek_past_duration"]     = "İstenen ilerleme zamanı medya süresinin sonunu aştı.",
+
+	-- Settings
+	["mp.settings.title"]               = "AYARLAR",
+	["mp.settings.audio"]               = "Ses",
+	["mp.settings.3d_audio"]            = "3D uzamsal ses",
+	["mp.settings.proximity_min"]       = "Minimum mesafe",
+	["mp.settings.proximity_max"]       = "Maksimum mesafe",
+	["mp.settings.mute_unfocused"]      = "Odak dışında sessize al",
 })

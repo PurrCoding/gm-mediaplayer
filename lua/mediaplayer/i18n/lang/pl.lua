@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("pl", {
 	["mp.success.added_to_queue"]       = "Dodano '%s' do kolejki",
 	["mp.error.no_permission"]          = "Nie masz uprawnień do wykonania tej czynności.",
 	["mp.error.seek_past_duration"]     = "Żądany czas przewijania przekroczył czas trwania mediów.",
+
+	-- Settings
+	["mp.settings.title"]               = "USTAWIENIA",
+	["mp.settings.audio"]               = "Dźwięk",
+	["mp.settings.3d_audio"]            = "Dźwięk przestrzenny 3D",
+	["mp.settings.proximity_min"]       = "Minimalna odległość",
+	["mp.settings.proximity_max"]       = "Maksymalna odległość",
+	["mp.settings.mute_unfocused"]      = "Wycisz gdy nieaktywne",
 })

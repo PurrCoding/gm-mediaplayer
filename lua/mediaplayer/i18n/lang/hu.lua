@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("hu", {
 	["mp.success.added_to_queue"]       = "'%s' hozzáadva a sorhoz",
 	["mp.error.no_permission"]          = "Nincs jogosultságod ehhez a művelethez.",
 	["mp.error.seek_past_duration"]     = "A kért tekerési idő meghaladta a média időtartamát.",
+
+	-- Settings
+	["mp.settings.title"]               = "BEÁLLÍTÁSOK",
+	["mp.settings.audio"]               = "Hang",
+	["mp.settings.3d_audio"]            = "3D térbeli hang",
+	["mp.settings.proximity_min"]       = "Minimális távolság",
+	["mp.settings.proximity_max"]       = "Maximális távolság",
+	["mp.settings.mute_unfocused"]      = "Némítás ha nincs fókuszban",
 })

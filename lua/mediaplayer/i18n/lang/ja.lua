@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("ja", {
 	["mp.success.added_to_queue"]       = "'%s' をキューに追加しました",
 	["mp.error.no_permission"]          = "この操作を行う権限がありません。",
 	["mp.error.seek_past_duration"]     = "リクエストされたシーク時間がメディアの長さを超えています。",
+
+	-- Settings
+	["mp.settings.title"]               = "設定",
+	["mp.settings.audio"]               = "オーディオ",
+	["mp.settings.3d_audio"]            = "3D立体音響",
+	["mp.settings.proximity_min"]       = "最小距離",
+	["mp.settings.proximity_max"]       = "最大距離",
+	["mp.settings.mute_unfocused"]      = "非アクティブ時にミュート",
 })

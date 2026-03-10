@@ -60,4 +60,12 @@ MediaPlayer.i18n.RegisterLanguage("fi", {
 	["mp.success.added_to_queue"]       = "'%s' lisätty jonoon",
 	["mp.error.no_permission"]          = "Sinulla ei ole oikeutta tehdä tätä.",
 	["mp.error.seek_past_duration"]     = "Pyydetty kelausaika ylitti median keston.",
+
+	-- Settings
+	["mp.settings.title"]               = "ASETUKSET",
+	["mp.settings.audio"]               = "Ääni",
+	["mp.settings.3d_audio"]            = "3D-tilaääni",
+	["mp.settings.proximity_min"]       = "Vähimmäisetäisyys",
+	["mp.settings.proximity_max"]       = "Enimmäisetäisyys",
+	["mp.settings.mute_unfocused"]      = "Mykistä kun ei aktiivinen",
 })

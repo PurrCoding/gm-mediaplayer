@@ -61,7 +61,7 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.error.no_permission"]          = "You don't have permission to do that.",
 	["mp.error.seek_past_duration"]     = "Request seek time was past the end of the media duration.",
 
-	-- Settings tab
+	-- Settings
 	["mp.settings.title"]               = "SETTINGS",
 	["mp.settings.audio"]               = "Audio",
 	["mp.settings.3d_audio"]            = "3D Spatial Audio",

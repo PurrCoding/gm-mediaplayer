@@ -50,11 +50,11 @@ body {
 }
 
 .services-grid {
-    display: flex;  
-    flex-wrap: wrap;  
-    justify-content: center;  
-    max-width: 550px;  
-    margin: -0.5rem auto;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	max-width: 550px;
+	margin: -0.5rem auto;
 }
 
 .service-card {

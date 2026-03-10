@@ -1,12 +1,88 @@
-Media Player (Updated Edition)
-============
-
-Media Player is an addon for Garry's Mod which features several media streaming services able to be played synchronously in multiplayer.
-
-### Installation ###
-
-Place the contents of this GitHub repository into a new addon folder within your `garrysmod/addons/` directory. For those unfamiliar with Git, press the `Download ZIP` button in the right-hand sidebar.
-
-If you'd only like to use the addon and not modify the source code, you can subscribe to the item on Steam Workshop:
-
-[![Steam Workshop](https://github.com/PurrCoding/gm-mediaplayer/raw/master/public/images/repo/workshop.png)](https://steamcommunity.com/sharedfiles/filedetails/?id=3001397905)
+# Media Player Redux  
+  
+A Garry's Mod addon for synchronized media streaming in multiplayer. Play videos, music, and other media on in-game screens — all synced across players in real time.  
+  
+[![Steam Workshop](https://img.shields.io/badge/Steam%20Workshop-Subscribe-blue?logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3001397905)  
+  
+## Features  
+  
+- **Synchronized Playback** — Media plays in sync for all players viewing the same screen.  
+- **Multiple Media Services** — Support for a wide range of platforms and media types:  
+  - YouTube  
+  - SoundCloud  
+  - Twitch  
+  - Dailymotion  
+  - Internet Archive  
+  - Google Drive  
+  - TikTok  
+  - Odysee  
+  - Direct audio files (`.mp3`, `.ogg`, etc.)  
+  - HTML5 video  
+  - Images  
+  - Webpages (when enabled by server)  
+- **Queue System** — Queue up media with support for skip, seek, pause, repeat, shuffle, and lock controls.  
+- **Vote Skip** — Players can vote to skip the current media.  
+- **3D Spatial Audio** — Audio volume adjusts based on distance and proximity to the screen.  
+- **Request Menu** — Built-in UI for players to request media via URL.  
+- **Fullscreen Mode** — Watch media in fullscreen on your client.  
+- **Idle Screen** — Displays an idle screen when no media is playing.  
+- **Thumbnails** — Optionally display media thumbnails on inactive screens.  
+- **Duplication Support** — Media player entities can be duplicated using Sandbox tools.  
+- **Localization** — Translated into 20 languages.  
+  
+## Spawnable Entities  
+  
+| Entity | Model |  
+|---|---|  
+| Big Screen TV | `models/gmod_tower/suitetv_large.mdl` |  
+| Huge Billboard | `models/hunter/plates/plate5x8.mdl` |  
+| Small TV | `models/props_phx/rt_screen.mdl` |  
+  
+All entities are available under the **Media Player** category in the spawn menu.  
+  
+## Installation  
+  
+### Steam Workshop (Recommended)  
+  
+Subscribe to the addon on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3001397905) — it will be automatically installed and kept up to date.  
+  
+### Manual Installation  
+  
+1. Download or clone this repository.  
+2. Place the folder into your `garrysmod/addons/` directory.  
+3. Restart Garry's Mod or change the map.  
+  
+## Configuration  
+  
+### Server Console Variables  
+  
+| ConVar | Default | Description |  
+|---|---|---|  
+| `mediaplayer_debug` | `0` | Enable debug mode; logs actions to the console. |  
+| `mediaplayer_allow_webpages` | `0` | Allow any webpage URL to be requested. |  
+| `mediaplayer_queue_limit` | `64` | Maximum number of items in a media player queue. |  
+  
+### Client Console Variables  
+  
+| ConVar | Default | Description |  
+|---|---|---|  
+| `mediaplayer_volume` | `0.15` | Playback volume (0–1). |  
+| `mediaplayer_resolution` | `480` | Media rendering resolution. |  
+| `mediaplayer_3daudio` | `1` | Enable 3D spatial audio. |  
+| `mediaplayer_mute_unfocused` | `1` | Mute media when the game window is unfocused. |  
+| `mediaplayer_fullscreen` | `0` | Enable fullscreen media playback. |  
+| `mediaplayer_draw_thumbnails` | `0` | Show media thumbnails on inactive screens. |  
+| `mediaplayer_proximity_min` | `100` | Minimum distance for proximity-based volume. |  
+| `mediaplayer_proximity_max` | `1000` | Maximum distance for proximity-based volume. |  
+  
+## Credits  
+  
+Originally created by [Samuel Maddock](https://github.com/samuelmaddock).  
+  
+### Contributors  
+  
+- [Shadowsun™](https://github.com/CattoGamer) — Maintainer; YouTube overhaul, new services (SoundCloud, TikTok, Google Drive, Odysee), i18n, proximity audio, and ongoing maintenance.  
+- [Astralcircle](https://github.com/Astralcircle) — Spawn menu icons, category icon, and repository structure refactor.  
+- [veitikka](https://github.com/veitikka) — YouTube metadata improvements, removing YouTube API dependency.  
+  
+...and all [other contributors](https://github.com/PurrCoding/gm-mediaplayer/graphs/contributors). Thank you!

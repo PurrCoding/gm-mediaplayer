@@ -5,6 +5,7 @@ include "volume_control.lua"
 include "playback.lua"
 include "queue.lua"
 include "horizontal_list.lua"
+include "settings.lua"
 
 
 --[[--------------------------------------------
@@ -28,6 +29,9 @@ function PANEL:Init()
 
 	local curplaytab = vgui.Create( "MP.CurrentlyPlayingTab" )
 	self.Tabs:AddSheet( MediaPlayer.L("mp.ui.currently_playing"), curplaytab, nil, false, false )
+
+	local settingstab = vgui.Create("MP.SettingsTab")
+	self.Tabs:AddSheet(MediaPlayer.L("mp.settings.title"), settingstab, nil, false, false)
 
 	-- TODO: Implement clientside media history for recently viewed tab
 	-- local panel = vgui.Create( "Panel" )

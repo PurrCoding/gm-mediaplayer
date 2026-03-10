@@ -226,6 +226,10 @@ function MEDIAPLAYER:Think()
 				local minDistance = MediaPlayer.Cvars.ProximityMin:GetFloat()
 				local maxDistance = MediaPlayer.Cvars.ProximityMax:GetFloat()
 
+				if minDistance >= maxDistance then
+					maxDistance = minDistance + 1
+				end
+
 				local falloff = 1 - ((distance - minDistance) / (maxDistance - minDistance))
 				volume = math_Clamp(baseVolume * falloff, 0, 1)
 			else

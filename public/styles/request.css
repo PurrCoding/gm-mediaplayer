@@ -50,16 +50,18 @@ body {
 }
 
 .services-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-	gap: 1rem;
-	max-width: 550px;
-	margin: 0 auto;
+    display: flex;  
+    flex-wrap: wrap;  
+    justify-content: center;  
+    max-width: 550px;  
+    margin: -0.5rem auto;
 }
 
 .service-card {
 	position: relative;
-	padding-bottom: 100%; /* Simulates aspect-ratio: 1 for Chrome < 88 */
+	width: 120px;
+	height: 120px;
+	margin: 0.5rem;
 	background: var(--bg-card);
 	border: 1px solid var(--border-color);
 	border-radius: var(--border-radius);
@@ -448,7 +450,6 @@ body {
 	}
 
 	.services-grid {
-		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 		gap: 1rem;
 		padding: 1.5rem;
 	}
@@ -466,9 +467,13 @@ body {
 
 @media (max-width: 480px) {
 	.services-grid {
-		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 		gap: 0.75rem;
 		padding: 1rem;
+	}
+
+	.service-card {
+		width: 100px;
+		height: 100px;
 	}
 
 	.popup-content {

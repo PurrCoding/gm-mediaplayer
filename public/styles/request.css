@@ -123,13 +123,13 @@ body {
 }
 
 /* Service logos */
-.logo-youtube { background-image: url(../images/logos/youtube.png); }
-.logo-tiktok { background-image: url(../images/logos/tiktok.svg); }
-.logo-twitch { background-image: url(../images/logos/twitch.png); }
-.logo-soundcloud { background-image: url(../images/logos/soundcloud.svg); }
-.logo-dailymotion { background-image: url(../images/logos/dailymotion.png); background-size: 55px; }
-.logo-archive { background-image: url(../images/logos/archive.png); }
-.logo-odysee { background-image: url(../images/logos/odysee.svg); }
+.logo-youtube { background-image: url(../images/youtube.png); }
+.logo-tiktok { background-image: url(../images/tiktok.svg); }
+.logo-twitch { background-image: url(../images/twitch.svg); }
+.logo-soundcloud { background-image: url(../images/soundcloud.svg); }
+.logo-dailymotion { background-image: url(../images/dailymotion.png); background-size: 55px; }
+.logo-archive { background-image: url(../images/archive.svg); }
+.logo-odysee { background-image: url(../images/odysee.svg); }
 
 /* Disabled service styles */
 .service-card.service-disabled {

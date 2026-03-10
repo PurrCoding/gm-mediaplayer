@@ -116,7 +116,12 @@ function SERVICE:SyncTime()
 		local diffTime = math.abs(curTime - seekTime)
 
 		if diffTime > 5 then
-			self.Channel:SetTime( seekTime )
+			-- SetTime can fail on block-streamed channels even when the
+			-- 'noblock' flag was requested, so handle the error gracefully.
+			local ok, err = pcall(self.Channel.SetTime, self.Channel, seekTime)
+			if not ok and MediaPlayer.DEBUG then
+				print("MediaPlayer: Failed to SetTime on audio channel - " .. tostring(err))
+			end
 		end
 	end
 end

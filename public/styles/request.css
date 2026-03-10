@@ -144,6 +144,10 @@ body {
 	border-color: var(--border-color);
 }
 
+.service-disabled .service-card-inner {
+	padding-bottom: 1.25rem;
+}
+
 .disabled-overlay {
 	position: absolute;
 	bottom: 0;

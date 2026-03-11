@@ -8,6 +8,10 @@ local minColor = Color(0, 220, 0, 200)
 local maxColor = Color(220, 0, 0, 200)
 local minGlow  = Color(0, 220, 0, 40)
 local maxGlow  = Color(220, 0, 0, 40)
+local playerColor = Color(0, 0, 0, 220)
+local playerGlow  = Color(0, 0, 0, 60)
+local playerTextColor   = Color(255, 255, 255, 255)
+local playerTextBgColor = Color(0, 0, 0, 180)
 
 local showProximityRadius = false
 
@@ -32,6 +36,8 @@ local function ProximityRadiusHook(depth, skybox, skybox3d)
 
 	local minDist = MediaPlayer.Cvars.ProximityMin:GetFloat()
 	local maxDist = MediaPlayer.Cvars.ProximityMax:GetFloat()
+	local ply = LocalPlayer()
+	local plyPos = ply:GetPos()
 
 	for _, mp in pairs(MediaPlayer.List) do
 		if not IsValid(mp) then continue end
@@ -47,6 +53,37 @@ local function ProximityRadiusHook(depth, skybox, skybox3d)
 			DrawThickCircle(pos, maxDist, maxGlow, 20, 64)
 			DrawThickCircle(pos, maxDist, maxColor, 6, 64)
 		end
+
+		-- Player distance circle + text
+		local distance = plyPos:Distance(pos)
+
+		DrawThickCircle(pos, distance, playerGlow, 14, 64)
+		DrawThickCircle(pos, distance, playerColor, 4, 64)
+
+		-- Direction from entity to player (flattened to XY plane)
+		local dir = (plyPos - pos)
+		dir.z = 0
+		local len = dir:Length()
+		if len > 0 then
+			dir = dir / len
+		else
+			dir = Vector(1, 0, 0)
+		end
+
+		-- Position text INWARD from the circle edge (toward entity center)
+		-- so the player sees it in front of them, not inside them
+		local textPos = pos + dir * (distance - 100) + Vector(0, 0, 50)
+
+		local billboardAng = Angle(0, EyeAngles().y - 90, 90)
+
+		cam.Start3D2D(textPos, billboardAng, 0.25)
+			local text = math.Round(distance) .. " units"
+			surface.SetFont("DermaLarge")
+			local tw, th = surface.GetTextSize(text)
+			surface.SetDrawColor(playerTextBgColor)
+			surface.DrawRect(-tw / 2 - 6, -th / 2 - 4, tw + 12, th + 8)
+			draw.SimpleText(text, "DermaLarge", 0, 0, playerTextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		cam.End3D2D()
 	end
 end
 

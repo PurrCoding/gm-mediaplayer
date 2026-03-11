@@ -88,6 +88,7 @@ end
 function PANEL:OnRemove()
 
 	hook.Remove( MP.EVENTS.VOLUME_CHANGED, self )
+	hook.Remove( MP.EVENTS.UI.MEDIA_PLAYER_CHANGED, self )
 
 end
 

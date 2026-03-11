@@ -299,11 +299,13 @@ function SEEKBAR:OnMouseReleased( mcode )
 end
 
 function SEEKBAR:Think()
-
 	local media = self.m_Media
 
 	if media and not self:IsEditing() then
-		local progress = media:CurrentTime() / media:Duration()
+		local duration = media:Duration()
+		if duration <= 0 then return end
+
+		local progress = media:CurrentTime() / duration
 		progress = clamp(progress, 0, 1)
 
 		self:SetSlideX( progress )

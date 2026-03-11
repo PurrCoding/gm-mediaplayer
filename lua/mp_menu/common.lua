@@ -561,7 +561,7 @@ function VOTE_CONTROLS:OnUpvote()
 		value = 1 -- set vote
 	end
 
-	self:SetVoteCount( self:GetVoteCount() + value )
+	self:SetVoteCount( self:GetVoteCount() - self:GetVoteValue() + value )
 	self:SetVoteValue( value )
 
 	hook.Run( MP.EVENTS.UI.VOTE_MEDIA, self.m_Media, value )
@@ -576,7 +576,7 @@ function VOTE_CONTROLS:OnDownvote()
 		value = -1 -- set vote
 	end
 
-	self:SetVoteCount( self:GetVoteCount() + value )
+	self:SetVoteCount( self:GetVoteCount() - self:GetVoteValue() + value )
 	self:SetVoteValue( value )
 
 	hook.Run( MP.EVENTS.UI.VOTE_MEDIA, self.m_Media, value )

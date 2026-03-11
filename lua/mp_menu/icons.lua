@@ -134,7 +134,7 @@ function DICON:PaintAt( x, y, dw, dh )
 		local OffX = ceil((dw - w) * 0.5)
 		local OffY = ceil((dh - h) * 0.5)
 
-		spritesheet.DrawIcon( self.m_strIcon, OffX + y, OffY + y, w, h, self.m_Color )
+		spritesheet.DrawIcon( self.m_strIcon, x + OffX, y + OffY, w, h, self.m_Color )
 		return true
 
 	end
@@ -258,7 +258,7 @@ function DICONLBLBTN:PerformLayout()
 
 	local w = self.BtnLbl:GetPos() + self.BtnLbl:GetWide() + self.m_Padding
 	local h = math.max( self.m_Icon:GetTall(), self.BtnLbl:GetTall() )
-	self:SetWide( w, h )
+	self:SetSize( w, h )
 
 	self.m_Icon:CenterVertical()
 	self.BtnLbl:CenterVertical()

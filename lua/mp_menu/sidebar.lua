@@ -105,7 +105,9 @@ function SidebarPresenter:SetupEvents()
 	local mp = self:GetMedia()
 
 	self:RegisterHook( MP.EVENTS.UI.OPEN_REQUEST_MENU, function()
-		self:HideSidebar()
+		timer.Simple(0, function()
+			SidebarPresenter:HideSidebar()
+		end)
 		MediaPlayer.OpenRequestMenu( mp )
 	end )
 
@@ -154,6 +156,8 @@ function SidebarPresenter:ClearEvents()
 	for _, hookname in ipairs(self.hooks) do
 		hook.Remove( hookname, "MP.SidebarPresenter" )
 	end
+
+	self.hooks = {}
 
 end
 

@@ -9,6 +9,17 @@ end
 
 MediaPlayer.Type = {}
 
+local setmetatable = setmetatable
+local pairs = pairs
+local pcall = pcall
+local tostring = tostring
+local ErrorNoHalt = ErrorNoHalt
+local Msg = Msg
+local print = print
+local next = next
+local timer = timer
+local table_insert = table.insert
+
 local function setBaseClass( name, tbl )
 	local classname = "mp_" .. name
 
@@ -145,6 +156,9 @@ function MediaPlayer.Create( id, type )
 	-- Add to media player list
 	MediaPlayer.List[mp.id] = mp
 
+	-- Start the think timer if this is the first media player
+	StartThinkTimer()
+
 	if MediaPlayer.DEBUG then
 		print( "Created Media Player", mp, mp.Name, type )
 	end
@@ -158,8 +172,12 @@ end
 -- @param table		Media player object.
 --
 function MediaPlayer.Destroy( mp )
-	-- TODO: does this need anything else?
 	MediaPlayer.List[mp.id] = nil
+
+	-- Stop the think timer if no media players remain
+	if next(MediaPlayer.List) == nil then
+		StopThinkTimer()
+	end
 
 	if MediaPlayer.DEBUG then
 		print( "Destroyed Media Player '" .. tostring(mp.id) .. "'" )
@@ -196,7 +214,7 @@ function MediaPlayer.GetAll()
 	local tbl = {}
 
 	for _, mp in pairs( MediaPlayer.List ) do
-		table.insert( tbl, mp )
+		table_insert( tbl, mp )
 	end
 
 	return tbl
@@ -240,11 +258,21 @@ local function MediaPlayerThink()
 	end
 end
 
-if timer.Exists( "MediaPlayerThink" ) then
-	timer.Remove( "MediaPlayerThink" )
+function StartThinkTimer()
+	if not timer.Exists("MediaPlayerThink") then
+		timer.Create("MediaPlayerThink", MediaPlayer.ThinkInterval, 0, MediaPlayerThink)
+	end
 end
 
--- TODO: only start timer when at least one mediaplayer is created; stop it when
--- there are none left.
-timer.Create( "MediaPlayerThink", MediaPlayer.ThinkInterval, 0, MediaPlayerThink )
-timer.Start( "MediaPlayerThink" )
+function StopThinkTimer()
+	if timer.Exists("MediaPlayerThink") then
+		timer.Remove("MediaPlayerThink")
+	end
+end
+
+-- On load/refresh: start timer only if media players already exist
+if next(MediaPlayer.List) ~= nil then
+	StartThinkTimer()
+else
+	StopThinkTimer()
+end

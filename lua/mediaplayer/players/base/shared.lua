@@ -1,7 +1,7 @@
 local MediaPlayer = MediaPlayer
 
-local Audio3DCvar = MediaPlayer.Cvars.Audio3D  
-local ProximityMinCvar = MediaPlayer.Cvars.ProximityMin  
+local Audio3DCvar = MediaPlayer.Cvars.Audio3D
+local ProximityMinCvar = MediaPlayer.Cvars.ProximityMin
 local ProximityMaxCvar = MediaPlayer.Cvars.ProximityMax
 
 local HasFocus = system.HasFocus
@@ -214,8 +214,11 @@ function MEDIAPLAYER:Think()
 
 		local volume
 
-		-- TODO: add a GAMEMODE hook to determine if sound should be muted
-		if not HasFocus() and MuteUnfocused:GetBool() then
+		-- Allow gamemodes/addons to force-mute a media player.
+		-- Return true from the hook to mute, false/nil to use default behavior.
+		if hook.Run( "MediaPlayerShouldMute", self, media ) then
+			volume = 0
+		elseif not HasFocus() and MuteUnfocused:GetBool() then
 			volume = 0
 		else
 			local baseVolume = MediaPlayer.Volume()

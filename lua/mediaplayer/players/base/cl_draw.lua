@@ -66,32 +66,40 @@ local OverflowString = "..." -- ellipsis
 -- @param w			Maximum width.
 -- @return String	String fitting the maximum required width.
 --
-local function RestrictStringWidth( text, font, w )
+local _restrictCache = {}
+local _restrictCacheSize = 0
+local MAX_RESTRICT_CACHE = 64
 
-	-- TODO: Cache this
+local function RestrictStringWidth( text, font, w )
+	local key = text .. "\0" .. font .. "\0" .. w
+	local cached = _restrictCache[key]
+	if cached then return cached end
 
 	surface.SetFont( font )
 	local curwidth = surface.GetTextSize( text )
 	local overflow = false
 
-	-- Reduce text by one character until it fits
 	while curwidth > w do
-
-		-- Text has overflowed, append overflow string on return
 		if not overflow then
 			overflow = true
 		end
 
-		-- Cut off last character
 		text = string.gsub(text, UTF8SubLastCharPattern, "")
-
-		-- Check size again
 		curwidth = surface.GetTextSize( text .. OverflowString )
-
 	end
 
-	return overflow and (text .. OverflowString) or text
+	local result = overflow and (text .. OverflowString) or text
 
+	-- Evict cache if it gets too large
+	if _restrictCacheSize >= MAX_RESTRICT_CACHE then
+		_restrictCache = {}
+		_restrictCacheSize = 0
+	end
+
+	_restrictCache[key] = result
+	_restrictCacheSize = _restrictCacheSize + 1
+
+	return result
 end
 
 function MEDIAPLAYER:DrawHTML( browser, w, h )

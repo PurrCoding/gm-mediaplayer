@@ -1,5 +1,9 @@
 local MediaPlayer = MediaPlayer
 
+local Audio3DCvar = MediaPlayer.Cvars.Audio3D  
+local ProximityMinCvar = MediaPlayer.Cvars.ProximityMin  
+local ProximityMaxCvar = MediaPlayer.Cvars.ProximityMax
+
 local HasFocus = system.HasFocus
 local MuteUnfocused = MediaPlayer.Cvars.MuteUnfocused
 local CeilPower2 = MediaPlayerUtils.CeilPower2
@@ -216,15 +220,15 @@ function MEDIAPLAYER:Think()
 		else
 			local baseVolume = MediaPlayer.Volume()
 
-			if MediaPlayer.Cvars.Audio3D:GetBool() then
+			if Audio3DCvar:GetBool() then
 				local localPlayer = LocalPlayer()
 
 				local playerPos = localPlayer:GetPos()
 				local entityPos = self:GetPos()
 				local distance = playerPos:Distance(entityPos)
 
-				local minDistance = MediaPlayer.Cvars.ProximityMin:GetFloat()
-				local maxDistance = MediaPlayer.Cvars.ProximityMax:GetFloat()
+				local minDistance = ProximityMinCvar:GetFloat()
+				local maxDistance = ProximityMaxCvar:GetFloat()
 
 				if minDistance >= maxDistance then
 					maxDistance = minDistance + 1

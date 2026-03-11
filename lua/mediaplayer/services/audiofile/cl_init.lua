@@ -181,15 +181,29 @@ end
 -----------------------------------------------------------]]
 
 local IsValid = IsValid
-local draw = draw
 local math = math
 local surface = surface
+
+-- Localized math functions for hot loop
+local math_pow = math.pow
+local math_sqrt = math.sqrt
+local math_log10 = math.log10
+local math_Clamp = math.Clamp
+local math_ceil = math.ceil
+local HSVToColor = HSVToColor
+
+-- Localized surface functions for hot loop
+local SetDrawColor = surface.SetDrawColor
+local DrawRect = surface.DrawRect
 
 local VisualizerBgColor = Color(44, 62, 80, 255)
 local VisualizerBarColor = Color(52, 152, 219)
 local VisualizerBarAlpha = 220
 
 local BANDS	= 28
+
+-- Reusable FFT buffer to avoid per-frame allocation
+local fftBuffer = {}
 
 local function DrawSpectrumAnalyzer( fft, w, h )
 
@@ -199,27 +213,27 @@ local function DrawSpectrumAnalyzer( fft, w, h )
 	for x = 0, BANDS do
 		local sum = 0
 		local sc = 0
-		local b1 = math.pow(2,x * 10.0 / (BANDS-1))
+		local b1 = math_pow(2, x * 10.0 / (BANDS - 1))
 
 		if (b1 > 1023) then b1 = 1023 end
 		if (b1 <= b0) then b1 = b0 + 1 end
-		sc = 10 + b1-b0;
+		sc = 10 + b1 - b0;
 		while b0 < b1 do
 			sum = sum + (fft[b0] or 0)
 			b0 = b0 + 1
 		end
 
-		y = (math.sqrt(sum / math.log10(sc)) * 1.7 * h) - 4
-		y = math.Clamp(y, 0, h)
+		y = (math_sqrt(sum / math_log10(sc)) * 1.7 * h) - 4
+		y = math_Clamp(y, 0, h)
 
 		local col = HSVToColor( 120 - (120 * y / h), 1, 1 )
 		col.a = VisualizerBarAlpha
-		surface.SetDrawColor(col)
+		SetDrawColor(col)
 
-		surface.DrawRect(
-			math.ceil(x * (w / BANDS)),
-			math.ceil(h - y - 1),
-			math.ceil(w / BANDS) - 2,
+		DrawRect(
+			math_ceil(x * (w / BANDS)),
+			math_ceil(h - y - 1),
+			math_ceil(w / BANDS) - 2,
 			y + 1
 		)
 	end
@@ -237,8 +251,8 @@ AddHTMLMaterialStyle( HTMLMAT_STYLE_ARTWORK, {
 
 function SERVICE:Draw( w, h )
 
-	surface.SetDrawColor( VisualizerBgColor )
-	surface.DrawRect( 0, 0, w, h )
+	SetDrawColor( VisualizerBgColor )
+	DrawRect( 0, 0, w, h )
 
 	local thumbnail = self:Thumbnail()
 	if thumbnail then
@@ -247,13 +261,14 @@ function SERVICE:Draw( w, h )
 
 	local channel = self.Channel
 	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then
-		local fft = {}
-		channel:FFT( fft, FFT_2048 )
+		-- Clear and reuse buffer to avoid per-frame table allocation
+		for k in pairs(fftBuffer) do fftBuffer[k] = nil end
+		channel:FFT( fftBuffer, FFT_2048 )
 
 		-- exposed on the table in case anyone wants to use this
-		self.fft = fft
+		self.fft = fftBuffer
 
-		DrawSpectrumAnalyzer( fft, w, h )
+		DrawSpectrumAnalyzer( fftBuffer, w, h )
 	end
 
 	self:PostDraw()

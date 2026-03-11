@@ -8,26 +8,49 @@ local minColor = Color(0, 220, 0, 200)
 local maxColor = Color(220, 0, 0, 200)
 local minGlow  = Color(0, 220, 0, 40)
 local maxGlow  = Color(220, 0, 0, 40)
-local playerColor = Color(0, 0, 0, 220)
-local playerGlow  = Color(0, 0, 0, 60)
+local playerColor       = Color(0, 0, 0, 220)
+local playerGlow        = Color(0, 0, 0, 60)
 local playerTextColor   = Color(255, 255, 255, 255)
 local playerTextBgColor = Color(0, 0, 0, 180)
 
 local showProximityRadius = false
 
+-- Localized math/render/engine functions for render hot loops
+local math_pi = math.pi
+local math_cos = math.cos
+local math_sin = math.sin
+local math_Round = math.Round
+local render_SetColorMaterial = render.SetColorMaterial
+local render_StartBeam = render.StartBeam
+local render_AddBeam = render.AddBeam
+local render_EndBeam = render.EndBeam
+local Vector = Vector
+local Angle = Angle
+local EyeAngles = EyeAngles
+local LocalPlayer = LocalPlayer
+local IsValid = IsValid
+local cam_Start3D2D = cam.Start3D2D
+local cam_End3D2D = cam.End3D2D
+local surface_SetFont = surface.SetFont
+local surface_GetTextSize = surface.GetTextSize
+local surface_SetDrawColor = surface.SetDrawColor
+local surface_DrawRect = surface.DrawRect
+local draw_SimpleText = draw.SimpleText
+local TEXT_ALIGN_CENTER = TEXT_ALIGN_CENTER
+
 local function DrawThickCircle(pos, radius, color, width, segments)
 	segments = segments or 64
 	width = width or 6
-	local step = (2 * math.pi) / segments
+	local step = (2 * math_pi) / segments
 
-	render.SetColorMaterial()
-	render.StartBeam(segments + 1)
+	render_SetColorMaterial()
+	render_StartBeam(segments + 1)
 	for i = 0, segments do
 		local angle = i * step
-		local p = pos + Vector(math.cos(angle) * radius, math.sin(angle) * radius, 1)
-		render.AddBeam(p, width, i / segments, color)
+		local p = pos + Vector(math_cos(angle) * radius, math_sin(angle) * radius, 1)
+		render_AddBeam(p, width, i / segments, color)
 	end
-	render.EndBeam()
+	render_EndBeam()
 end
 
 local function ProximityRadiusHook(depth, skybox, skybox3d)
@@ -46,18 +69,15 @@ local function ProximityRadiusHook(depth, skybox, skybox3d)
 		local pos = ent:GetPos()
 
 		if minDist > 0 then
-			DrawThickCircle(pos, minDist, minGlow, 20, 64)
 			DrawThickCircle(pos, minDist, minColor, 6, 64)
 		end
 		if maxDist > 0 then
-			DrawThickCircle(pos, maxDist, maxGlow, 20, 64)
 			DrawThickCircle(pos, maxDist, maxColor, 6, 64)
 		end
 
 		-- Player distance circle + text
 		local distance = plyPos:Distance(pos)
 
-		DrawThickCircle(pos, distance, playerGlow, 14, 64)
 		DrawThickCircle(pos, distance, playerColor, 4, 64)
 
 		-- Direction from entity to player (flattened to XY plane)
@@ -76,14 +96,14 @@ local function ProximityRadiusHook(depth, skybox, skybox3d)
 
 		local billboardAng = Angle(0, EyeAngles().y - 90, 90)
 
-		cam.Start3D2D(textPos, billboardAng, 0.25)
-			local text = math.Round(distance) .. " units"
-			surface.SetFont("DermaLarge")
-			local tw, th = surface.GetTextSize(text)
-			surface.SetDrawColor(playerTextBgColor)
-			surface.DrawRect(-tw / 2 - 6, -th / 2 - 4, tw + 12, th + 8)
-			draw.SimpleText(text, "DermaLarge", 0, 0, playerTextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		cam.End3D2D()
+		cam_Start3D2D(textPos, billboardAng, 0.25)
+			local text = math_Round(distance) .. " units"
+			surface_SetFont("DermaLarge")
+			local tw, th = surface_GetTextSize(text)
+			surface_SetDrawColor(playerTextBgColor)
+			surface_DrawRect(-tw / 2 - 6, -th / 2 - 4, tw + 12, th + 8)
+			draw_SimpleText(text, "DermaLarge", 0, 0, playerTextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		cam_End3D2D()
 	end
 end
 

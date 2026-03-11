@@ -68,4 +68,6 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.settings.proximity_min"]       = "Proximity Min Distance",
 	["mp.settings.proximity_max"]       = "Proximity Max Distance",
 	["mp.settings.mute_unfocused"]      = "Mute When Unfocused",
+	["mp.settings.language"]            = "Language",
+	["mp.settings.show_radius"]         = "Show Proximity Radius",
 })

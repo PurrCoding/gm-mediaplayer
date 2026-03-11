@@ -42,6 +42,14 @@ end
 --
 function MediaPlayer.i18n.GetLanguage()
 	if CLIENT then
+		local override = MediaPlayer.Cvars and MediaPlayer.Cvars.LanguageOverride
+		if override then
+			local lang = override:GetString()
+			if lang ~= "" and MediaPlayer.i18n._languages[lang] then
+				return lang
+			end
+		end
+
 		local cvar = GetConVar("gmod_language")
 		return cvar and cvar:GetString() or MediaPlayer.i18n._fallback
 	end

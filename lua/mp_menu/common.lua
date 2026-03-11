@@ -45,16 +45,90 @@ surface.CreateFont( "MP.AddedByName", FontTbl )
 	Common media player panels
 ----------------------------------------------]]
 
+local color_transparent = Color(0, 0, 0, 0)
+local SCROLL_SPEED = 50
+local PAUSE_DURATION = 2
+
 local MEDIA_TITLE = {}
 
 function MEDIA_TITLE:Init()
 	self.BaseClass.Init( self )
 	self:SetFont( "MP.MediaTitle" )
 	self:SetTextColor( color_white )
+
+	self._scrollOffset = 0
+	self._scrolling = false
+	self._paused = true
+	self._pauseStart = RealTime()
+	self._lastText = ""
+end
+
+function MEDIA_TITLE:Think()
+	local text = self:GetText()
+	local w = self:GetWide()
+
+	-- Recalculate text width when text changes
+	if text ~= self._lastText then
+		self._lastText = text
+		surface.SetFont(self:GetFont())
+		local tw = surface.GetTextSize(text)
+		self._textWidth = tw
+		self._scrollOffset = 0
+		self._paused = true
+		self._pauseStart = RealTime()
+	end
+
+	-- Check if scrolling is needed
+	if not self._textWidth or self._textWidth <= w then
+		self._scrolling = false
+		self:SetTextColor(color_white)
+		return
+	end
+
+	self._scrolling = true
+	self:SetTextColor(color_transparent)
+
+	local maxScroll = self._textWidth - w
+
+	if self._paused then
+		if RealTime() - self._pauseStart >= PAUSE_DURATION then
+			self._paused = false
+			-- If we were at the end, jump back to start and pause again
+			if self._scrollOffset >= maxScroll then
+				self._scrollOffset = 0
+				self._paused = true
+				self._pauseStart = RealTime()
+			end
+		end
+	else
+		self._scrollOffset = self._scrollOffset + SCROLL_SPEED * FrameTime()
+		if self._scrollOffset >= maxScroll then
+			self._scrollOffset = maxScroll
+			self._paused = true
+			self._pauseStart = RealTime()
+		end
+	end
+end
+
+function MEDIA_TITLE:Paint(w, h)
+	if not self._scrolling then
+		return
+	end
+
+	local x, y = self:LocalToScreen(0, 0)
+
+	render.SetScissorRect(x, y, x + w, y + h, true)
+	draw.SimpleText(
+		self:GetText(),
+		self:GetFont(),
+		-self._scrollOffset,
+		0,
+		color_white
+	)
+	render.SetScissorRect(0, 0, 0, 0, false)
 end
 
 derma.DefineControl( "MP.MediaTitle", "", MEDIA_TITLE, "DLabel" )
-
 
 local MEDIA_TIME = {}
 

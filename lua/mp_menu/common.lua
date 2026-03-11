@@ -1,5 +1,5 @@
-local ceil = math.ceil
 local clamp = math.Clamp
+local min = math.min
 
 local FormatSeconds = MediaPlayerUtils.FormatSeconds
 
@@ -122,8 +122,10 @@ function MEDIA_TITLE:Paint(w, h)
 		self:GetText(),
 		self:GetFont(),
 		-self._scrollOffset,
-		0,
-		color_white
+		h / 2,
+		color_white,
+		nil,
+		TEXT_ALIGN_CENTER
 	)
 	render.SetScissorRect(0, 0, 0, 0, false)
 end
@@ -308,7 +310,7 @@ function ADDED_BY:PerformLayout()
 	local w = pw + nw + self.NameOffset
 
 	if self.maxWidth then
-		w = math.min( w, self.maxWidth )
+		w = min( w, self.maxWidth )
 
 		-- Clips name label to the maximum width; looks kind of bad since the
 		-- ellipsis start too early for some reason.

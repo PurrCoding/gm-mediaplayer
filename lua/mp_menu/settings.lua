@@ -128,7 +128,7 @@ local function CreateSlider(parent, i18nKey, convar, min, max, decimals)
 	return slider
 end
 
-local function CreateLanguageDropdown(parent, i18nKey)
+local function CreateLanguageDropdown(parent, i18nKey, settingsPanel)
 	local label = vgui.Create("DLabel", parent)
 	label:SetText(L(i18nKey))
 	label:SetTextColor(Color(200, 200, 200))
@@ -158,8 +158,14 @@ local function CreateLanguageDropdown(parent, i18nKey)
 
 	combo.OnSelect = function(_, _, _, data)
 		RunConsoleCommand("mediaplayer_language", data)
+		if IsValid(settingsPanel) then
+			timer.Simple(0.1, function()
+				if IsValid(settingsPanel) then
+					settingsPanel:BuildContent()
+				end
+			end)
+		end
 	end
-
 	return combo
 end
 
@@ -195,6 +201,11 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:DockPadding(0, 0, 0, 0)
+	self:BuildContent()
+end
+
+function PANEL:BuildContent()
+	self:Clear()
 
 	local scroll = vgui.Create("DScrollPanel", self)
 	scroll:Dock(FILL)
@@ -208,18 +219,25 @@ function PANEL:Init()
 	local proxMin = CreateSlider(scroll, "mp.settings.proximity_min", "mediaplayer_proximity_min", 0, 5000, 0)
 	local proxMax = CreateSlider(scroll, "mp.settings.proximity_max", "mediaplayer_proximity_max", 0, 5000, 0)
 
-	-- Clamp min/max so min can't exceed max and vice versa
+	local clampingProxy = false
+
 	proxMin.OnValueChanged = function(_, val)
+		if clampingProxy then return end
 		local max = MediaPlayer.Cvars.ProximityMax:GetFloat()
 		if val >= max then
-			proxMin:SetValue(max - 1)
+			clampingProxy = true
+			proxMin:SetValue(math.max(0, max - 1))
+			clampingProxy = false
 		end
 	end
 
 	proxMax.OnValueChanged = function(_, val)
+		if clampingProxy then return end
 		local min = MediaPlayer.Cvars.ProximityMin:GetFloat()
 		if val <= min then
-			proxMax:SetValue(min + 1)
+			clampingProxy = true
+			proxMax:SetValue(math.min(5000, min + 1))
+			clampingProxy = false
 		end
 	end
 
@@ -231,7 +249,7 @@ function PANEL:Init()
 
 	-- Language section
 	CreateSectionLabel(scroll, "mp.settings.language")
-	CreateLanguageDropdown(scroll, "mp.settings.language")
+	CreateLanguageDropdown(scroll, "mp.settings.language", self)
 
 	-- Subtitles (placeholder)
 	CreateDisabledDropdown(scroll, "Subtitles — Soon™?", {
@@ -241,7 +259,6 @@ function PANEL:Init()
 		"Japanese — Soon™",
 		"Klingon — Soon™",
 	})
-
 end
 
 function PANEL:Paint(w, h)

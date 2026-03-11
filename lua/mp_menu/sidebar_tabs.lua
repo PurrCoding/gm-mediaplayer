@@ -1,5 +1,3 @@
-local ceil = math.ceil
-
 local surface = surface
 local color_white = color_white
 
@@ -70,15 +68,15 @@ function PANEL:PerformLayout()
 	local ActivePanel = ActiveTab:GetPanel()
 
 	local numItems = #self.Items
-	local tabWidth = ceil(self:GetWide() / numItems)
+	local tabWidth = math.floor(self:GetWide() / numItems)
 
 	local tab
 
 	for k, v in pairs( self.Items ) do
-
 		tab = v.Tab
 
-		tab:SetSize( tabWidth, self.TabHeight )
+		local w = (k == numItems) and (self:GetWide() - (numItems - 1) * tabWidth) or tabWidth
+		tab:SetSize( w, self.TabHeight )
 		tab:SetPos( (k-1) * tabWidth )
 
 		-- Handle tab panel visibility

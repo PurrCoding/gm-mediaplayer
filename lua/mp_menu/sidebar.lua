@@ -14,13 +14,14 @@ include "settings.lua"
 
 local PANEL = {}
 
+local SLIDE_DURATION = 0.15
+local SLIDE_EASE = -1
+
+
 function PANEL:Init()
-
 	self:SetName( "MediaPlayerSidebar" )
-
 	self:SetPaintBackgroundEnabled( true )
 	self:SetPaintBorderEnabled( false )
-
 	self:SetZPos( -99 )
 	self:SetSize( 385, 580 )
 
@@ -33,16 +34,19 @@ function PANEL:Init()
 	local settingstab = vgui.Create("MP.SettingsTab")
 	self.Tabs:AddSheet(MediaPlayer.L("mp.settings.title"), settingstab, nil, false, false)
 
-	-- TODO: Implement clientside media history for recently viewed tab
-	-- local panel = vgui.Create( "Panel" )
-	-- self.Tabs:AddSheet( "RECENTLY VIEWED", panel, nil, false, false )
-
 	self.VolumeControls = vgui.Create( "MP.VolumeControl", self )
 	self.VolumeControls:Dock( BOTTOM )
 	self.VolumeControls:SetHeight( 48 )
 
 	self:InvalidateLayout( true )
 
+	-- Start off-screen and slide in
+	self._sliding = true
+	local targetX, targetY = self:GetPos()
+	self:SetPos( -self:GetWide(), targetY )
+	self:MoveTo( targetX, targetY, SLIDE_DURATION, 0, SLIDE_EASE, function()
+		self._sliding = false
+	end)
 end
 
 function PANEL:Paint(w, h)
@@ -53,12 +57,19 @@ function PANEL:Paint(w, h)
 end
 
 function PANEL:PerformLayout()
-
-	self:CenterVertical()
-	self:AlignLeft( 10 )
-
+	if not self._sliding then
+		self:CenterVertical()
+		self:AlignLeft( 10 )
+	end
 	self.Tabs:SizeToContentWidth()
+end
 
+function PANEL:SlideOut( callback )
+	self._sliding = true
+	local _, y = self:GetPos()
+	self:MoveTo( -self:GetWide(), y, SLIDE_DURATION, 0, SLIDE_EASE, function()
+		if callback then callback() end
+	end)
 end
 
 local MP_SIDEBAR = vgui.RegisterTable( PANEL, "EditablePanel" )
@@ -172,17 +183,20 @@ function SidebarPresenter:ShowSidebar( mp )
 end
 
 function SidebarPresenter:HideSidebar()
-
 	if not self.Sidebar then return end
 
 	self:ClearEvents()
 
 	if IsValid(self.Sidebar) then
-		self.Sidebar:Remove()
+		self.Sidebar:SlideOut(function()
+			if IsValid(self.Sidebar) then
+				self.Sidebar:Remove()
+			end
+			self.Sidebar = nil
+		end)
+	else
+		self.Sidebar = nil
 	end
-
-	self.Sidebar = nil
-
 end
 
 

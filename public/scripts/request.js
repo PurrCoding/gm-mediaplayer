@@ -1,3 +1,4 @@
+// public/scripts/request.js
 'use strict';
 
 // Service definitions with codec requirements
@@ -52,7 +53,7 @@ async function initializeServices() {
 			<div class="service-card-inner">
 				<div class="service-icon logo-${service.icon}"></div>
 				<div class="service-name">${service.name}</div>
-				${isDisabled ? '<div class="disabled-overlay">Codec Required</div>' : ''}
+				${isDisabled ? `<div class="disabled-overlay">${MP_I18N.t("request.codec_overlay")}</div>` : ''}
 			</div>
 		`;
 
@@ -122,7 +123,7 @@ function requestUrl() {
 	if (url.length === 0) return;
 
 	statusIndicator.classList.remove('hidden');
-	statusText.textContent = 'Request sent!';
+	statusText.textContent = MP_I18N.t('request.status_sent');
 	submitBtn.disabled = true;
 
 	setTimeout(() => {
@@ -191,6 +192,7 @@ function isValidURL(string) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+	MP_I18N.initFromHash();
 	initializeServices();
 	initializeUrlInput();
 	initializeAutoInput();

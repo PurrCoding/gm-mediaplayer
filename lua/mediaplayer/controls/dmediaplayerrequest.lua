@@ -52,7 +52,8 @@ function PANEL:Init()
 	end )
 
 	local requestUrl = MediaPlayer.GetConfigValue( "request.url" )
-	self.Browser:OpenURL( requestUrl )
+	local lang = MediaPlayer.i18n.GetLanguage()
+	self.Browser:OpenURL( requestUrl .. "#lang=" .. lang )
 
 	self.Controls = vgui.Create( "MPHTMLControls", self.BrowserContainer )
 	self.Controls:Dock( TOP )

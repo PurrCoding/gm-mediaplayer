@@ -97,3 +97,14 @@ function MediaPlayer.GetIdlescreen()
 	return MediaPlayer._idlescreen
 
 end
+
+cvars.AddChangeCallback("mediaplayer_language", function()
+
+	if IsValid(MediaPlayer._idlescreen) then
+		local setup = hook.Run("MediaPlayerSetupIdlescreen", MediaPlayer._idlescreen)
+		if not setup then
+			MediaPlayer._idlescreen:SetHTML(GetIdlescreenHTML())
+		end
+	end
+
+end, "MP.IdlescreenLanguageRefresh")

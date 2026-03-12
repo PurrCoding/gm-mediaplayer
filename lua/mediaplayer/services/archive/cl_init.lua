@@ -236,12 +236,13 @@ do	-- Media Controls
 
 		if IsValid(self.Browser) then
 			self.Browser:RunJavascript(JS_Pause)
-			self._YTPaused = true
+			self._Paused = true
 		end
 
 	end
 
 	function SERVICE:SetVolume( volume )
+		if not IsValid(self.Browser) then return end
 		local js = JS_Volume:format( volume )
 		self.Browser:RunJavascript(js)
 	end

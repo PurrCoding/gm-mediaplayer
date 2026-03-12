@@ -104,9 +104,9 @@ local EMBED_HTML = [[
 function SERVICE:OnBrowserReady( browser )
 
 	-- Resume paused player
-	if self._YTPaused then
+	if self._Paused then
 		self.Browser:RunJavascript( JS_Play )
-		self._YTPaused = nil
+		self._Paused = nil
 		return
 	end
 
@@ -125,12 +125,13 @@ function SERVICE:Pause()
 
 	if IsValid(self.Browser) then
 		self.Browser:RunJavascript(JS_Pause)
-		self._YTPaused = true
+		self._Paused = true
 	end
 
 end
 
 function SERVICE:SetVolume( volume )
+	if not IsValid(self.Browser) then return end
 	local js = JS_Volume:format( volume )
 	self.Browser:RunJavascript(js)
 end
@@ -157,7 +158,7 @@ do	-- Metadata Prefech
 		panel:SetAlpha(0)
 		panel:SetMouseInputEnabled(false)
 
-		svc = self
+		local svc = self
 		function panel:ConsoleMessage(msg)
 
 			if msg:StartWith("METADATA:") then

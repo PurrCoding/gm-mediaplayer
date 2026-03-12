@@ -1,4 +1,5 @@
 AddCSLuaFile "shared.lua"
+AddCSLuaFile "cl_init.lua"
 include "shared.lua"
 
 local urllib = url
@@ -8,36 +9,35 @@ local FilenameExtPattern = "([^/]+%.%S+)$"
 SERVICE.TitleIncludeExtension = true -- include extension in title
 
 function SERVICE:GetMetadata( callback )
+	if self._metadata then
+		callback(self._metadata)
+		return
+	end
 
-	if not self._metadata then
+	local title
 
-		local title
+	local pattern = self.TitleIncludeExtension and
+		FilenameExtPattern or FilenamePattern
 
-		local pattern = self.TitleIncludeExtension and
-			FilenameExtPattern or FilenamePattern
+	if self.urlinfo.path then
+		local path = self.urlinfo.path
+		path = string.match( path, pattern ) -- get filename
 
-		if self.urlinfo.path then
-			local path = self.urlinfo.path
-			path = string.match( path, pattern ) -- get filename
-
-			if path then
-				title = urllib.unescape( path )
-			else
-				title = self.url
-			end
+		if path then
+			title = urllib.unescape( path )
 		else
 			title = self.url
 		end
-
-		self._metadata = {
-			title 		= title or self.Name,
-			url 		= self.url
-		}
-
+	else
+		title = self.url
 	end
 
-	if callback then
-		callback(self._metadata)
-	end
+	local metadata = {
+		title = title or self.Name,
+		url   = self.url
+	}
 
+	self:SetMetadata(metadata, true)
+
+	callback(self._metadata)
 end

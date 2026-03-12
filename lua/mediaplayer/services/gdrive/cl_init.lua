@@ -23,14 +23,14 @@ local JS_Interface = [[
 function SERVICE:OnBrowserReady( browser )
 
 	-- Resume paused player
-	if self._GDPaused then
+	if self._Paused then
 		self.Browser:RunJavascript( [[
 			if(window.MediaPlayer) {
 				MediaPlayer.playVideo()
-			} 
+			}
 		]] )
 
-		self._GDPaused = nil
+		self._Paused = nil
 		return
 	end
 
@@ -50,7 +50,7 @@ do -- Player Controls
 	local JS_Pause = [[
 		if(window.MediaPlayer) {
 			MediaPlayer.pauseVideo()
-		} 
+		}
 	]]
 	local JS_Volume = [[
 		if (window.MediaPlayer) {
@@ -79,12 +79,13 @@ do -- Player Controls
 
 		if IsValid(self.Browser) then
 			self.Browser:RunJavascript(JS_Pause)
-			self._GDPaused = true
+			self._Paused = true
 		end
 
 	end
 
 	function SERVICE:SetVolume( volume )
+		if not IsValid(self.Browser) then return end
 		local js = JS_Volume:format( volume )
 		self.Browser:RunJavascript(js)
 	end
@@ -117,12 +118,12 @@ do	-- Metadata Prefech
 					done = true;
 
 					var title = document.querySelector("meta[property='og:title']").getAttribute("content");
-					var metadata = { 
+					var metadata = {
 						duration: player.getDuration(),
 						title: title
 					}
 
-					console.log("METADATA:" + JSON.stringify(metadata))	
+					console.log("METADATA:" + JSON.stringify(metadata))
 				}
 			})
 		})();
@@ -137,7 +138,7 @@ do	-- Metadata Prefech
 		panel:SetAlpha(0)
 		panel:SetMouseInputEnabled(false)
 
-		svc = self
+		local svc = self
 		function panel:ConsoleMessage(msg)
 
 			if msg:StartWith("METADATA:") then

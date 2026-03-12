@@ -89,6 +89,7 @@ if CLIENT then
 	end
 
 	function SERVICE:SetVolume( volume )
+		if not IsValid(self.Browser) then return end
 		local js = JS_Volume:format( volume )
 		self.Browser:RunJavascript(js)
 	end
@@ -96,7 +97,7 @@ if CLIENT then
 	function SERVICE:Sync()
 
 		local seekTime = self:CurrentTime()
-		if self:IsTimed() and seekTime > 0 then
+		if IsValid(self.Browser) and self:IsTimed() and seekTime > 0 then
 			self.Browser:RunJavascript(JS_Seek:format(seekTime))
 		end
 	end
@@ -120,49 +121,28 @@ if CLIENT then
 	end
 
 	function SERVICE:NetWriteRequest()
-		net.WriteUInt( self._metaDuration, 16 )
+		net.WriteUInt( self._metaDuration or 0, 16 )
 	end
 
 end
 
 if SERVER then
 	function SERVICE:GetMetadata( callback )
-
-		if self._metadata then
-			callback( self._metadata )
+		local cached, found = self:GetCachedMetadata()
+		if found then
+			callback(cached)
 			return
 		end
 
-		local cache = MediaPlayer.Metadata:Query(self)
+		local metadata = {}
 
-		if MediaPlayer.DEBUG then
-			print("MediaPlayer.GetMetadata Cache results:")
-			PrintTable(cache or {})
-		end
+		metadata.title = self.url
+		metadata.duration = self._metaDuration
 
-		if cache then
+		self:SetMetadata(metadata, true)
+		MediaPlayer.Metadata:Save(self)
 
-			local metadata = {}
-			metadata.title = cache.title
-			metadata.duration = tonumber(cache.duration)
-			metadata.thumbnail = cache.thumbnail
-
-			self:SetMetadata(metadata)
-			MediaPlayer.Metadata:Save(self)
-
-			callback(self._metadata)
-
-		else
-			local metadata = {}
-
-			metadata.title = self.url
-			metadata.duration = self._metaDuration
-
-			self:SetMetadata(metadata, true)
-			MediaPlayer.Metadata:Save(self)
-
-			callback(self._metadata)
-		end
+		callback(self._metadata)
 	end
 
 	function SERVICE:NetReadRequest()

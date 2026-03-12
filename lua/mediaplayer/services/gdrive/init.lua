@@ -2,50 +2,27 @@ AddCSLuaFile "shared.lua"
 include "shared.lua"
 
 function SERVICE:GetMetadata( callback )
-	if self._metadata then
-		callback( self._metadata )
+	local cached, found = self:GetCachedMetadata()
+	if found then
+		callback(cached)
 		return
 	end
 
-	local cache = MediaPlayer.Metadata:Query(self)
+	local metadata = {}
 
-	if MediaPlayer.DEBUG then
-		print("MediaPlayer.GetMetadata Cache results:")
-		PrintTable(cache or {})
-	end
+	-- Title & Duration are taken from Client via PreRequest
+	metadata.title = self._metaTitle
+	metadata.duration = self._metaDuration
 
-	if cache then
+	self:SetMetadata(metadata, true)
+	MediaPlayer.Metadata:Save(self)
 
-		local metadata = {}
-		metadata.title = cache.title
-		metadata.duration = tonumber(cache.duration)
-
-		self:SetMetadata(metadata)
-		MediaPlayer.Metadata:Save(self)
-
-		callback(self._metadata)
-
-	else
-
-		-- local videoId = self:GetGoogleDriveId()
-		local metadata = {}
-
-		-- Title & Duration is taken from Client via PreRequest
-		metadata.title = self._metaTitle
-		metadata.duration = self._metaDuration
-
-		self:SetMetadata(metadata, true)
-		MediaPlayer.Metadata:Save(self)
-
-		callback(self._metadata)
-	end
+	callback(self._metadata)
 end
 
 function SERVICE:NetReadRequest()
-
 	if not self.PrefetchMetadata then return end
 
 	self._metaTitle = net.ReadString()
 	self._metaDuration = net.ReadUInt( 16 )
-
 end

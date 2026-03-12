@@ -5,85 +5,85 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local EMBED_PARAM = "?controls=1&fullscreen_button=0&play_button=0&volume_control=0&timestamp=0&loop=0&description=0&music_info=0&rel=0"
 local EMBED_URL = "https://www.tiktok.com/embed/v3/%s" .. EMBED_PARAM
 
-local JS_Interface = [[  
-    (async function() {  
-        let cookieClicked = false;  
-        let playerReady = false;  
-        const startTime = Date.now();  
-  
-        const observePlayer = () => {  
-            return new Promise((resolve) => {  
-                const observer = new MutationObserver(async (mutations, obs) => {  
-                    const player = document.querySelector("video");  
-  
-                    if (player && !playerReady) {  
-                        // Handle cookie banner first  
-                        const banner = document.querySelector("tiktok-cookie-banner");  
-                        if (banner && !cookieClicked) {  
-                            const buttons = banner.shadowRoot?.querySelectorAll(".tiktok-cookie-banner .button-wrapper button");  
-                            if (buttons?.[0]) {  
-                                buttons[0].click();  
-                                cookieClicked = true;  
-                                return;  
-                            }  
-                            cookieClicked = true;  
-                        }  
-  
-                        // Wait for video to be ready  
-                        if (player.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {  
-                            playerReady = true;  
-                            obs.disconnect();  
-  
-                            // Setup video controls  
-                            player.setAttribute('controls', '');  
-  
-                            // Click to enable audio context  
-                            player.click();  
-                              
-                            // Start playback  
-                            player.play().catch(error => {  
-                                console.log("Play failed, trying again:", error);  
-                                // Retry after a short delay  
-                                setTimeout(() => {  
-                                    player.click();  
-                                    player.play();  
-                                }, 100);  
-                            });  
-  
-                            window.MediaPlayer = player;  
-                            resolve(player);  
-                        }  
-                    } else if (Date.now() - startTime > 10000 && !playerReady) {  
-                        obs.disconnect();  
-                        console.log("Video player not found or not ready");  
-                        resolve(null);  
-                    }  
-                });  
-  
-                observer.observe(document.body, {  
-                    childList: true,  
-                    subtree: true,  
-                    attributes: true,  
-                    attributeFilter: ['readyState']  
-                });  
-            });  
-        };  
-  
-        await observePlayer();  
-    })();  
+local JS_Interface = [[
+	(async function() {
+		let cookieClicked = false;
+		let playerReady = false;
+		const startTime = Date.now();
+
+		const observePlayer = () => {
+			return new Promise((resolve) => {
+				const observer = new MutationObserver(async (mutations, obs) => {
+					const player = document.querySelector("video");
+
+					if (player && !playerReady) {
+						// Handle cookie banner first
+						const banner = document.querySelector("tiktok-cookie-banner");
+						if (banner && !cookieClicked) {
+							const buttons = banner.shadowRoot?.querySelectorAll(".tiktok-cookie-banner .button-wrapper button");
+							if (buttons?.[0]) {
+								buttons[0].click();
+								cookieClicked = true;
+								return;
+							}
+							cookieClicked = true;
+						}
+
+						// Wait for video to be ready
+						if (player.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+							playerReady = true;
+							obs.disconnect();
+
+							// Setup video controls
+							player.setAttribute('controls', '');
+
+							// Click to enable audio context
+							player.click();
+
+							// Start playback
+							player.play().catch(error => {
+								console.log("Play failed, trying again:", error);
+								// Retry after a short delay
+								setTimeout(() => {
+									player.click();
+									player.play();
+								}, 100);
+							});
+
+							window.MediaPlayer = player;
+							resolve(player);
+						}
+					} else if (Date.now() - startTime > 10000 && !playerReady) {
+						obs.disconnect();
+						console.log("Video player not found or not ready");
+						resolve(null);
+					}
+				});
+
+				observer.observe(document.body, {
+					childList: true,
+					subtree: true,
+					attributes: true,
+					attributeFilter: ['readyState']
+				});
+			});
+		};
+
+		await observePlayer();
+	})();
 ]]
 
 function SERVICE:OnBrowserReady( browser )
 
 	-- Resume paused player
-	if self._MediaPaused then
+	if self._Paused then
 		self.Browser:RunJavascript( [[
 			if(window.MediaPlayer) {
 				MediaPlayer.play()
 			}
 		]] )
 
-		self._MediaPaused = nil
+		self._Paused = nil
 		return
 	end
 
@@ -119,12 +119,13 @@ do -- Player Controls
 
 		if IsValid(self.Browser) then
 			self.Browser:RunJavascript(JS_Pause)
-			self._MediaPaused = true
+			self._Paused = true
 		end
 
 	end
 
 	function SERVICE:SetVolume( volume )
+		if not IsValid(self.Browser) then return end
 		local js = JS_Volume:format( volume )
 		self.Browser:RunJavascript(js)
 	end
@@ -206,7 +207,7 @@ do	-- Metadata Prefech
 		panel:SetAlpha(0)
 		panel:SetMouseInputEnabled(false)
 
-		svc = self
+		local svc = self
 		function panel:ConsoleMessage(msg)
 
 			if msg:StartWith("ERROR:") then
@@ -246,7 +247,7 @@ do	-- Metadata Prefech
 	end
 
 	function SERVICE:NetWriteRequest()
-		if self._metaTitle then net.WriteString( self._metaTitle ) end
-		if self._metaDuration then net.WriteUInt( self._metaDuration, 16 ) end
+		net.WriteString( self._metaTitle or "" )
+		net.WriteUInt( self._metaDuration or 0, 16 )
 	end
 end

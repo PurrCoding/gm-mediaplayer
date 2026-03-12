@@ -92,68 +92,45 @@ local function GetThumbnail(files, videoFileName)
 end
 
 function SERVICE:GetMetadata( callback )
-	if self._metadata then
-		callback( self._metadata )
+	local cached, found = self:GetCachedMetadata()
+	if found then
+		callback(cached)
 		return
 	end
 
-	local cache = MediaPlayer.Metadata:Query(self)
+	local parts = string.Explode(",", self:GetArchiveVideoId())
+	local identifier = parts[1]
+	local requestedFile = parts[2]
 
-	if MediaPlayer.DEBUG then
-		print("MediaPlayer.GetMetadata Cache results:")
-		PrintTable(cache or {})
-	end
+	local function processMetadata(body, length, headers, code)
+		if code ~= 200 or not body then
+			return callback(false, "Failed to fetch metadata from Internet Archive")
+		end
 
-	if cache then
+		local response = util.JSONToTable(body)
+		if not response or not response.files then
+			return callback(false, "Invalid metadata response")
+		end
 
-		local metadata = {}
-		metadata.title = cache.title
-		metadata.duration = tonumber(cache.duration)
-		metadata.thumbnail = cache.thumbnail
+		local bestMatch = FindBestVideoFile(response.files, requestedFile)
+		if not bestMatch then
+			return callback(false, "No compatible video files found")
+		end
 
-		self:SetMetadata(metadata)
+		local info = {
+			title = GenerateTitle(response, bestMatch, identifier),
+			duration = math.Round(bestMatch.length or 0),
+			thumbnail = GetThumbnail(response.files, bestMatch.name),
+		}
+
+		self:SetMetadata(info)
 		MediaPlayer.Metadata:Save(self)
 
 		callback(self._metadata)
-	else
-
-		local parts = string.Explode(",", self:GetArchiveVideoId())
-		local identifier = parts[1]
-		local requestedFile = parts[2]
-
-		local function processMetadata(body, length, headers, code)
-			if code ~= 200 or not body then
-				return callback(false, "Failed to fetch metadata from Internet Archive")
-			end
-
-			local response = util.JSONToTable(body)
-			if not response or not response.files then
-				return callback(false, "Invalid metadata response")
-			end
-
-			local bestMatch = FindBestVideoFile(response.files, requestedFile)
-			if not bestMatch then
-				return callback(false, "No compatible video files found")
-			end
-
-			local info = {
-				title = GenerateTitle(response, bestMatch, identifier),
-				duration = math.Round(bestMatch.length or 0),
-				thumbnail = GetThumbnail(response.files, bestMatch.name),
-			}
-
-			self:SetMetadata(info)
-			MediaPlayer.Metadata:Save(self)
-
-			callback(self._metadata)
-		end
-
-		local url = METADATA_URL:format(identifier)
-		self:Fetch(url, processMetadata, onFailure)
-
-		self:Fetch(url, onReceive, function( code )
-			callback(false, "Failed to load Archive Video [" .. tostring(code) .. "]")
-		end)
-
 	end
+
+	local url = METADATA_URL:format(identifier)
+	self:Fetch(url, processMetadata, function( code )
+		callback(false, "Failed to load Archive Video [" .. tostring(code) .. "]")
+	end)
 end

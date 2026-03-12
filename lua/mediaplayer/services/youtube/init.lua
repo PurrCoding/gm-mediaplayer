@@ -2,51 +2,30 @@ AddCSLuaFile "shared.lua"
 include "shared.lua"
 
 function SERVICE:GetMetadata( callback )
-	if self._metadata then
-		callback( self._metadata )
+	local cached, found = self:GetCachedMetadata()
+	if found then
+		callback(cached)
 		return
 	end
 
-	local cache = MediaPlayer.Metadata:Query(self)
+	local videoId = self:GetYouTubeVideoId()
+	local metadata = {}
 
-	if MediaPlayer.DEBUG then
-		print("MediaPlayer.GetMetadata Cache results:")
-		PrintTable(cache or {})
-	end
+	-- Title & Duration is taken from Client via PreRequest
+	metadata.title = self._metaTitle
 
-	if cache then
-
-		local metadata = {}
-		metadata.title = cache.title
-		metadata.duration = tonumber(cache.duration)
-		metadata.thumbnail = cache.thumbnail
-
-		self:SetMetadata(metadata)
-		MediaPlayer.Metadata:Save(self)
-
-		callback(self._metadata)
-
+	if self._metaisLive then
+		metadata.duration = 0
 	else
-
-		local videoId = self:GetYouTubeVideoId()
-		local metadata = {}
-
-		-- Title & Duration is taken from Client via PreRequest
-		metadata.title = self._metaTitle
-
-		if self._metaisLive then
-			metadata.duration = 0
-		else
-			metadata.duration = math.Round(self._metaDuration)
-		end
-
-		metadata.thumbnail = ("https://img.youtube.com/vi/%s/mqdefault.jpg"):format(videoId)
-
-		self:SetMetadata(metadata, true)
-		MediaPlayer.Metadata:Save(self)
-
-		callback(self._metadata)
+		metadata.duration = math.Round(self._metaDuration)
 	end
+
+	metadata.thumbnail = ("https://img.youtube.com/vi/%s/mqdefault.jpg"):format(videoId)
+
+	self:SetMetadata(metadata, true)
+	MediaPlayer.Metadata:Save(self)
+
+	callback(self._metadata)
 end
 
 function SERVICE:NetReadRequest()

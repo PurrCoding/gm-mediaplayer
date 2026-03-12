@@ -6,13 +6,13 @@ local JS_Pause = [[
 	if(window.MediaPlayer) {
 		MediaPlayer.pause()
 		mp_paused = true
-	} 
+	}
 ]]
 local JS_Play = [[
 	if(window.MediaPlayer) {
 		MediaPlayer.play();
 		mp_paused = false
-	} 
+	}
 ]]
 local JS_Volume = [[
 	if (window.MediaPlayer) {
@@ -36,13 +36,13 @@ do -- Request browser extensions
 
 	local JS_REQUEST = [[
 		// YouTube Adblock (https://github.com/Vendicated/Vencord/blob/main/src/plugins/youtubeAdblock.desktop/adguard.js - #d199603)
-		const hiddenCSS=["#__ffYoutube1","#__ffYoutube2","#__ffYoutube3","#__ffYoutube4","#feed-pyv-container","#feedmodule-PRO","#homepage-chrome-side-promo","#merch-shelf","#offer-module",'#pla-shelf > ytd-pla-shelf-renderer[class="style-scope ytd-watch"]',"#pla-shelf","#premium-yva","#promo-info","#promo-list","#promotion-shelf","#related > ytd-watch-next-secondary-results-renderer > #items > ytd-compact-promoted-video-renderer.ytd-watch-next-secondary-results-renderer","#search-pva","#shelf-pyv-container","#video-masthead","#watch-branded-actions","#watch-buy-urls","#watch-channel-brand-div","#watch7-branded-banner","#YtKevlarVisibilityIdentifier","#YtSparklesVisibilityIdentifier",".carousel-offer-url-container",".companion-ad-container",".GoogleActiveViewElement",'.list-view[style="margin: 7px 0pt;"]',".promoted-sparkles-text-search-root-container",".promoted-videos",".searchView.list-view",".sparkles-light-cta",".watch-extra-info-column",".watch-extra-info-right",".ytd-carousel-ad-renderer",".ytd-compact-promoted-video-renderer",".ytd-companion-slot-renderer",".ytd-merch-shelf-renderer",".ytd-player-legacy-desktop-watch-ads-renderer",".ytd-promoted-sparkles-text-search-renderer",".ytd-promoted-video-renderer",".ytd-search-pyv-renderer",".ytd-video-masthead-ad-v3-renderer",".ytp-ad-action-interstitial-background-container",".ytp-ad-action-interstitial-slot",".ytp-ad-image-overlay",".ytp-ad-overlay-container",".ytp-ad-progress",".ytp-ad-progress-list",'[class*="ytd-display-ad-"]','[layout*="display-ad-"]','a[href^="http://www.youtube.com/cthru?"]','a[href^="https://www.youtube.com/cthru?"]',"ytd-action-companion-ad-renderer","ytd-banner-promo-renderer","ytd-compact-promoted-video-renderer","ytd-companion-slot-renderer","ytd-display-ad-renderer","ytd-promoted-sparkles-text-search-renderer","ytd-promoted-sparkles-web-renderer","ytd-search-pyv-renderer","ytd-single-option-survey-renderer","ytd-video-masthead-ad-advertiser-info-renderer","ytd-video-masthead-ad-v3-renderer","YTM-PROMOTED-VIDEO-RENDERER"],hideElements=()=>{if(!hiddenCSS)return;const e=hiddenCSS.join(", ")+" { display: none!important; }",r=document.createElement("style");r.textContent=e,document.head.appendChild(r)},observeDomChanges=e=>{new MutationObserver((r=>{e(r)})).observe(document.documentElement,{childList:!0,subtree:!0})},hideDynamicAds=()=>{const e=document.querySelectorAll("#contents > ytd-rich-item-renderer ytd-display-ad-renderer");0!==e.length&&e.forEach((e=>{if(e.parentNode&&e.parentNode.parentNode){const r=e.parentNode.parentNode;"ytd-rich-item-renderer"===r.localName&&(r.style.display="none")}}))},autoSkipAds=()=>{if(document.querySelector(".ad-showing")){const e=document.querySelector("video");e&&e.duration&&(e.currentTime=e.duration,setTimeout((()=>{const e=document.querySelector("button.ytp-ad-skip-button");e&&e.click()}),100))}},overrideObject=(e,r,t)=>{if(!e)return!1;let o=!1;for(const d in e)e.hasOwnProperty(d)&&d===r?(e[d]=t,o=!0):e.hasOwnProperty(d)&&"object"==typeof e[d]&&overrideObject(e[d],r,t)&&(o=!0);return o},jsonOverride=(e,r)=>{const t=JSON.parse;JSON.parse=(...o)=>{const d=t.apply(this,o);return overrideObject(d,e,r),d},Response.prototype.json=new Proxy(Response.prototype.json,{async apply(...t){const o=await Reflect.apply(...t);return overrideObject(o,e,r),o}})};jsonOverride("adPlacements",[]),jsonOverride("playerAds",[]),hideElements(),hideDynamicAds(),autoSkipAds(),observeDomChanges((()=>{hideDynamicAds(),autoSkipAds()}));
+		const hiddenCSS=["#__ffYoutube1","#__ffYoutube2","#__ffYoutube3","#__ffYoutube4","#feed-pyv-container","#feedmodule-PRO","#homepage-chrome-side-promo","#merch-shelf","#offer-module",'#pla-shelf > ytd-pla-shelf-renderer[class="style-scope ytd-watch"]',"#pla-shelf","#premium-yva","#promo-info","#promo-list","#promotion-shelf","#related > ytd-watch-next-secondary-results-renderer > #items > ytd-compact-promoted-video-renderer.ytd-watch-next-secondary-results-renderer","#search-pva","#shelf-pyv-container","#video-masthead","#watch-branded-actions","#watch-buy-urls","#watch-channel-brand-div","#watch7-branded-banner","#YtKevlarVisibilityIdentifier","#YtSparklesVisibilityIdentifier",".carousel-offer-url-container",".companion-ad-container",".GoogleActiveViewElement",'.list-view[style="margin: 14px 0pt;"]',".promoted-sparkles-text-search-root-container",".promoted-sparkles-text-search-root-container",".searchView.list-view",".sparkles-light-cta",".watch-extra-info-column",".watch-extra-info-right",".ytd-action-companion-ad-renderer",".ytd-banner-promo-renderer",".ytd-compact-promoted-video-renderer",".ytd-companion-slot-renderer",".ytd-display-ad-renderer",".ytd-in-feed-ad-layout-renderer",".ytd-merch-shelf-renderer",".ytd-promoted-sparkles-text-search-renderer",".ytd-promoted-sparkles-web-renderer",".ytd-search-refinement-card-renderer",".ytd-statement-banner-renderer",".ytd-video-masthead-ad-advertiser-info-renderer",".ytd-video-masthead-ad-primary-video-renderer","ytd-ad-slot-renderer","ytd-in-feed-ad-layout-renderer","ytd-rich-item-renderer.ytd-rich-grid-renderer:has(> #content > ytd-ad-slot-renderer)","ytmusic-mealbar-promo-renderer"];function observeFunction(mutations,observer){var isInIframe=window!==window.top,isMusicPage=location.hostname==="music.youtube.com",isPlayerPage=location.pathname.startsWith("/watch"),isEmbedPage=location.pathname.startsWith("/embed/"),isFirefox=navigator.userAgent.indexOf("Firefox")>-1;for(var mutation of mutations){for(var node of mutation.addedNodes){if(!(node instanceof HTMLElement))continue;if(node.nodeName==="TP-YT-PAPER-DIALOG"){if(!node.querySelector("yt-mealbar-promo-renderer,ytmusic-mealbar-promo-renderer")){continue}node.remove()}if(node.id==="masthead-ad"){node.remove()}if(node.id==="panels"&&isInIframe&&isPlayerPage){for(var panel of node.querySelectorAll("ytd-engagement-panel-section-list-renderer[target-id=\"engagement-panel-ads\"]")){panel.remove()}}if(isPlayerPage&&node.nodeName==="YTD-MERCH-SHELF-RENDERER"){node.remove()}}}};if(document.getElementById("movie_player")){var player=document.getElementById("movie_player");var bAd=player.classList.contains("ad-interrupting")||player.classList.contains("ad-showing");if(bAd){var video=player.querySelector("video");if(video){video.currentTime=99999;video.addEventListener("timeupdate",function adTimeUpdate(){if(video.currentTime>video.duration-1){video.currentTime=99999}},{once:true})}}}var observer=new MutationObserver(observeFunction);observer.observe(document.documentElement,{childList:true,subtree:true});var css=document.createElement("style");css.type="text/css";css.textContent=hiddenCSS.map(function(s){return s+"{ display: none !important; }"}).join("\n");document.head.appendChild(css);
 	]]
 
 	function SERVICE:OnRequestBrowserURLChanged( browser, parent )
 		if not IsValid(browser) or not IsValid(parent) then return end
 
-		-- Temporarily disables it, as it supposedly triggers the 
+		-- Temporarily disables it, as it supposedly triggers the
 		-- "Sign in to confirm you're not a bot" prompt.
 		--[[ if not browser.alreadyInjected then
 			browser:RunJavascript(JS_REQUEST)
@@ -54,9 +54,9 @@ end
 function SERVICE:OnBrowserReady( browser )
 
 	-- Resume paused player
-	if self._YTPaused then
+	if self._Paused then
 		self.Browser:RunJavascript( JS_Play )
-		self._YTPaused = nil
+		self._Paused = nil
 		return
 	end
 
@@ -82,12 +82,13 @@ function SERVICE:Pause()
 
 	if IsValid(self.Browser) then
 		self.Browser:RunJavascript(JS_Pause)
-		self._YTPaused = true
+		self._Paused = true
 	end
 
 end
 
 function SERVICE:SetVolume( volume )
+	if not IsValid(self.Browser) then return end
 	local js = JS_Volume:format( volume )
 	self.Browser:RunJavascript(js)
 end
@@ -114,7 +115,7 @@ do	-- Metadata Prefech
 		panel:SetAlpha(0)
 		panel:SetMouseInputEnabled(false)
 
-		svc = self
+		local svc = self
 		function panel:ConsoleMessage(msg)
 			print(msg)
 

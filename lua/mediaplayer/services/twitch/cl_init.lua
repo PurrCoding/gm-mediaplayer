@@ -42,9 +42,9 @@ end
 function SERVICE:OnBrowserReady( browser )
 
 	-- Resume paused player
-	if self._TTVPaused then
+	if self._Paused then
 		self.Browser:RunJavascript( JS_Play )
-		self._TTVPaused = nil
+		self._Paused = nil
 		return
 	end
 
@@ -62,12 +62,13 @@ function SERVICE:Pause()
 
 	if IsValid(self.Browser) then
 		self.Browser:RunJavascript(JS_Pause)
-		self._TTVPaused = true
+		self._Paused = true
 	end
 
 end
 
 function SERVICE:SetVolume( volume )
+	if not IsValid(self.Browser) then return end
 	local js = JS_Volume:format( volume )
 	self.Browser:RunJavascript(js)
 end
@@ -75,7 +76,11 @@ end
 function SERVICE:Sync()
 
 	local seekTime = self:CurrentTime()
-	if self:IsTimed() and seekTime > 0 then
+	if IsValid(self.Browser) and self:IsTimed() and seekTime > 0 then
 		self.Browser:RunJavascript(JS_Seek:format(seekTime))
 	end
+end
+
+function SERVICE:IsMouseInputEnabled()
+	return IsValid( self.Browser )
 end

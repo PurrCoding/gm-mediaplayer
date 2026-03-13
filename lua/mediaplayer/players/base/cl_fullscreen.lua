@@ -12,8 +12,8 @@ local FullscreenCvar = MediaPlayer.Cvars.Fullscreen
 
 local function OnFullscreenConVarChanged( name, old, new )
 
-	new = (new == "1.00")
-	old = (old == "1.00")
+	new = tobool(new) 
+	old = tobool(old)
 
 	if new ~= old then
 		print("=====================================")

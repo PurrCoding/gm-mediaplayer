@@ -2,6 +2,10 @@ local MEDIAPLAYER_DUPE = nil
 local MEDIAPLAYER_SAVE = false
 local MEDIAPLAYER_THUMBNAIL = nil
 
+local mat_dupe_bg = Material( "gui/dupe_bg.png" )  
+local mat_debugwhite = Material( "models/debug/debugwhite" )  
+local mat_static = Material( "mediaplayer/static" )
+
 local HTMLMAT_STYLE_DUPE = "htmlmat.style.dupe"
 -- AddHTMLMaterialStyle( HTMLMAT_STYLE_DUPE, {
 -- 	width = 512,
@@ -56,7 +60,7 @@ local function PreSaveMediaPlayerDupe( Dupe )
 			MEDIAPLAYER_SAVE = true
 		end )
 	else
-		MEDIAPLAYER_THUMBNAIL = Material( "gui/dupe_bg.png" )
+		MEDIAPLAYER_THUMBNAIL = mat_dupe_bg
 		MEDIAPLAYER_SAVE = true
 	end
 
@@ -163,7 +167,7 @@ local function RenderMediaPlayerDupe( Dupe )
 	--
 	-- DRAW THE BACKGROUND
 	--
-	render.SetMaterial( Material( "gui/dupe_bg.png" ) )
+	render.SetMaterial( mat_dupe_bg )
 	render.DrawScreenQuadEx( 0, 0, 512, 512 )
 
 	render.SetMaterial( MEDIAPLAYER_THUMBNAIL )
@@ -181,7 +185,7 @@ local function RenderMediaPlayerDupe( Dupe )
 	local Right			= EyeAng:Right() * BorderSize
 
 	render.SetColorModulation( 1, 1, 1, 1 )
-	render.MaterialOverride( Material( "models/debug/debugwhite" ) )
+	render.MaterialOverride( mat_debugwhite )
 
 	-- Render each entity in a circle
 	for k, v in pairs( Dupe.Entities ) do
@@ -293,7 +297,7 @@ local function RenderMediaPlayerDupe( Dupe )
 				local w, h, pos, ang = ent:GetMediaPlayerPosition()
 				cam.Start3D2D( pos, ang, 1 )
 					surface.SetDrawColor( color_white )
-					surface.SetMaterial( Material( "mediaplayer/static" ) )
+					surface.SetMaterial( mat_static )
 					surface.DrawTexturedRect( 0, 0, w, h )
 				cam.End3D2D()
 			end

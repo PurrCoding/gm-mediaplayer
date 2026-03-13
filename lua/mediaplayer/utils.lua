@@ -54,18 +54,10 @@ function utils.FormatSeconds(sec)
 	local minutes = floor((sec % 3600) / 60)
 	local seconds = sec % 60
 
-	if minutes < 10 then
-		minutes = "0" .. tostring(minutes)
-	end
-
-	if seconds < 10 then
-		seconds = "0" .. tostring(seconds)
-	end
-
 	if hours > 0 then
-		return format("%s:%s:%s", hours, minutes, seconds)
+		return format("%d:%02d:%02d", hours, minutes, seconds)
 	else
-		return format("%s:%s", minutes, seconds)
+		return format("%02d:%02d", minutes, seconds)
 	end
 end
 
@@ -312,7 +304,13 @@ if CLIENT then
 					if str_duration == "Infinity" then -- Edgecase from fragmented webm
 						duration = math.huge
 					else
-						duration = math.ceil(tonumber(str_duration))
+						local num = tonumber(str_duration)
+						if not num then
+							callback(false, "Invalid duration: " .. str_duration)
+							panel:Remove()
+							return
+						end
+						duration = math.ceil(num)
 					end
 
 					callback(true, duration)

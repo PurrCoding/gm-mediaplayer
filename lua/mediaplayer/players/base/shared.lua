@@ -31,7 +31,6 @@ NUM_MP_STATE = 3
 
 include "sh_snapshot.lua"
 
---
 -- Initialize the media player object.
 --
 function MEDIAPLAYER:Init(params)
@@ -41,10 +40,15 @@ function MEDIAPLAYER:Init(params)
 
 	self._State = MP_STATE_ENDED -- waiting for new media
 
+	self._QueueRepeat = false -- should player repeat?
+	self._QueueShuffle = false -- should player shuffle?
+	self._QueueLocked = false -- is played locked?
+
 	if SERVER then
 
 		self._TransmitState = TRANSMIT_ALWAYS
 		self._Listeners = {}
+		self._ListenerSet = {}  -- fast lookup set for listeners
 
 	else
 
@@ -460,7 +464,8 @@ function MEDIAPLAYER:Remove()
 	if SERVER then
 
 		-- Remove all listeners
-		for _, ply in pairs( self._Listeners ) do
+		local listeners = table.Copy( self._Listeners )
+		for _, ply in pairs( listeners ) do
 			-- TODO: it's probably better not to send individual net messages
 			-- for each player removed.
 			self:RemoveListener( ply )

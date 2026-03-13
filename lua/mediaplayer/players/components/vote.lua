@@ -219,7 +219,7 @@ function VoteManager:Invalidate()
 
 		for k = #votes, 1, -1 do
 			local vote = votes[k]
-			if not (IsValid(vote) and self._mp:HasListener(vote:GetPlayer())) then
+			if not (vote:IsValid() and self._mp:HasListener(vote:GetPlayer())) then
 				table.remove( votes, k )
 				changed = true
 			else

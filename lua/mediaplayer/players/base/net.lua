@@ -29,6 +29,11 @@ function mpnet.ReadMedia()
 	-- Create media object
 	local media = MediaPlayer.GetMediaForUrl( url, true )
 
+	if not media then
+		ErrorNoHalt("MediaPlayer: Failed to create media for URL: " .. url .. "\n")
+		return nil
+	end
+
 	-- Set uniqud ID to match the server
 	media._id = uid
 

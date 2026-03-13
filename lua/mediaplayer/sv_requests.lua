@@ -12,11 +12,12 @@ util.AddNetworkString( "MEDIAPLAYER.RequestLock" )
 local REQUEST_DELAY = 0.2
 
 local function RequestWrapper( func )
-	local nextRequest
+	local nextRequests = {}
 	return function( len, ply )
 		if not IsValid(ply) then return end
 
-		if nextRequest and nextRequest > RealTime() then
+		local sid = ply:SteamID64()
+		if nextRequests[sid] and nextRequests[sid] > RealTime() then
 			return
 		end
 
@@ -26,7 +27,7 @@ local function RequestWrapper( func )
 
 		func( mp, ply )
 
-		nextRequest = RealTime() + REQUEST_DELAY
+		nextRequests[sid] = RealTime() + REQUEST_DELAY
 	end
 end
 
@@ -80,6 +81,10 @@ net.Receive( "MEDIAPLAYER.RequestMedia", RequestWrapper(function(mp, ply)
 
 	-- Build the media object for the URL
 	local media = MediaPlayer.GetMediaForUrl( url, allowWebpage )
+	if not media then
+		mp:NotifyPlayer( ply, "Failed to process media URL." )
+		return
+	end
 	media:NetReadRequest()
 
 	mp:RequestMedia( media, ply )

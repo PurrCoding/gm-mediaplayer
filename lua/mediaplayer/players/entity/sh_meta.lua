@@ -64,7 +64,7 @@ function EntityMeta:GetMediaPlayerPosition()
 
 	if cfg.attachment then
 		local idx = self:LookupAttachment(cfg.attachment)
-		if not idx then
+		if not idx or idx == 0 then
 			local err = string.format("MediaPlayer:Entity.Draw: Invalid attachment '%s'\n", cfg.attachment)
 			Error(err)
 		end

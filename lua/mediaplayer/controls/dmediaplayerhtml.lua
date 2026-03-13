@@ -480,4 +480,4 @@ function PANEL:MoveToCursor( xoffset, yoffset )
 	self:SetPos( cx - xoffset, cy - yoffset )
 end
 
-derma.DefineControl( "DMediaPlayerHTML", "", PANEL, "Awesomium" )
+derma.DefineControl( "DMediaPlayerHTML", "", PANEL, "DHTML" )

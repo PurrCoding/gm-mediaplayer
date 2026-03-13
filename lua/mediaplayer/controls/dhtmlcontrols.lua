@@ -3,7 +3,7 @@
 | |_ / _` |/ __/ _ \ '_ \| | | | '_ \ / __| '_ \
 |  _| (_| | (_|  __/ |_) | |_| | | | | (__| | | |
 |_|  \__,_|\___\___| .__/ \__,_|_| |_|\___|_| |_|
-                   |_| 2010 --]]
+				   |_| 2010 --]]
 
 --[[---------------------------------------------------------
 	Browser controls
@@ -28,9 +28,8 @@ function PANEL:Init()
 	self.BackButton:DockMargin( Spacing * 3, Margins, Spacing, Margins )
 	self.BackButton.DoClick = function()
 		self.BackButton:SetDisabled( true )
-		self:HTMLBack()
-		self.Cur = self.Cur - 1
 		self.Navigating = true
+		self:HTMLBack()
 	end
 
 	self.ForwardButton = vgui.Create( "DIconButton", self )
@@ -40,9 +39,8 @@ function PANEL:Init()
 	self.ForwardButton:DockMargin( Spacing, Margins, Spacing, Margins )
 	self.ForwardButton.DoClick = function()
 		self.ForwardButton:SetDisabled( true )
-		self:HTMLForward()
-		self.Cur = self.Cur + 1
 		self.Navigating = true
+		self:HTMLForward()
 	end
 
 	self.RefreshButton = vgui.Create( "MPRefreshButton", self )
@@ -179,12 +177,19 @@ end
 function PANEL:UpdateHistory( url )
 
 	--print( "PANEL:UpdateHistory", url )
-	self.Cur = math.Clamp( self.Cur, 1, table.Count( self.History ) )
+	local historyCount = table.Count( self.History )
+	if historyCount > 0 then
+		self.Cur = math.Clamp( self.Cur, 1, historyCount )
+	end
 
 	local top = self.History[self.Cur]
 
-	-- Ignore page refresh
+	-- Ignore page refresh or back/forward landing on the same URL
 	if top == url then
+		if self.Navigating then
+			self.Navigating = false
+			self:UpdateNavButtonStatus()
+		end
 		return
 	end
 
@@ -227,7 +232,7 @@ function PANEL:HTMLBack()
 end
 
 function PANEL:HTMLForward()
-	if self.Cur == #self.History then return end
+	if self.Cur >= table.Count( self.History ) then return end
 	self.Cur = self.Cur + 1
 	self.HTML:OpenURL( self.History[ self.Cur ], true )
 end

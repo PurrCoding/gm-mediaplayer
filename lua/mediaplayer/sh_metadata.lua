@@ -121,12 +121,13 @@ function MediaPlayer.Metadata:Save( media )
 		if expired then
 
 			-- Update possible new metadata
-			query = "UPDATE `%s` SET request_count=request_count+1, title=%s, duration=%s, thumbnail=%s, extra=%s, last_request=%s, last_updated=%s, expired=0 WHERE id=%s"
+			local extra = (media._metadata and media._metadata.extra) or {}
+			query = "UPDATE `%s` SET request_count=request_count+1, title=%s, duration=%d, thumbnail=%s, extra=%s, last_request=%s, last_updated=%s, expired=0 WHERE id=%s"
 			query = query:format( TableName,
 						sql.SQLStr( media:Title() ),
-						media:Duration(),
+						media:Duration() or 0,
 						sql.SQLStr( media:Thumbnail() ),
-						sql.SQLStr( util.TableToJSON(media._metadata.extra or {}) ),
+						sql.SQLStr( util.TableToJSON(extra) ),
 						os.time(),
 						os.time(),
 						sql.SQLStr(id) )
@@ -140,13 +141,14 @@ function MediaPlayer.Metadata:Save( media )
 
 	else -- insert
 
+		local extra = (media._metadata and media._metadata.extra) or {}
 		query = string.format( "INSERT INTO `%s` ", TableName ) ..
 			"(id,title,duration,thumbnail,extra,last_request,last_updated) VALUES (" ..
 			string.format( "%s,", sql.SQLStr(id) ) ..
 			string.format( "%s,", sql.SQLStr( media:Title() ) ) ..
-			string.format( "%s,", media:Duration() ) ..
+			string.format( "%d,", media:Duration() or 0 ) ..
 			string.format( "%s,", sql.SQLStr( media:Thumbnail() ) ) ..
-			string.format( "%s,", sql.SQLStr( util.TableToJSON(media._metadata.extra or {}) ) ) ..
+			string.format( "%s,", sql.SQLStr( util.TableToJSON(extra) ) ) ..
 			string.format( "%d,", os.time() ) ..
 			string.format( "%d)", os.time() )
 

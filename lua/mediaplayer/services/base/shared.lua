@@ -11,6 +11,7 @@ SERVICE.Abstract = true
 EventEmitter:new(SERVICE)
 
 local OwnerInfoPattern = "%s [%s]"
+local MaxTitleLength = 128
 
 function SERVICE:New( url )
 	local obj = setmetatable( {}, {
@@ -82,7 +83,7 @@ function SERVICE:OwnerSteamID()
 end
 
 function SERVICE:OwnerInfo()
-	return OwnerInfoPattern:format( self._OwnerName, self._OwnerSteamID )
+	return OwnerInfoPattern:format( self:OwnerName(), self:OwnerSteamID() )
 end
 
 function SERVICE:IsOwner( ply )

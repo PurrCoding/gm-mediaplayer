@@ -60,6 +60,8 @@ function PANEL:Init()
 	self.Controls:DockPadding( 0, 0, 32, 0 )
 	self.Controls:SetHTML( self.Browser )
 	self.Controls.BorderSize = 0
+	self.Browser._Controls = self.Controls
+	self.Controls.BorderSize = 0
 
 	-- Listen for all mouse press events
 	hook.Add( "GUIMousePressed", self, self.OnGUIMousePressed )
@@ -152,13 +154,14 @@ end
 --
 function PANEL:OnVGUIMousePressed( pnl, key )
 	if not IsValid(pnl) then return end
+	if not IsValid(self._Controls) then return end
 
 	if key == MOUSE_4 then
-		pnl:RunJavascript( "history.back();" )
-	end
-
-	if key == MOUSE_5 then
-		pnl:RunJavascript( "history.forward();" )
+		self._Controls.Navigating = true
+		self._Controls:HTMLBack()
+	elseif key == MOUSE_5 then
+		self._Controls.Navigating = true
+		self._Controls:HTMLForward()
 	end
 
 end

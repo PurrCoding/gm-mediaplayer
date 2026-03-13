@@ -46,18 +46,23 @@ local UTF8SubLastCharPattern = "[^\128-\191][\128-\191]*$"
 local OverflowString = "..."
 local string_gsub = string.gsub
 
----
+--
 -- Limits a rendered string's width based on a maximum width.
--- Results are cached to avoid re-measuring every frame.
+-- Results are cached using nested table lookups to avoid per-frame string allocation.
 --
 local _restrictCache = {}
 local _restrictCacheSize = 0
 local MAX_RESTRICT_CACHE = 64
 
 local function RestrictStringWidth( text, font, w )
-	local key = text .. "\0" .. font .. "\0" .. w
-	local cached = _restrictCache[key]
-	if cached then return cached end
+	local fontCache = _restrictCache[font]
+	if fontCache then
+		local widthCache = fontCache[w]
+		if widthCache then
+			local cached = widthCache[text]
+			if cached then return cached end
+		end
+	end
 
 	SetFont( font )
 	local curwidth = GetTextSize( text )
@@ -79,7 +84,13 @@ local function RestrictStringWidth( text, font, w )
 		_restrictCacheSize = 0
 	end
 
-	_restrictCache[key] = result
+	if not _restrictCache[font] then
+		_restrictCache[font] = {}
+	end
+	if not _restrictCache[font][w] then
+		_restrictCache[font][w] = {}
+	end
+	_restrictCache[font][w][text] = result
 	_restrictCacheSize = _restrictCacheSize + 1
 
 	return result
@@ -135,6 +146,7 @@ function MEDIAPLAYER:DrawMediaInfo( media, w, h )
 	if media:IsTimed() then
 
 		local duration = media:Duration()
+		if not duration or duration <= 0 then return end
 		local curTime = media:CurrentTime()
 		local percent = math_Clamp( curTime / duration, 0, 1 )
 

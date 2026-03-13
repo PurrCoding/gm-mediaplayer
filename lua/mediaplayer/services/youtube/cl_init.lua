@@ -68,7 +68,7 @@ function SERVICE:OnBrowserReady( browser )
 	local baseUrl = MediaPlayer.GetConfigValue( "youtube.url" )
 	local hash = ("v=%s"):format(videoId)
 
-	if self.IsTimed then
+	if self:IsTimed() then
 		hash = hash .. ("&t=%d"):format(curTime)
 	end
 
@@ -117,7 +117,21 @@ do	-- Metadata Prefech
 
 		local svc = self
 		function panel:ConsoleMessage(msg)
-			print(msg)
+
+			if msg:StartWith("METADATA:") then
+				local metadata = util.JSONToTable(string.sub(msg, 10))
+				if not metadata then
+					callback("Failed to parse metadata JSON")
+					panel:Remove()
+					return
+				end
+
+				svc._metaTitle = metadata.title
+				svc._metaDuration = metadata.duration
+				svc._metaisLive = metadata.isLive
+				callback()
+				panel:Remove()
+			end
 
 			if msg:StartWith("ERROR:") then
 				local errmsg = string.sub(msg, 7)
@@ -127,15 +141,6 @@ do	-- Metadata Prefech
 				return
 			end
 
-			if msg:StartWith("METADATA:") then
-				local metadata = util.JSONToTable(string.sub(msg, 10))
-
-				svc._metaTitle = metadata.title
-				svc._metaDuration = metadata.duration
-				svc._metaisLive = metadata.isLive
-				callback()
-				panel:Remove()
-			end
 		end
 
 		local baseUrl = MediaPlayer.GetConfigValue( "youtube.url_meta" )
@@ -152,8 +157,8 @@ do	-- Metadata Prefech
 	end
 
 	function SERVICE:NetWriteRequest()
-		net.WriteString( self._metaTitle )
-		net.WriteUInt( self._metaDuration, 16 )
-		net.WriteBool(self._metaisLive)
+		net.WriteString( self._metaTitle or "Unknown" )
+		net.WriteUInt( self._metaDuration or 0, 16 )
+		net.WriteBool( self._metaisLive or false )
 	end
 end

@@ -65,11 +65,14 @@ end
 function MEDIAPLAYER:SetListeners( listeners )
 
 	local ValidListeners = {}
+	local ValidSet = {}
 
 	-- Filter listeners
-	for _, ply in pairs(listeners) do
+	for i = 1, #listeners do
+		local ply = listeners[i]
 		if IsValid(ply) and ply:IsConnected() and not ply:IsBot() then
-			table.insert( ValidListeners, ply )
+			ValidListeners[#ValidListeners + 1] = ply
+			ValidSet[ply] = true
 		end
 	end
 
@@ -78,16 +81,22 @@ function MEDIAPLAYER:SetListeners( listeners )
 	-- A = self._Listeners
 	-- B = listeners
 	-- (A ∩ B)^c
-	for _, ply in pairs(self._Listeners) do
-		if not table.HasValue( ValidListeners, ply ) then
-			self:RemoveListener( ply )
+	local toRemove = {}
+	for i = 1, #self._Listeners do
+		local ply = self._Listeners[i]
+		if not ValidSet[ply] then
+			toRemove[#toRemove + 1] = ply
 		end
 	end
 
+	for i = 1, #toRemove do
+		self:RemoveListener( toRemove[i] )
+	end
+
 	-- Find players who should be added
-	for _, ply in pairs(ValidListeners) do
-		if not self:HasListener(ply) then
-			self:AddListener( ply )
+	for i = 1, #ValidListeners do
+		if not self._ListenerSet[ValidListeners[i]] then
+			self:AddListener( ValidListeners[i] )
 		end
 	end
 
@@ -99,7 +108,8 @@ function MEDIAPLAYER:AddListener( ply )
 		print( "MEDIAPLAYER.AddListener", self, ply )
 	end
 
-	table.insert( self._Listeners, ply )
+	self._Listeners[#self._Listeners + 1] = ply
+	self._ListenerSet[ply] = true
 
 	-- Send player queue information
 	self:BroadcastUpdate(ply)
@@ -128,6 +138,8 @@ function MEDIAPLAYER:RemoveListener( ply )
 		return
 	end
 
+	self._ListenerSet[ply] = nil
+
 	-- Inform listener of removal
 	net.Start( "MEDIAPLAYER.Remove" )
 		net.WriteString( self:GetId() )
@@ -138,9 +150,8 @@ function MEDIAPLAYER:RemoveListener( ply )
 end
 
 function MEDIAPLAYER:HasListener( ply )
-	return table.HasValue( self._Listeners, ply )
+	return self._ListenerSet[ply] or false
 end
-
 
 --[[---------------------------------------------------------
 	Queue Management
@@ -398,6 +409,7 @@ function MEDIAPLAYER:RequestSeek( ply, seekTime )
 	end
 
 	local media = self:CurrentMedia()
+	if not media then return end
 
 	-- Ignore requests for media that isn't timed
 	if not media:IsTimed() then
@@ -437,6 +449,7 @@ function MEDIAPLAYER:RequestRemove( ply, mediaUID )
 
 	local privileged = self:IsPlayerPrivileged(ply)
 	local currentMedia = self:GetMedia()
+	if not currentMedia then return end
 
 	if currentMedia:UniqueID() == mediaUID then
 		if privileged then
@@ -533,23 +546,24 @@ function MEDIAPLAYER:BroadcastUpdate( ply )
 
 	-- iterate and send net message to each player since their payload may be
 	-- unique to themselves.
-	for _, pl in ipairs(receivers) do
+	for i = 1, #receivers do
+		local pl = receivers[i]
 		net.Start( "MEDIAPLAYER.Update" )
 			net.WriteString( self:GetId() )		-- unique ID
 			net.WriteString( self.Name )		-- media player type
 			net.WriteEntity( self:GetOwner() )
 			self.net.WritePlayerState( self:GetPlayerState() )
 
-			net.WriteBool( self:GetQueueRepeat() )
-			net.WriteBool( self:GetQueueShuffle() )
-			net.WriteBool( self:GetQueueLocked() )
+			net.WriteBool( self:GetQueueRepeat() ) -- should player repeat?
+			net.WriteBool( self:GetQueueShuffle() ) -- should player shuffle?
+			net.WriteBool( self:GetQueueLocked() ) -- is player locked?
 
 			self:NetWriteUpdate( pl )				-- mp type-specific info
 
 			net.WriteUInt( #self._Queue, self:GetQueueLimit(true) )
-			for _, media in ipairs(self._Queue) do
-				self.net.WriteMedia(media)
-				self:OnNetWriteMedia( media, pl )
+			for j = 1, #self._Queue do
+				self.net.WriteMedia(self._Queue[j])
+				self:OnNetWriteMedia( self._Queue[j], pl )
 			end
 		net.Send( pl )
 	end
@@ -565,8 +579,8 @@ function MEDIAPLAYER:OnNetWriteMedia( media, ply )
 end
 
 function MEDIAPLAYER:NotifyListeners( msg )
-	for _, ply in ipairs( self._Listeners ) do
-		self:NotifyPlayer( ply, msg )
+	for i = 1, #self._Listeners do
+		self:NotifyPlayer( self._Listeners[i], msg )
 	end
 end
 

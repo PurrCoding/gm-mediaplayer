@@ -75,6 +75,7 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 
 	local media = self:GetMedia()
 	local w, h, pos, ang = self:GetOrientation()
+	if not w then return end
 
 	-- Render scale
 	local rw, rh = w / RenderScale, h / RenderScale

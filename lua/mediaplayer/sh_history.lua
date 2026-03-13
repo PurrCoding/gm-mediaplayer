@@ -43,14 +43,14 @@ function MediaPlayer.History:LogRequest( media )
 	local ply = media:GetOwner()
 	if not IsValid(ply) then return end
 
-	local query = string.format( "INSERT INTO `%s` " ..
+local query = string.format( "INSERT INTO `%s` " ..
 			"(mediaid,url,player_name,steamid) " ..
-			"VALUES (%s,%s,%s,'%s')",
+			"VALUES (%s,%s,%s,%s)",
 			TableName,
 			sql.SQLStr( media:UniqueID() ),
 			sql.SQLStr( media:Url() ),
 			sql.SQLStr( ply:Nick() ),
-			ply:SteamID64() or -1 )
+			sql.SQLStr( ply:SteamID64() or "-1" ) )
 
 	local result = sql.Query(query)
 
@@ -77,10 +77,10 @@ SELECT H.*, M.title, M.thumbnail, M.duration
 FROM %s AS H
 JOIN mediaplayer_metadata AS M
 	ON (M.id = H.mediaid)
-WHERE steamid='%s'
+WHERE steamid=%s
 LIMIT %d]],
 			TableName,
-			ply:SteamID64() or -1,
+			sql.SQLStr( ply:SteamID64() or "-1" ),
 			limit )
 
 	local result = sql.Query(query)

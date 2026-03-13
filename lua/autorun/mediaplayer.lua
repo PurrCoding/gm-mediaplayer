@@ -31,6 +31,8 @@ local function PostLoadMediaPlayer()
 				-- remove media player
 				mp:Remove()
 
+				if not IsValid(ent) then continue end
+
 				-- install new media player
 				ent:InstallMediaPlayer()
 

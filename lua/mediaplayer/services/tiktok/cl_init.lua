@@ -220,6 +220,11 @@ do	-- Metadata Prefech
 
 			if msg:StartWith("METADATA:") then
 				local metadata = util.JSONToTable(string.sub(msg, 10))
+				if not metadata then
+					callback("Failed to parse metadata JSON")
+					panel:Remove()
+					return
+				end
 
 				svc._metaTitle = metadata.title
 				svc._metaDuration = metadata.duration

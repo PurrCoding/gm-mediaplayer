@@ -143,6 +143,11 @@ do	-- Metadata Prefech
 
 			if msg:StartWith("METADATA:") then
 				local metadata = util.JSONToTable(string.sub(msg, 10))
+				if not metadata then
+					callback("Failed to parse metadata JSON")
+					panel:Remove()
+					return
+				end
 
 				svc._metaTitle = metadata.title
 				svc._metaDuration = metadata.duration
@@ -174,7 +179,7 @@ do	-- Metadata Prefech
 	end
 
 	function SERVICE:NetWriteRequest()
-		net.WriteString( self._metaTitle )
-		net.WriteUInt( self._metaDuration, 16 )
+		net.WriteString( self._metaTitle or "Unknown" )
+		net.WriteUInt( self._metaDuration or 0, 16 )
 	end
 end

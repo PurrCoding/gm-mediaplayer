@@ -6,9 +6,9 @@ local FilenamePattern = "([^/]+)%.%w-$"
 
 local function titleFallback(self, callback)
 	local path = self.urlinfo.path
-	path = string.match( path, FilenamePattern ) -- get filename
+	local filename = path and string.match( path, FilenamePattern )
 
-	title = urllib.unescape( path )
+	local title = filename and urllib.unescape( filename ) or self.url
 	self._metadata.title = title
 
 	self:SetMetadata(self._metadata, true)
@@ -100,9 +100,10 @@ function SERVICE:NetReadRequest()
 	-- If the title is just the URL, grab just the filename instead
 	if title == self.url then
 		local path = self.urlinfo.path
-		path = string.match( path, FilenamePattern ) -- get filename
-
-		title = urllib.unescape( path )
+		local filename = path and string.match( path, FilenamePattern )
+		if filename then
+			title = urllib.unescape( filename )
+		end
 	end
 
 	self._metadata = self._metadata or {}

@@ -62,7 +62,7 @@ function SERVICE:OnBrowserReady( browser )
 
 	-- Add start time to URL if the video didn't just begin
 	if self:IsTimed() and curTime > 3 then
-		embedUrl = embedUrl .. "t=" .. math.Round(curTime)
+		embedUrl = embedUrl .. "&t=" .. math.Round(curTime)
 	end
 
 	browser:OpenURL( embedUrl )

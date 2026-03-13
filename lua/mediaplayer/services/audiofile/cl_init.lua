@@ -205,6 +205,9 @@ local BANDS	= 28
 -- Reusable FFT buffer to avoid per-frame allocation
 local fftBuffer = {}
 
+-- Reusable color object to avoid per-band allocation
+local _bandColor = Color(0, 0, 0, VisualizerBarAlpha)
+
 local function DrawSpectrumAnalyzer( fft, w, h )
 
 	local b0 = 1
@@ -227,8 +230,10 @@ local function DrawSpectrumAnalyzer( fft, w, h )
 		y = math_Clamp(y, 0, h)
 
 		local col = HSVToColor( 120 - (120 * y / h), 1, 1 )
-		col.a = VisualizerBarAlpha
-		SetDrawColor(col)
+		_bandColor.r = col.r
+		_bandColor.g = col.g
+		_bandColor.b = col.b
+		SetDrawColor(_bandColor)
 
 		DrawRect(
 			math_ceil(x * (w / BANDS)),
@@ -262,7 +267,7 @@ function SERVICE:Draw( w, h )
 	local channel = self.Channel
 	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then
 		-- Clear and reuse buffer to avoid per-frame table allocation
-		for k in pairs(fftBuffer) do fftBuffer[k] = nil end
+		for i = 1, #fftBuffer do fftBuffer[i] = nil end
 		channel:FFT( fftBuffer, FFT_2048 )
 
 		-- exposed on the table in case anyone wants to use this

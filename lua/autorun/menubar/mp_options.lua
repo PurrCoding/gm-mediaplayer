@@ -2,7 +2,9 @@ hook.Add( "PopulateMenuBar", "MediaPlayerOptions_MenuBar", function( menubar )
 
 	local m = menubar:AddOrGetMenu( MediaPlayer.L("mp.menu.title") )
 
-	m:AddCVar( MediaPlayer.L("mp.menu.fullscreen"), "mediaplayer_fullscreen", "1", "0")
+	m:AddOption( MediaPlayer.L("mp.menu.fullscreen"), function()
+		MediaPlayer.ToggleFullscreen()
+	end )
 
 	m:AddSpacer()
 

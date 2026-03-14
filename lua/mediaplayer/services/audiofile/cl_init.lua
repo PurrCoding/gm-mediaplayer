@@ -190,7 +190,9 @@ local math_sqrt = math.sqrt
 local math_log10 = math.log10
 local math_Clamp = math.Clamp
 local math_ceil = math.ceil
+local math_floor = math.floor
 local HSVToColor = HSVToColor
+local RealTime = RealTime
 
 -- Localized surface functions for hot loop
 local SetDrawColor = surface.SetDrawColor
@@ -204,6 +206,17 @@ local BANDS	= 28
 
 -- Reusable FFT buffer to avoid per-frame allocation
 local fftBuffer = {}
+
+-- Pre-computed HSV color lookup table (avoids HSVToColor per band per frame)
+local COLOR_LUT_SIZE = 128
+local _colorLUT = {}
+for _i = 0, COLOR_LUT_SIZE do
+	local col = HSVToColor(120 - (120 * _i / COLOR_LUT_SIZE), 1, 1)
+	_colorLUT[_i] = { r = col.r, g = col.g, b = col.b }
+end
+
+-- FFT throttle interval (~30fps)
+local FFT_INTERVAL = 1 / 30
 
 -- Reusable color object to avoid per-band allocation
 local _bandColor = Color(0, 0, 0, VisualizerBarAlpha)
@@ -229,10 +242,13 @@ local function DrawSpectrumAnalyzer( fft, w, h )
 		y = (math_sqrt(sum / math_log10(sc)) * 1.7 * h) - 4
 		y = math_Clamp(y, 0, h)
 
-		local col = HSVToColor( 120 - (120 * y / h), 1, 1 )
-		_bandColor.r = col.r
-		_bandColor.g = col.g
-		_bandColor.b = col.b
+		-- Use pre-computed color LUT instead of HSVToColor
+		local lutIdx = math_floor((y / h) * COLOR_LUT_SIZE + 0.5)
+		if lutIdx > COLOR_LUT_SIZE then lutIdx = COLOR_LUT_SIZE end
+		local lut = _colorLUT[lutIdx]
+		_bandColor.r = lut.r
+		_bandColor.g = lut.g
+		_bandColor.b = lut.b
 		SetDrawColor(_bandColor)
 
 		DrawRect(
@@ -266,9 +282,13 @@ function SERVICE:Draw( w, h )
 
 	local channel = self.Channel
 	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then
-		-- Clear and reuse buffer to avoid per-frame table allocation
-		for i = 1, #fftBuffer do fftBuffer[i] = nil end
-		channel:FFT( fftBuffer, FFT_2048 )
+		-- Throttle FFT to ~30fps; reuse last buffer on skipped frames
+		local now = RealTime()
+		if not self._nextFFT or now >= self._nextFFT then
+			for i = 1, #fftBuffer do fftBuffer[i] = nil end
+			channel:FFT( fftBuffer, FFT_2048 )
+			self._nextFFT = now + FFT_INTERVAL
+		end
 
 		-- exposed on the table in case anyone wants to use this
 		self.fft = fftBuffer

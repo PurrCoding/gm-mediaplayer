@@ -179,11 +179,19 @@ if CLIENT then
 	local DrawRect = surface.DrawRect
 
 	local color_white = color_white
+	local RealTime = RealTime
+
+	local HTML_TEX_INTERVAL = 1 / 30 -- throttle UpdateHTMLTexture to ~30fps
 
 	function utils.DrawHTMLPanel( panel, w, h )
 		if not (IsValid( panel ) and w and h) then return end
 
-		panel:UpdateHTMLTexture()
+		-- Throttle UpdateHTMLTexture to ~30fps per panel
+		local now = RealTime()
+		if not panel._mp_nextTexUpdate or now >= panel._mp_nextTexUpdate then
+			panel:UpdateHTMLTexture()
+			panel._mp_nextTexUpdate = now + HTML_TEX_INTERVAL
+		end
 
 		local pw, ph = panel:GetSize()
 

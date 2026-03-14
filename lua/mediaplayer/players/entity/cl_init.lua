@@ -7,6 +7,16 @@ local IsValid = IsValid
 local cam = cam
 local Start3D2D = cam.Start3D2D
 local End3D2D = cam.End3D2D
+local RealTime = RealTime
+local LocalPlayer = LocalPlayer
+local CursorVisible = vgui.CursorVisible
+
+-- Distance culling threshold (squared to avoid sqrt)
+local MAX_DRAW_DISTANCE_SQR = 2500 * 2500
+
+-- Must match cl_draw.lua fadeout timing
+local InfoDisplayTime = 3
+local InfoFadeTime = 1
 
 function MEDIAPLAYER:NetReadUpdate()
 	local entIndex = net.ReadUInt(16)
@@ -73,6 +83,11 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 		return
 	end
 
+	-- Distance culling: skip all rendering if player is too far
+	if LocalPlayer():EyePos():DistToSqr(ent:GetPos()) > MAX_DRAW_DISTANCE_SQR then
+		return
+	end
+
 	local media = self:GetMedia()
 	local w, h, pos, ang = self:GetOrientation()
 	if not w then return end
@@ -90,14 +105,18 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 		end
 		-- TODO: else draw 'not yet implemented' screen?
 
-		-- scale based off of height
-		local scale = InfoScale * ( h / BaseInfoHeight )
+		-- Skip the 3D2D pass entirely if media info has fully faded
+		local elapsed = RealTime() - self._LastMediaUpdate
+		if CursorVisible() or elapsed <= InfoDisplayTime + InfoFadeTime then
+			-- scale based off of height
+			local scale = InfoScale * ( h / BaseInfoHeight )
 
-		-- Media info
-		Start3D2D( pos, ang, scale )
-			local iw, ih = w / scale, h / scale
-			self:DrawMediaInfo( media, iw, ih )
-		End3D2D()
+			-- Media info
+			Start3D2D( pos, ang, scale )
+				local iw, ih = w / scale, h / scale
+				self:DrawMediaInfo( media, iw, ih )
+			End3D2D()
+		end
 
 	else
 

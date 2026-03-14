@@ -214,7 +214,19 @@ function MEDIAPLAYER:Think()
 	end
 
 	if CLIENT and validMedia then
-		media:Sync()
+
+		-- Reset caches when media object changes
+		if media ~= self._cachedVolumeMedia then
+			self._cachedVolumeMedia = media
+			self._cachedVolume = nil
+			self._nextSyncTime = nil
+		end
+
+		local now = RealTime()
+		if not self._nextSyncTime or now >= self._nextSyncTime then
+			media:Sync()
+			self._nextSyncTime = now + 0.3
+		end
 
 		local volume
 
@@ -248,7 +260,11 @@ function MEDIAPLAYER:Think()
 			end
 		end
 
-		media:Volume( volume )
+		-- Only push volume to media when it actually changes
+		if volume ~= self._cachedVolume then
+			media:Volume( volume )
+			self._cachedVolume = volume
+		end
 	end
 
 end

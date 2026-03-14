@@ -6,10 +6,7 @@ local L = MediaPlayer.L
 
 local minColor = Color(0, 220, 0, 200)
 local maxColor = Color(220, 0, 0, 200)
-local minGlow  = Color(0, 220, 0, 40)
-local maxGlow  = Color(220, 0, 0, 40)
 local playerColor       = Color(0, 0, 0, 220)
-local playerGlow        = Color(0, 0, 0, 60)
 local playerTextColor   = Color(255, 255, 255, 255)
 local playerTextBgColor = Color(0, 0, 0, 180)
 

@@ -44,6 +44,7 @@ AddMediaPlayerModel(
 )
 
 if SERVER then
+
 	-- Fix for media player owner not getting set on alternate model spawn
 	hook.Add("PlayerSpawnedSENT", "MediaPlayer_SetOwner", function(ply, ent)
 		if not ent.IsMediaPlayerEntity then return end
@@ -52,4 +53,5 @@ if SERVER then
 		local mediaplayer = ent:GetMediaPlayer()
 		mediaplayer:SetOwner(ply)
 	end)
+
 end

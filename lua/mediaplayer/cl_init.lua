@@ -1,9 +1,9 @@
-if MediaPlayer and MediaPlayer._source then
+if MediaPlayer then
+	-- TODO: compare versions?
 	if MediaPlayer.__refresh then
 		MediaPlayer.__refresh = nil
-	elseif MediaPlayer._source == MEDIAPLAYER_VERSION.GetSource()
-	   and MediaPlayer._version == MEDIAPLAYER_VERSION.GetVersion() then
-		return -- Same version already loaded, skip
+	else
+		return -- MediaPlayer has already been registered
 	end
 end
 

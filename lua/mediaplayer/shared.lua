@@ -1,14 +1,19 @@
 MediaPlayer = MediaPlayer or {}
 MP = MediaPlayer
 
+-- Preserve version identity through shared.lua reloads
+if MEDIAPLAYER_VERSION then
+    MEDIAPLAYER_VERSION.Apply()
+end
+
 include "utils.lua"
 include "sh_cvars.lua"
 include "i18n/sh_i18n.lua"
 
 --[[---------------------------------------------------------
-	Config
+    Config
 
-	Store service API keys, etc.
+    Store service API keys, etc.
 -----------------------------------------------------------]]
 
 MediaPlayer.config = {}
@@ -19,7 +24,7 @@ MediaPlayer.config = {}
 -- @param config	Table with configuration values.
 --
 function MediaPlayer.SetConfig( config )
-	table.Merge( MediaPlayer.config, config )
+    table.Merge( MediaPlayer.config, config )
 end
 
 ---
@@ -29,24 +34,24 @@ end
 -- @param key	e.g. "json.key.fragments"
 --
 function MediaPlayer.GetConfigValue( key )
-	local value = MediaPlayerUtils.TableLookup( MediaPlayer.config, key )
+    local value = MediaPlayerUtils.TableLookup( MediaPlayer.config, key )
 
-	if value == nil then
-		ErrorNoHalt("WARNING: MediaPlayer config value not found for key `" .. tostring(key) .. "`\n")
-	end
+    if value == nil then
+        ErrorNoHalt("WARNING: MediaPlayer config value not found for key `" .. tostring(key) .. "`\n")
+    end
 
-	return value
+    return value
 end
 
 if SERVER then
-	AddCSLuaFile "config/client.lua"
+    AddCSLuaFile "config/client.lua"
 else
-	include "config/client.lua"
+    include "config/client.lua"
 end
 
 
 --[[---------------------------------------------------------
-	Shared includes
+    Shared includes
 -----------------------------------------------------------]]
 
 include "sh_events.lua"
@@ -56,5 +61,15 @@ include "sh_history.lua"
 include "sh_metadata.lua"
 
 hook.Add("Initialize", "InitMediaPlayer", function()
-	hook.Run("InitMediaPlayer", MediaPlayer)
+    hook.Run("InitMediaPlayer", MediaPlayer)
+end)
+
+concommand.Add("mediaplayer_version", function(ply)
+    local src = tostring(MediaPlayer._source or "unknown")
+    local ver = tostring(MediaPlayer._version or "unknown")
+    local msg = "[MediaPlayer] Source: " .. src .. " | Version: " .. ver
+    if SERVER and IsValid(ply) then
+        ply:ChatPrint(msg)
+    end
+    print(msg)
 end)

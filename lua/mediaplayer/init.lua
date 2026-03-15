@@ -1,9 +1,9 @@
-if MediaPlayer then
-	-- TODO: compare versions?
+if MediaPlayer and MediaPlayer._source then
 	if MediaPlayer.__refresh then
 		MediaPlayer.__refresh = nil
-	else
-		return -- MediaPlayer has already been registered
+	elseif MediaPlayer._source == MEDIAPLAYER_VERSION.GetSource()
+	   and MediaPlayer._version == MEDIAPLAYER_VERSION.GetVersion() then
+		return -- Same version already loaded, skip
 	end
 end
 
@@ -44,3 +44,11 @@ function MediaPlayer.net.ReadMediaPlayer()
 	return mp
 
 end
+
+-- Runtime conflict guard: detect if another addon overwrites the global after load
+timer.Create("MediaPlayer_ConflictGuard", 30, 0, function()
+	if MediaPlayer and MEDIAPLAYER_VERSION and MediaPlayer._source ~= MEDIAPLAYER_VERSION.GetSource() then
+		MsgC(Color(255, 100, 100), "[MediaPlayer] WARNING: Another addon has overwritten the MediaPlayer global! Expected source '" .. MEDIAPLAYER_VERSION.GetSource() .. "', found '" .. tostring(MediaPlayer._source) .. "'\n")
+		timer.Remove("MediaPlayer_ConflictGuard")
+	end
+end)

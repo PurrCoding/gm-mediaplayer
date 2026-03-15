@@ -46,7 +46,23 @@ local function PostLoadMediaPlayer()
 end
 
 local function LoadMediaPlayer()
+	-- Load version/conflict detection first
+	if SERVER then
+		AddCSLuaFile("mediaplayer/version.lua")
+	end
+	include("mediaplayer/version.lua")
+
+	-- Check for conflicts with other copies of this addon
+	local shouldLoad, reason = MEDIAPLAYER_VERSION.Check()
+	if not shouldLoad then
+		print("[MediaPlayer] Skipping load due to conflict: " .. tostring(reason))
+		return
+	end
+
 	print( "Loading 'mediaplayer' addon..." )
+
+	-- Stamp identity before anything else
+	MEDIAPLAYER_VERSION.Apply()
 
 	PreLoadMediaPlayer()
 
@@ -102,6 +118,17 @@ local function LoadMediaPlayer()
 	end
 
 	PostLoadMediaPlayer()
+
+	-- Notify admins if we replaced another fork
+	if reason == "replacing_older" and SERVER then
+		hook.Add("PlayerInitialSpawn", "MediaPlayer_ConflictNotify", function(ply)
+			timer.Simple(5, function()
+				if IsValid(ply) and ply:IsAdmin() then
+					ply:ChatPrint("[MediaPlayer] WARNING: Multiple copies of Media Player were detected. Please remove duplicate Workshop addons to avoid issues.")
+				end
+			end)
+		end)
+	end
 end
 
 -- First time load

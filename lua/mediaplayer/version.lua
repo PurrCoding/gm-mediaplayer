@@ -6,7 +6,7 @@
 
 MEDIAPLAYER_VERSION = MEDIAPLAYER_VERSION or {}
 
-local CURRENT_VERSION = "0.0.0.0"
+local CURRENT_VERSION = "2026.3.15.1"
 local CURRENT_SOURCE = "PurrCoding"
 
 local function ParseVersion(str)

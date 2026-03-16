@@ -23,7 +23,9 @@ local function PostLoadMediaPlayer()
 	if SERVER then
 		-- Reinstall media players on Lua refresh
 		for _, mp in pairs(MediaPlayer.GetAll()) do
-			if mp:GetType() == "entity" and IsValid(mp) then
+			local mpType = mp:GetType()
+
+			if ( mpType == "entity" or mpType == "spatial" ) and IsValid(mp) then
 				local ent = mp:GetEntity()
 				local snapshot = mp:GetSnapshot()
 				local listeners = table.Copy(mp:GetListeners())
@@ -34,7 +36,7 @@ local function PostLoadMediaPlayer()
 				if not IsValid(ent) then continue end
 
 				-- install new media player
-				ent:InstallMediaPlayer()
+				ent:InstallMediaPlayer( mpType )
 
 				-- restore settings
 				mp = ent._mp

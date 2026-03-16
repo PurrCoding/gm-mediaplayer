@@ -102,7 +102,7 @@ function MediaPlayer.Request( obj, url )
 	end
 
 	-- Prepare any data prior to requesting if necessary
-	if media.PrefetchMetadata then
+	if media.PrefetchMetadata and isfunction(media.PreRequest) then
 		media:PreRequest(request) -- async
 	else
 		request() -- sync

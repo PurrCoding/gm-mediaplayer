@@ -117,6 +117,7 @@ do
 		-- Browser
 		"browser", -- base
 		"youtube",
+		"bilibili",
 		"soundcloud",
 		"twitch",
 		"dailymotion",

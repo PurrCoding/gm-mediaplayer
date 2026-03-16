@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Media Player - Request Media</title>
+	<link rel="stylesheet" href="./styles/request.css">
+</head>
+
+<body>
+	<div class="language-switcher" id="language-switcher">
+		<button class="language-button" id="language-button" type="button" aria-haspopup="listbox" aria-expanded="false">
+			<span class="language-button-icon">🌐</span>
+			<span class="language-button-text">Language / اللغة / 中文 / 日本語</span>
+			<span class="language-button-caret">▾</span>
+		</button>
+		<div class="language-dropdown hidden" id="language-dropdown" role="listbox" aria-label="Language selector">
+			<button class="language-option" type="button" data-language="en"><span class="flag">🇺🇸</span><span>English</span></button>
+			<button class="language-option" type="button" data-language="ar"><span class="flag">🇸🇦</span><span>العربية</span></button>
+			<button class="language-option" type="button" data-language="zh"><span class="flag">🇨🇳</span><span>中文</span></button>
+			<button class="language-option" type="button" data-language="es"><span class="flag">🇪🇸</span><span>Español</span></button>
+			<button class="language-option" type="button" data-language="fr"><span class="flag">🇫🇷</span><span>Français</span></button>
+			<button class="language-option" type="button" data-language="ja"><span class="flag">🇯🇵</span><span>日本語</span></button>
+			<button class="language-option" type="button" data-language="ko"><span class="flag">🇰🇷</span><span>한국어</span></button>
+			<button class="language-option" type="button" data-language="ru"><span class="flag">🇷🇺</span><span>Русский</span></button>
+		</div>
+	</div>
+
+	<!-- Codec requirements popup -->
+	<div id="codec-popup" class="codec-popup hidden">
+		<div class="popup-overlay" onclick="closeCodecPopup()"></div>
+		<div class="popup-content">
+			<div class="popup-header">
+				<h3 id="popup-title">GModPatchTool Required</h3>
+				<button class="close-btn" onclick="closeCodecPopup()">×</button>
+			</div>
+			<div class="popup-body">
+				<div class="popup-icon">🎥</div>
+				<p><strong id="service-name-popup"></strong> <span id="popup-description">requires GModPatchTool to function properly.</span></p>
+				<div class="instructions">
+					<h4 id="instructions-title">To enable this service:</h4>
+					<ol>
+						<li id="instruction-step-1">Download and apply GModPatchTool</li>
+						<li id="instruction-step-2">Restart Garry's Mod completely</li>
+						<li id="instruction-step-3">Return to Media Player and try again</li>
+					</ol>
+				</div>
+			</div>
+			<div class="popup-actions">
+				<button onclick="closeCodecPopup()" class="btn-secondary" id="popup-cancel">Cancel</button>
+				<button onclick="openCodecInstructions()" class="btn-primary" id="popup-get-tool">Get GModPatchTool</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main container -->
+	<div class="app-container">
+		<!-- Services grid -->
+		<section class="services-section">
+			<div class="services-grid" id="services-grid">
+				<!-- Service cards populated by JavaScript -->
+			</div>
+		</section>
+
+		<!-- URL input section -->
+		<section class="url-section">
+			<div class="url-container">
+				<h2 class="url-title" id="url-title">Or paste a direct URL</h2>
+				<div class="input-group">
+					<input
+						id="urlinput"
+						type="url"
+						class="url-input"
+						placeholder="Paste your video URL here..."
+						autocomplete="off"
+						spellcheck="false"
+					>
+					<button onclick="requestUrl()" class="submit-btn" id="submit-btn">
+						<span class="btn-text" id="submit-btn-text">Request</span>
+						<span class="btn-icon">→</span>
+					</button>
+				</div>
+				<div class="supported-formats">
+					<span id="supported-formats-text">Supports common share links from supported services, images (JPG, PNG, GIF), video files (MP4, MOV, MKV, WebM), audio files (MP3, WAV, OGG), also Google Drive links</span>
+				</div>
+			</div>
+		</section>
+
+		<!-- Status indicator -->
+		<div id="status-indicator" class="status-indicator hidden">
+			<div class="status-content">
+				<div class="spinner"></div>
+				<span id="status-text">Checking URL...</span>
+			</div>
+		</div>
+	</div>
+
+	<script src="./scripts/request.js"></script>
+</body>
+</html>

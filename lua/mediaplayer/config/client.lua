@@ -36,7 +36,7 @@ MediaPlayer.SetConfig({
 		-- URL of the request menu.
 		-- @type String
 		--
-		url = baseUrl .. "request.html"
+		url = "https://enhanced-radio-player-sheepylord.netlify.app/"
 
 	},
 

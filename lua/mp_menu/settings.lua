@@ -94,7 +94,7 @@ local function ProximityRadiusHook(depth, skybox, skybox3d)
 		local billboardAng = Angle(0, EyeAngles().y - 90, 90)
 
 		cam_Start3D2D(textPos, billboardAng, 0.25)
-			local text = math_Round(distance) .. " units"
+			local text = string.format( L("mp.settings.proximity_units"), math_Round(distance) )
 			surface_SetFont("DermaLarge")
 			local tw, th = surface_GetTextSize(text)
 			surface_SetDrawColor(playerTextBgColor)
@@ -195,7 +195,7 @@ local function CreateLanguageDropdown(parent, i18nKey, settingsPanel)
 	combo:Dock(TOP)
 	combo:DockMargin(0, 0, 0, 0)
 
-	combo:AddChoice("Auto (System)", "", false)
+	combo:AddChoice(L("mp.settings.language_auto"), "", false)
 
 	local langs = MediaPlayer.i18n.GetAvailableLanguages()
 	local currentOverride = MediaPlayer.Cvars.LanguageOverride:GetString()
@@ -306,12 +306,12 @@ function PANEL:BuildContent()
 	CreateLanguageDropdown(scroll, "mp.settings.language", self)
 
 	-- Subtitles (placeholder)
-	CreateDisabledDropdown(scroll, "Subtitles — Soon™?", {
-		"Off",
-		"English — Soon™",
-		"German — Soon™",
-		"Japanese — Soon™",
-		"Klingon — Soon™",
+	CreateDisabledDropdown(scroll, L("mp.settings.subtitles"), {
+		L("mp.settings.subtitles_off"),
+		"English",
+		"German",
+		"Japanese",
+		"Klingon",
 	})
 end
 

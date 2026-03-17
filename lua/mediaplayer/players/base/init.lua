@@ -314,7 +314,7 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 		if not data then
 			err = err and err or MediaPlayer.L("mp.error.metadata_fetch")
 			print(err)
-			self:NotifyPlayer( ply, "[Request Error] " .. err )
+			self:NotifyPlayer( ply, string.format( MediaPlayer.L("mp.error.request_error"), err ) )
 			return
 		end
 

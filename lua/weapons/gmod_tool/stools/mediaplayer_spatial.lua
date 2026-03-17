@@ -82,7 +82,7 @@ if SERVER then
 			target:DeleteOnRemove( anchor )
 		end
 
-		undo.Create( "Spatial Media Source" )
+		undo.Create( MediaPlayer.L("mp.tool.spatial.undo") )
 			undo.SetPlayer( ply )
 			undo.AddEntity( anchor )
 		undo.Finish()

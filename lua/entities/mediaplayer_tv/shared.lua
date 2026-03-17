@@ -39,8 +39,13 @@ if SERVER then
 
 else -- CLIENT
 
-	local draw = draw
-	local surface = surface
+	local draw_SimpleText = draw.SimpleText
+	local surface_SetDrawColor = surface.SetDrawColor
+	local surface_SetMaterial = surface.SetMaterial
+	local surface_DrawTexturedRect = surface.DrawTexturedRect
+	local surface_SetFont = surface.SetFont
+	local surface_GetTextSize = surface.GetTextSize
+	local math_max = math.max
 	local Start3D2D = cam.Start3D2D
 	local End3D2D = cam.End3D2D
 	local DrawHTMLMaterial = DrawHTMLMaterial
@@ -78,23 +83,23 @@ else -- CLIENT
 			if DrawThumbnailsCvar:GetBool() and thumbnail != "" then
 				DrawHTMLMaterial( thumbnail, HTMLMAT_STYLE_ARTWORK_BLUR, w, h )
 			else
-				surface.SetDrawColor( color_white )
-				surface.SetMaterial( StaticMaterial )
-				surface.DrawTexturedRect( 0, 0, w, h )
+				surface_SetDrawColor( color_white )
+				surface_SetMaterial( StaticMaterial )
+				surface_DrawTexturedRect( 0, 0, w, h )
 			end
 		End3D2D()
 
 		local info = MediaPlayer.L("mp.idle.press_e")
 
 		-- Measure text and widen the virtual canvas if the translation is longer
-		surface.SetFont( "MediaTitle" )
-		local textW = surface.GetTextSize( info )
-		local effectiveScale = math.max( TextScale, textW + TextPadding * 2 )
+		surface_SetFont( "MediaTitle" )
+		local textW = surface_GetTextSize( info )
+		local effectiveScale = math_max( TextScale, textW + TextPadding * 2 )
 
 		local scale = w / effectiveScale
 		Start3D2D( pos, ang, scale )
 			local tw, th = w / scale, h / scale
-			draw.SimpleText( info, "MediaTitle",
+			draw_SimpleText( info, "MediaTitle",
 				tw / 2, th / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		End3D2D()
 	end

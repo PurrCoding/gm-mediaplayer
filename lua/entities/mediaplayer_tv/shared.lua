@@ -50,6 +50,7 @@ else -- CLIENT
 
 	local StaticMaterial = Material( "mediaplayer/static" )
 	local TextScale = 700
+	local TextPadding = 40
 
 	function ENT:Draw()
 		self:DrawModel()
@@ -83,9 +84,14 @@ else -- CLIENT
 			end
 		End3D2D()
 
-
-		local scale = w / TextScale
 		local info = MediaPlayer.L("mp.idle.press_e")
+
+		-- Measure text and widen the virtual canvas if the translation is longer
+		surface.SetFont( "MediaTitle" )
+		local textW = surface.GetTextSize( info )
+		local effectiveScale = math.max( TextScale, textW + TextPadding * 2 )
+
+		local scale = w / effectiveScale
 		Start3D2D( pos, ang, scale )
 			local tw, th = w / scale, h / scale
 			draw.SimpleText( info, "MediaTitle",

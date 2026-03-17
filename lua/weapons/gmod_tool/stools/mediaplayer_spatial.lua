@@ -17,7 +17,7 @@ local function IsUsableTarget( tr )
 		return false
 	end
 
-	if IsValid(tr.Entity) and tr.Entity:GetClass() == "mediaplayer_spatial_anchor" then
+	if IsValid(tr.Entity) and tr.Entity.IsMediaPlayerEntity then
 		return false
 	end
 

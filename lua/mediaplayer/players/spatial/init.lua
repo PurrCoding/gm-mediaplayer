@@ -9,12 +9,6 @@ local HearRadiusCvar = CreateConVar( "mediaplayer_spatial_hear_radius", 1800, {
 	FCVAR_REPLICATED
 }, "How far spatial media anchors can be heard before listeners are removed." )
 
-local MaxRepeatCountCvar = CreateConVar( "mediaplayer_spatial_max_repeat_count", 16, {
-	FCVAR_ARCHIVE,
-	FCVAR_NOTIFY,
-	FCVAR_REPLICATED
-}, "Maximum number of additional finite repeats allowed for spatial media anchors." )
-
 function MEDIAPLAYER:NetWriteUpdate()
 	local entIndex = IsValid(self.Entity) and self.Entity:EntIndex() or 0
 	net.WriteUInt(entIndex, 16)

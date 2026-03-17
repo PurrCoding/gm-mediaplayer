@@ -85,9 +85,10 @@ else -- CLIENT
 
 
 		local scale = w / TextScale
+		local info = MediaPlayer.L("mp.idle.press_e")
 		Start3D2D( pos, ang, scale )
 			local tw, th = w / scale, h / scale
-			draw.SimpleText( "Press E to begin watching", "MediaTitle",
+			draw.SimpleText( info, "MediaTitle",
 				tw / 2, th / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		End3D2D()
 	end

@@ -4,6 +4,7 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	-- Idle screen
 	["mp.idle.no_media"]                = "No media playing",
 	["mp.idle.hint"]                    = "Hold %s while looking at the media player to reveal the queue menu.",
+	["mp.idle.press_e"]                 = "Press E to begin watching",
 
 	-- Sidebar UI
 	["mp.ui.currently_playing"]         = "CURRENTLY PLAYING",
@@ -57,6 +58,8 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.error.duplicate_request"]      = "The requested media was already in the queue",
 	["mp.error.metadata_fetch"]         = "There was a problem fetching the requested media's metadata.",
 	["mp.error.queue_denied"]           = "The requested media couldn't be queued.",
+	["mp.error.media_url_failed"]       = "Failed to process media URL.",
+	["mp.error.request_error"]          = "[Request Error] %s",
 	["mp.success.added_to_queue"]       = "Added '%s' to the queue",
 	["mp.error.no_permission"]          = "You don't have permission to do that.",
 	["mp.error.seek_past_duration"]     = "Request seek time was past the end of the media duration.",
@@ -67,19 +70,24 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.settings.3d_audio"]            = "3D Spatial Audio",
 	["mp.settings.proximity_min"]       = "Proximity Min Distance",
 	["mp.settings.proximity_max"]       = "Proximity Max Distance",
+	["mp.settings.proximity_units"]     = "%s units",
 	["mp.settings.mute_unfocused"]      = "Mute When Unfocused",
 	["mp.settings.language"]            = "Language",
+	["mp.settings.language_auto"]       = "Auto (System)",
 	["mp.settings.show_radius"]         = "Show Proximity Radius",
+	["mp.settings.subtitles"]           = "Subtitles",
+	["mp.settings.subtitles_off"]       = "Off",
 
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Spatial Media Player",
-	["mp.tool.spatial.label"] 			= "Spatial Media",
+	["mp.tool.spatial.label"]           = "Spatial Media",
 	["mp.tool.spatial.desc"]            = "Pin MediaPlayer audio to the world or make it follow an entity.",
 	["mp.tool.spatial.usage"]           = "Left click: place a spatial source. Right click: remove it.",
 	["mp.tool.spatial.help_place"]      = "Left click a prop, player, or NPC to attach a spatial audio source to it. Left click the world to pin one in place.",
 	["mp.tool.spatial.help_remove"]     = "Right click a target to remove its spatial source.",
 	["mp.tool.spatial.help_sidebar"]    = "To request media or control playback, look at the object and hold C to open the sidebar — it works the same way as any other media player.",
 	["mp.tool.spatial.hint_press_c"]    = "Spatial media source placed! Hold C while looking at the object to open the sidebar and request media.",
+	["mp.tool.spatial.undo"]            = "Spatial Media Source",
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "You don't have permission to control this spatial media source.",

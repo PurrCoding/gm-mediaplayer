@@ -4,6 +4,7 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 	-- Idle screen
 	["mp.idle.no_media"]                = "Keine Wiedergabe",
 	["mp.idle.hint"]                    = "Halte %s gedrückt, während du auf den Mediaplayer schaust, um das Warteschlangenmenü zu öffnen.",
+	["mp.idle.press_e"]                 = "Drücke E, um mit dem Zuschauen zu beginnen",
 
 	-- Sidebar UI
 	["mp.ui.currently_playing"]         = "AKTUELLE WIEDERGABE",
@@ -57,6 +58,8 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 	["mp.error.duplicate_request"]      = "Das angeforderte Medium befindet sich bereits in der Warteschlange.",
 	["mp.error.metadata_fetch"]         = "Beim Abrufen der Metadaten des angeforderten Mediums ist ein Problem aufgetreten.",
 	["mp.error.queue_denied"]           = "Das angeforderte Medium konnte nicht zur Warteschlange hinzugefügt werden.",
+	["mp.error.media_url_failed"]       = "Die Medien-URL konnte nicht verarbeitet werden.",
+	["mp.error.request_error"]          = "[Anfragefehler] %s",
 	["mp.success.added_to_queue"]       = "'%s' zur Warteschlange hinzugefügt",
 	["mp.error.no_permission"]          = "Du hast keine Berechtigung dazu.",
 	["mp.error.seek_past_duration"]     = "Die angeforderte Sprungzeit liegt nach dem Ende der Mediendauer.",
@@ -67,5 +70,25 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 	["mp.settings.3d_audio"]            = "3D-Raumklang",
 	["mp.settings.proximity_min"]       = "Mindestentfernung",
 	["mp.settings.proximity_max"]       = "Höchstentfernung",
+	["mp.settings.proximity_units"]     = "%s Einheiten",
 	["mp.settings.mute_unfocused"]      = "Stumm wenn nicht fokussiert",
+	["mp.settings.language"]            = "Sprache",
+	["mp.settings.language_auto"]       = "Automatisch (System)",
+	["mp.settings.show_radius"]         = "Näherungsradius anzeigen",
+	["mp.settings.subtitles"]           = "Untertitel",
+	["mp.settings.subtitles_off"]       = "Aus",
+
+	-- Spatial tool
+	["mp.tool.spatial.name"]            = "Räumlicher Mediaplayer",
+	["mp.tool.spatial.label"]           = "Räumliche Medien",
+	["mp.tool.spatial.desc"]            = "Hefte MediaPlayer-Audio an die Welt oder lasse es einer Entität folgen.",
+	["mp.tool.spatial.usage"]           = "Linksklick: räumliche Quelle platzieren. Rechtsklick: entfernen.",
+	["mp.tool.spatial.help_place"]      = "Klicke mit links auf ein Prop, einen Spieler oder NPC, um eine räumliche Audioquelle anzuheften. Klicke auf die Welt, um sie an Ort und Stelle zu fixieren.",
+	["mp.tool.spatial.help_remove"]     = "Klicke mit rechts auf ein Ziel, um dessen räumliche Quelle zu entfernen.",
+	["mp.tool.spatial.help_sidebar"]    = "Um Medien anzufordern oder die Wiedergabe zu steuern, schaue auf das Objekt und halte C gedrückt, um die Seitenleiste zu öffnen — sie funktioniert wie jeder andere Mediaplayer.",
+	["mp.tool.spatial.hint_press_c"]    = "Räumliche Medienquelle platziert! Halte C gedrückt und schaue auf das Objekt, um die Seitenleiste zu öffnen und Medien anzufordern.",
+	["mp.tool.spatial.undo"]            = "Räumliche Medienquelle",
+
+	-- Spatial player
+	["mp.spatial.no_permission"]        = "Du hast keine Berechtigung, diese räumliche Medienquelle zu steuern.",
 })

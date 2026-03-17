@@ -17,7 +17,16 @@ local function IsUsableTarget( tr )
 		return false
 	end
 
-	if IsValid(tr.Entity) and tr.Entity.IsMediaPlayerEntity then
+	local ent = tr.Entity
+	if not IsValid(ent) or ent:IsWorld() then
+		return false
+	end
+
+	if ent:IsPlayer() or ent:IsNPC() then
+		return false
+	end
+
+	if ent.IsMediaPlayerEntity then
 		return false
 	end
 

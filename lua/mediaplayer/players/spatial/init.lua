@@ -9,38 +9,37 @@ local HearRadiusCvar = CreateConVar( "mediaplayer_spatial_hear_radius", 1800, {
 	FCVAR_REPLICATED
 }, "How far spatial media anchors can be heard before listeners are removed." )
 
--- Cache the squared radius to avoid recomputing every tick
-local hearRadiusSqr = HearRadiusCvar:GetFloat() ^ 2
+local MaxRepeatCountCvar = CreateConVar( "mediaplayer_spatial_max_repeat_count", 16, {
+	FCVAR_ARCHIVE,
+	FCVAR_NOTIFY,
+	FCVAR_REPLICATED
+}, "Maximum number of additional finite repeats allowed for spatial media anchors." )
 
-cvars.AddChangeCallback( "mediaplayer_spatial_hear_radius", function( _, _, new )
-	local r = math.max( tonumber(new) or 1, 1 )
-	hearRadiusSqr = r * r
-end, "mp_spatial_radius_cache" )
+function MEDIAPLAYER:NetWriteUpdate()
+	local entIndex = IsValid(self.Entity) and self.Entity:EntIndex() or 0
+	net.WriteUInt(entIndex, 16)
+end
 
 function MEDIAPLAYER:UpdateListeners()
-	-- Guard against re-entry from AddListener → BroadcastUpdate → UpdateListeners
-	if self._updatingListeners then return end
-
 	local ent = self:GetEntity()
+
 	if not IsValid(ent) then
 		self:SetListeners({})
 		return
 	end
 
+	local radius = math.max( HearRadiusCvar:GetFloat(), 1 )
+	local radiusSqr = radius * radius
 	local pos = ent:GetPos()
 	local listeners = {}
-	local n = 0
 
-	for _, ply in ipairs( player.GetHumans() ) do
-		if ply:GetPos():DistToSqr(pos) <= hearRadiusSqr then
-			n = n + 1
-			listeners[n] = ply
+	for _, ply in ipairs(player.GetHumans()) do
+		if IsValid(ply) and ply:GetPos():DistToSqr(pos) <= radiusSqr then
+			table.insert( listeners, ply )
 		end
 	end
 
-	self._updatingListeners = true
 	self:SetListeners( listeners )
-	self._updatingListeners = false
 end
 
 function MEDIAPLAYER:CanPlayerRequestMedia( ply, media )

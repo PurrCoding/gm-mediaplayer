@@ -4,17 +4,6 @@ include "shared.lua"
 local MetadataUrlBV = "https://api.bilibili.com/x/web-interface/view?bvid=%s"
 local MetadataUrlAV = "https://api.bilibili.com/x/web-interface/view?aid=%s"
 
-local function SetFallbackMetadata( self )
-	local metadata = {
-		title = "Bilibili",
-		duration = 0,
-		thumbnail = "",
-	}
-
-	self:SetMetadata( metadata, true )
-	MediaPlayer.Metadata:Save( self )
-end
-
 local function BuildMetadata( self, payload )
 	local data = payload.data or {}
 	local pageIndex = self:GetBilibiliPage() or 1
@@ -46,8 +35,7 @@ end
 local function OnReceiveMetadata( self, callback, body )
 	local data = util.JSONToTable( body )
 	if not data or data.code ~= 0 or not data.data then
-		SetFallbackMetadata( self )
-		return callback( self._metadata )
+		return callback( false, "Failed to parse Bilibili video metadata." )
 	end
 
 	local metadata = BuildMetadata( self, data )
@@ -58,28 +46,9 @@ local function OnReceiveMetadata( self, callback, body )
 end
 
 function SERVICE:GetMetadata( callback )
-	if self._metadata then
-		callback( self._metadata )
-		return
-	end
-
-	local cache = MediaPlayer.Metadata:Query( self )
-
-	if MediaPlayer.DEBUG then
-		print( "MediaPlayer.GetMetadata Cache results:" )
-		PrintTable( cache or {} )
-	end
-
-	if cache then
-		local metadata = {
-			title = cache.title,
-			duration = tonumber( cache.duration ) or 0,
-			thumbnail = cache.thumbnail,
-		}
-
-		self:SetMetadata( metadata )
-		MediaPlayer.Metadata:Save( self )
-		callback( self._metadata )
+	local cached, found = self:GetCachedMetadata()
+	if found then
+		callback( cached )
 		return
 	end
 
@@ -92,8 +61,7 @@ function SERVICE:GetMetadata( callback )
 	elseif aid then
 		apiurl = MetadataUrlAV:format( aid )
 	else
-		SetFallbackMetadata( self )
-		return callback( self._metadata )
+		return callback( false, "Could not extract Bilibili video ID from URL." )
 	end
 
 	self:Fetch( apiurl,
@@ -101,8 +69,7 @@ function SERVICE:GetMetadata( callback )
 			OnReceiveMetadata( self, callback, body )
 		end,
 		function( code )
-			SetFallbackMetadata( self )
-			callback( self._metadata )
+			callback( false, "Failed to fetch Bilibili metadata [" .. tostring(code) .. "]" )
 		end
 	)
 end

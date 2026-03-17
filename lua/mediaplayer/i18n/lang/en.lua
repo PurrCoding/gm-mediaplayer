@@ -70,4 +70,15 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.settings.mute_unfocused"]      = "Mute When Unfocused",
 	["mp.settings.language"]            = "Language",
 	["mp.settings.show_radius"]         = "Show Proximity Radius",
+
+	-- Spatial tool
+	["mp.tool.spatial.name"]            = "Spatial Media Player",
+	["mp.tool.spatial.desc"]            = "Pin MediaPlayer audio to the world or make it follow an entity.",
+	["mp.tool.spatial.usage"]           = "Left click: place a spatial source. Right click: remove it.",
+	["mp.tool.spatial.help_place"]      = "Left click a prop, player, or NPC to attach a spatial audio source to it. Left click the world to pin one in place.",
+	["mp.tool.spatial.help_remove"]     = "Right click a target to remove its spatial source.",
+	["mp.tool.spatial.help_sidebar"]    = "To request media or control playback, look at the object and hold C to open the sidebar — it works the same way as any other media player.",
+
+	-- Spatial player
+	["mp.spatial.no_permission"]        = "You don't have permission to control this spatial media source.",
 })

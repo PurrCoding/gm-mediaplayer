@@ -229,8 +229,19 @@ end
 function MediaPlayer.GetByObject( obj )
 	local mp = nil
 
-	if isentity(obj) and obj.IsMediaPlayerEntity then
-		mp = obj:GetMediaPlayer()
+	if isentity(obj) then
+		if obj.IsMediaPlayerEntity then
+			mp = obj:GetMediaPlayer()
+		else
+			-- Check children for parented media player entities
+			-- (e.g. spatial anchors parented to props)
+			for _, child in ipairs(obj:GetChildren()) do
+				if child.IsMediaPlayerEntity then
+					mp = child:GetMediaPlayer()
+					if mp then break end
+				end
+			end
+		end
 	elseif istable(obj) and obj.IsMediaPlayer then
 		mp = obj
 	elseif isstring(obj) then

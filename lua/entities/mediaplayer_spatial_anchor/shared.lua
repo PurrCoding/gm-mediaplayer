@@ -4,13 +4,11 @@ ENT.Base = "base_anim"
 ENT.PrintName = "Spatial Media Anchor"
 ENT.Author = "SheepyLord"
 ENT.Spawnable = false
-ENT.RenderGroup = RENDERGROUP_OTHER
 
 ENT.Model = Model( "models/props_junk/PopCan01a.mdl" )
 ENT.MediaPlayerType = "spatial"
 
 ENT.IsMediaPlayerEntity = true
-ENT.IsMediaPlayerSpatialAnchor = true
 
 local DummyConfig = {
 	offset = Vector(0, 0, 0),
@@ -33,17 +31,11 @@ function ENT:Initialize()
 
 		local mp = self:InstallMediaPlayer( self.MediaPlayerType )
 		self:SetMediaPlayerID( mp:GetId() )
-
-		if self:GetLoopCount() < 0 then
-			self:SetLoopCount( 0 )
-		end
 	end
 end
 
 function ENT:SetupDataTables()
 	self:NetworkVar( "String", 0, "MediaPlayerID" )
-	self:NetworkVar( "Bool", 0, "LoopForever" )
-	self:NetworkVar( "Int", 0, "LoopCount" )
 end
 
 function ENT:UpdateTransmitState()

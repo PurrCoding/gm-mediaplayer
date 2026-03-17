@@ -40,14 +40,6 @@ end
 
 function MEDIAPLAYER:SetEntity(ent)
 	self.Entity = ent
-
-	if SERVER then
-		local creator = ent.GetCreator and ent:GetCreator()
-
-		if IsValid( creator ) and creator:IsPlayer() then
-			self:SetOwner( creator )
-		end
-	end
 end
 
 function MEDIAPLAYER:GetEntity()

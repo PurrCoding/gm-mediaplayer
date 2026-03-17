@@ -96,9 +96,9 @@ function SERVICE:GetURL()
 end
 
 function SERVICE:OnBrowserReady( browser )
-	if self._BiliPaused then
+	if self._Paused then
 		self.Browser:RunJavascript( JS_Play )
-		self._BiliPaused = nil
+		self._Paused = nil
 		return
 	end
 
@@ -122,7 +122,7 @@ function SERVICE:Pause()
 
 	if IsValid( self.Browser ) then
 		self.Browser:RunJavascript( JS_Pause )
-		self._BiliPaused = true
+		self._Paused = true
 	end
 end
 

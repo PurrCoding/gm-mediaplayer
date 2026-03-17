@@ -130,6 +130,7 @@ body {
 .logo-dailymotion { background-image: url(../images/dailymotion.png); background-size: 55px; }
 .logo-archive { background-image: url(../images/archive.svg); }
 .logo-odysee { background-image: url(../images/odysee.svg); }
+.logo-bilibili { background-image: url(../images/bilibili.svg); }
 
 /* Disabled service styles */
 .service-card.service-disabled {

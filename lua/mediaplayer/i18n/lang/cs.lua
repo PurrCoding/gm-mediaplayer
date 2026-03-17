@@ -4,6 +4,7 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	-- Idle screen
 	["mp.idle.no_media"]                = "Nic se nepřehrává",
 	["mp.idle.hint"]                    = "Podržte %s a dívejte se na přehrávač médií pro zobrazení nabídky fronty.",
+	["mp.idle.press_e"]                 = "Stiskněte E pro zahájení sledování",
 
 	-- Sidebar UI
 	["mp.ui.currently_playing"]         = "PRÁVĚ SE PŘEHRÁVÁ",
@@ -57,6 +58,8 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	["mp.error.duplicate_request"]      = "Požadované médium je již ve frontě",
 	["mp.error.metadata_fetch"]         = "Při získávání metadat požadovaného média došlo k problému.",
 	["mp.error.queue_denied"]           = "Požadované médium nemohlo být zařazeno do fronty.",
+	["mp.error.media_url_failed"]       = "Nepodařilo se zpracovat URL média.",
+	["mp.error.request_error"]          = "[Chyba požadavku] %s",
 	["mp.success.added_to_queue"]       = "'%s' přidáno do fronty",
 	["mp.error.no_permission"]          = "Na toto nemáte oprávnění.",
 	["mp.error.seek_past_duration"]     = "Požadovaný čas přetočení přesáhl délku média.",
@@ -67,5 +70,25 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	["mp.settings.3d_audio"]            = "3D prostorový zvuk",
 	["mp.settings.proximity_min"]       = "Minimální vzdálenost",
 	["mp.settings.proximity_max"]       = "Maximální vzdálenost",
+	["mp.settings.proximity_units"]     = "%s jednotek",
 	["mp.settings.mute_unfocused"]      = "Ztlumit při ztrátě fokusu",
+	["mp.settings.language"]            = "Jazyk",
+	["mp.settings.language_auto"]       = "Automaticky (systém)",
+	["mp.settings.show_radius"]         = "Zobrazit poloměr blízkosti",
+	["mp.settings.subtitles"]           = "Titulky",
+	["mp.settings.subtitles_off"]       = "Vypnuto",
+
+	-- Spatial tool
+	["mp.tool.spatial.name"]            = "Prostorový přehrávač médií",
+	["mp.tool.spatial.label"]           = "Prostorová média",
+	["mp.tool.spatial.desc"]            = "Připevněte zvuk MediaPlayeru ke světu nebo ho nechte sledovat entitu.",
+	["mp.tool.spatial.usage"]           = "Levé tlačítko: umístit prostorový zdroj. Pravé tlačítko: odstranit.",
+	["mp.tool.spatial.help_place"]      = "Klikněte levým tlačítkem na prop, hráče nebo NPC pro připojení prostorového zdroje zvuku. Klikněte na svět pro připevnění na místo.",
+	["mp.tool.spatial.help_remove"]     = "Klikněte pravým tlačítkem na cíl pro odstranění jeho prostorového zdroje.",
+	["mp.tool.spatial.help_sidebar"]    = "Pro požadavek na média nebo ovládání přehrávání se podívejte na objekt a podržte C pro otevření postranního panelu — funguje stejně jako jakýkoli jiný přehrávač médií.",
+	["mp.tool.spatial.hint_press_c"]    = "Prostorový zdroj médií umístěn! Podržte C a dívejte se na objekt pro otevření postranního panelu a požadavek na média.",
+	["mp.tool.spatial.undo"]            = "Prostorový zdroj médií",
+
+	-- Spatial player
+	["mp.spatial.no_permission"]        = "Nemáte oprávnění ovládat tento prostorový zdroj médií.",
 })

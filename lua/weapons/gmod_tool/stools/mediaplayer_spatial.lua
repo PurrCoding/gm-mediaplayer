@@ -22,13 +22,9 @@ local function IsUsableTarget( tr )
 		return false
 	end
 
-	if ent:IsPlayer() or ent:IsNPC() then
-		return false
-	end
-
-	if ent.IsMediaPlayerEntity then
-		return false
-	end
+	if ent:IsPlayer() or ent:IsNPC() then return false end
+	if ent:IsRagdoll() then return false end
+	if ent.IsMediaPlayerEntity then return false end
 
 	return true
 end

@@ -79,6 +79,7 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.tool.spatial.help_place"]      = "Left click a prop, player, or NPC to attach a spatial audio source to it. Left click the world to pin one in place.",
 	["mp.tool.spatial.help_remove"]     = "Right click a target to remove its spatial source.",
 	["mp.tool.spatial.help_sidebar"]    = "To request media or control playback, look at the object and hold C to open the sidebar — it works the same way as any other media player.",
+	["mp.tool.spatial.hint_press_c"]    = "Spatial media source placed! Hold C while looking at the object to open the sidebar and request media.",
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "You don't have permission to control this spatial media source.",

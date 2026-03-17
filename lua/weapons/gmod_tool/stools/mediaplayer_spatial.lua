@@ -102,7 +102,13 @@ if SERVER then
 			return false
 		end
 
-		return IsValid( CreateAnchor( ply, tr ) )
+		anchor = CreateAnchor( ply, tr )
+		if IsValid( anchor ) then
+			ply:ChatPrint( MediaPlayer.L("mp.tool.spatial.hint_press_c") )
+			return true
+		end
+
+		return false
 	end
 
 	function TOOL:RightClick( tr )

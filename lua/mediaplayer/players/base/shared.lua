@@ -269,13 +269,95 @@ function MEDIAPLAYER:Think()
 
 end
 
+local function IsMediaObject( media )
+	return istable(media) and
+		isfunction(media.StartTime) and
+		isfunction(media.CurrentTime) and
+		isfunction(media.UniqueID) and
+		isfunction(media.Url)
+end
+
+function MediaPlayer.RehydrateMedia( media, restorePlayback )
+	if not istable(media) then
+		return media
+	end
+
+	if IsMediaObject(media) then
+		return media
+	end
+
+	local url = rawget(media, "url")
+	if not isstring(url) or url == "" then
+		return media
+	end
+
+	local recreated = MediaPlayer.GetMediaForUrl( url, true )
+	if not istable(recreated) then
+		return media
+	end
+
+	table.Merge( recreated, media )
+
+	if recreated:IsTimed() then
+		recreated:ResetTime()
+
+		if restorePlayback then
+			local savedTime = rawget(media, "currentTime")
+			if not isnumber(savedTime) then
+				local pauseTime = rawget(media, "_PauseTime")
+				local startTime = rawget(media, "_StartTime")
+
+				if isnumber(pauseTime) and isnumber(startTime) then
+					savedTime = math.max( pauseTime - startTime, 0 )
+				else
+					savedTime = 0
+				end
+			end
+
+			recreated:StartTime( RealTime() - savedTime )
+
+			if rawget(media, "_PauseTime") ~= nil or rawget(media, "_playing") == false then
+				recreated:Pause()
+			end
+		else
+			recreated._playing = false
+		end
+	end
+
+	return recreated
+end
+
+function MEDIAPLAYER:NormalizeMedia( media, restorePlayback )
+	return MediaPlayer.RehydrateMedia( media, restorePlayback )
+end
+
+function MEDIAPLAYER:NormalizeMediaQueue()
+	if not istable(self._Queue) then
+		self._Queue = {}
+		return self._Queue
+	end
+
+	for i = 1, #self._Queue do
+		local normalized = self:NormalizeMedia( self._Queue[i], false )
+		if normalized ~= self._Queue[i] then
+			self._Queue[i] = normalized
+		end
+	end
+
+	return self._Queue
+end
+
 --
 -- Get the currently playing media.
 --
 -- @return Media	Currently playing media
 --
 function MEDIAPLAYER:GetMedia()
-	return self._Media
+	local media = self:NormalizeMedia( self._Media, true )
+	if media ~= self._Media then
+		self._Media = media
+	end
+	return media
 end
 
 MEDIAPLAYER.CurrentMedia = MEDIAPLAYER.GetMedia
@@ -286,6 +368,7 @@ MEDIAPLAYER.CurrentMedia = MEDIAPLAYER.GetMedia
 -- @param media		Media object.
 --
 function MEDIAPLAYER:SetMedia( media )
+	media = self:NormalizeMedia( media, true )
 	self._Media = media
 	self:OnMediaStarted( media )
 
@@ -300,7 +383,7 @@ end
 -- @return table	Media queue.
 --
 function MEDIAPLAYER:GetMediaQueue()
-	return self._Queue
+	return self:NormalizeMediaQueue()
 end
 
 --
@@ -368,6 +451,8 @@ end
 -- Called when the queue is updated; emits a change event.
 --
 function MEDIAPLAYER:QueueUpdated()
+	self:NormalizeMediaQueue()
+
 	if SERVER then
 		self:SortQueue()
 	end
@@ -381,6 +466,7 @@ end
 -- @param media		Media object.
 --
 function MEDIAPLAYER:AddMedia( media )
+	media = self:NormalizeMedia( media, false )
 	if not media then return end
 
 	if SERVER then

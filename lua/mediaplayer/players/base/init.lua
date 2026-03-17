@@ -163,6 +163,8 @@ function MEDIAPLAYER:NextMedia( item )
 		print( "MEDIAPLAYER.NextMedia" )
 	end
 
+	self:NormalizeMediaQueue()
+
 	local media = nil
 
 	-- Grab media from the queue if available
@@ -172,6 +174,7 @@ function MEDIAPLAYER:NextMedia( item )
 	end
 
 	self:SetMedia( media )
+	media = self:GetMedia()
 	self:SendMedia( media )
 
 	self:BroadcastUpdate()
@@ -179,6 +182,8 @@ function MEDIAPLAYER:NextMedia( item )
 end
 
 function MEDIAPLAYER:SendMedia( media, ply )
+
+	media = self:NormalizeMedia( media, true )
 
 	if MediaPlayer.DEBUG then
 		print( "MEDIAPLAYER.SendMedia", media )
@@ -205,8 +210,8 @@ function MEDIAPLAYER:SendMedia( media, ply )
 end
 
 local function queueTimeSort( a, b )
-	local atime = a:GetMetadataValue( "queueTime" )
-	local btime = b:GetMetadataValue( "queueTime" )
+	local atime = a:GetMetadataValue( "queueTime" ) or 0
+	local btime = b:GetMetadataValue( "queueTime" ) or 0
 
 	return atime < btime
 end
@@ -216,10 +221,12 @@ function MEDIAPLAYER:SortQueue()
 		return -- queue has been shuffled
 	end
 
+	self:NormalizeMediaQueue()
 	table.sort( self._Queue, queueTimeSort )
 end
 
 function MEDIAPLAYER:ShuffleQueue()
+	self:NormalizeMediaQueue()
 	self._Queue = MediaPlayerUtils.Shuffle( self._Queue )
 end
 
@@ -267,6 +274,8 @@ function MEDIAPLAYER:ShouldQueueMedia( media )
 end
 
 function MEDIAPLAYER:RequestMedia( media, ply )
+
+	self:NormalizeMediaQueue()
 
 	-- Player must be valid and also a listener
 	if not ( IsValid(ply) and self:HasListener(ply) ) then
@@ -436,6 +445,8 @@ end
 
 function MEDIAPLAYER:RequestRemove( ply, mediaUID )
 
+	self:NormalizeMediaQueue()
+
 	if not (self:GetPlayerState() >= MP_STATE_PLAYING) then return end
 
 	-- Player must be valid and also a listener
@@ -529,6 +540,8 @@ end
 -----------------------------------------------------------]]
 
 function MEDIAPLAYER:BroadcastUpdate( ply )
+
+	self:NormalizeMediaQueue()
 
 	if MediaPlayer.DEBUG then
 		print( "MEDIAPLAYER.BroadcastUpdate", ply )

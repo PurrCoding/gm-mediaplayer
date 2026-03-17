@@ -82,7 +82,7 @@ net.Receive( "MEDIAPLAYER.RequestMedia", RequestWrapper(function(mp, ply)
 	-- Build the media object for the URL
 	local media = MediaPlayer.GetMediaForUrl( url, allowWebpage )
 	if not media then
-		mp:NotifyPlayer( ply, "Failed to process media URL." )
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.media_url_failed") )
 		return
 	end
 	media:NetReadRequest()

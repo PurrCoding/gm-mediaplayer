@@ -97,7 +97,8 @@ do
 	local path = "players/"
 	local players = {
 		"base", -- MUST LOAD FIRST!
-		"entity"
+		"entity",
+		"spatial"
 	}
 
 	for _, player in ipairs(players) do

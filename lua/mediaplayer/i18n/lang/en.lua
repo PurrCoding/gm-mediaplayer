@@ -73,6 +73,7 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Spatial Media Player",
+	["mp.tool.spatial.label"] 			= "Spatial Media",
 	["mp.tool.spatial.desc"]            = "Pin MediaPlayer audio to the world or make it follow an entity.",
 	["mp.tool.spatial.usage"]           = "Left click: place a spatial source. Right click: remove it.",
 	["mp.tool.spatial.help_place"]      = "Left click a prop, player, or NPC to attach a spatial audio source to it. Left click the world to pin one in place.",

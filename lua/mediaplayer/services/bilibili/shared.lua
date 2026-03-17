@@ -1,5 +1,9 @@
 DEFINE_BASECLASS( "mp_service_base" )
 
+-- NOTE: Without a logged-in Bilibili account, video quality is limited
+-- to a maximum of 360p. This is a Bilibili platform restriction and
+-- cannot be worked around from the addon side.
+
 SERVICE.Name = "Bilibili"
 SERVICE.Id = "bili"
 SERVICE.Base = "browser"

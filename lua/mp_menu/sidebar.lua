@@ -111,10 +111,6 @@ function SidebarPresenter:SetupEvents()
 		MediaPlayer.OpenRequestMenu( mp )
 	end )
 
-	self:RegisterHook( MP.EVENTS.UI.FAVORITE_MEDIA, function( media )
-		-- TODO
-	end )
-
 	self:RegisterHook( MP.EVENTS.UI.REMOVE_MEDIA, function( media )
 		if not media then return end
 		MediaPlayer.RequestRemove( mp, media:UniqueID() )

@@ -34,14 +34,10 @@ function PANEL:Init()
 	self.BtnList = vgui.Create( "DHorizontalList", self )
 	self.BtnList:SetSpacing( self.BtnSpacing )
 
-	self.FavBtn = vgui.Create( "MP.FavoriteButton", self )
-
 	hook.Run( MP.EVENTS.UI.SETUP_PLAYBACK_PANEL, self )
 
-	if hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER ) then
-		self.SkipBtn = vgui.Create( "MP.SkipButton" )
-		self:AddButton( self.SkipBtn )
-	end
+	self.SkipBtn = vgui.Create( "MP.SkipButton" )
+	self:AddButton( self.SkipBtn )
 
 	self.AddedByLbl = vgui.Create( "MP.AddedBy", self )
 
@@ -79,14 +75,12 @@ function PANEL:OnMediaChanged( media )
 		self.AddedByLbl:SetPlayer( media:GetOwner(), media:OwnerName(), media:OwnerSteamID() )
 
 		self.AddedByLbl:Show()
-		self.FavBtn:Hide()
 		self.BtnList:Show()
 	else
 		self.MediaTitle:SetText( MediaPlayer.L("mp.ui.no_media") )
 		self.MediaTitle:SetTooltip( "" )
 
 		self.AddedByLbl:Hide()
-		self.FavBtn:Hide()
 		self.BtnList:Hide()
 	end
 
@@ -149,9 +143,6 @@ function PANEL:PerformLayout()
 	self.MediaTime:MoveRightOf( self.PlayPauseBtn, self.Padding )
 	self.MediaTime:AlignBottom( self.Padding - 2 )
 
-	self.FavBtn:AlignTop( self.Padding )
-	self.FavBtn:AlignRight( self.Padding )
-
 	self.BtnList:InvalidateLayout(true)
 	self.BtnList:AlignBottom( self.Padding )
 	self.BtnList:AlignRight( self.Padding )
@@ -165,7 +156,7 @@ function PANEL:PerformLayout()
 	self.AddedByLbl:AlignBottom( self.Padding )
 	self.AddedByLbl:MoveLeftOf( self.BtnList, self.BtnSpacing )
 
-	local maxTitleWidth = ( self.FavBtn:GetPos() - self.BtnSpacing ) -
+	local maxTitleWidth = ( w - self.Padding - self.BtnSpacing ) -
 		( self.MediaTitle:GetPos() )
 
 	if self.MediaTitle:GetWide() > maxTitleWidth then

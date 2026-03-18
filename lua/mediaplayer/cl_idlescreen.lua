@@ -84,8 +84,6 @@ function MediaPlayer.GetIdlescreen()
 		local resolution = MediaPlayer.Resolution()
 		browser:SetSize( resolution * 16 / 9, resolution )
 
-		-- TODO: set proper browser size
-
 		MediaPlayer._idlescreen = browser
 
 		local setup = hook.Run( "MediaPlayerSetupIdlescreen", browser )

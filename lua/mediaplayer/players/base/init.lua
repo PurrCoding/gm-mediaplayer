@@ -350,8 +350,8 @@ function MEDIAPLAYER:RequestPause( ply )
 		return
 	end
 
-	-- Check player priviledges
-	if not self:IsPlayerPrivileged(ply) then
+	-- Non-privileged players vote to skip
+	if not self._Voteskip then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
@@ -373,17 +373,42 @@ function MEDIAPLAYER:RequestSkip( ply )
 		return
 	end
 
-	-- Check player priviledges
-	if not self:IsPlayerPrivileged(ply) then
+	-- Privileged players can skip instantly
+	if self:IsPlayerPrivileged(ply) then
+		if MediaPlayer.DEBUG then
+			print( "MEDIAPLAYER.RequestSkip (privileged)", ply )
+		end
+		self:OnMediaFinished()
+		return
+	end
+
+	-- Guard: voteskip manager must exist
+	if not self._Voteskip then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
 
-	if MediaPlayer.DEBUG then
-		print( "MEDIAPLAYER.RequestSkip", ply )
+	-- Non-privileged players vote to skip
+	if self._Voteskip:HasVoted(ply) then
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.voteskip.already_voted"))
+		return
 	end
 
-	self:OnMediaFinished()
+	self._Voteskip:AddVote(ply)
+
+	local numListeners = #self._Listeners
+	local numVotes = self._Voteskip:GetNumVotes()
+	local reqVotes = self._Voteskip:GetNumRequiredVotes(numListeners)
+
+	if self._Voteskip:ShouldSkip(numListeners) then
+		self:NotifyListeners(MediaPlayer.L("mp.voteskip.passed"))
+		self:OnMediaFinished()
+	else
+		local remaining = reqVotes - numVotes
+		self:NotifyListeners(
+			MediaPlayer.L("mp.voteskip.vote_cast", numVotes, reqVotes, remaining)
+		)
+	end
 
 end
 

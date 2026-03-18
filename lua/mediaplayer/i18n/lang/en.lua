@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.ui.added_by"]                  = "ADDED BY",
 	["mp.ui.unknown"]                   = "Unknown",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]   = "You have already voted to skip.",
+	["mp.voteskip.vote_cast"]       = "Voteskip: %d/%d votes (%d more needed)",
+	["mp.voteskip.passed"]          = "Voteskip passed! Skipping...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Repeat",
 	["mp.ui.shuffle"]                   = "Shuffle",

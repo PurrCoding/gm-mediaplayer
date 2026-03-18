@@ -1,5 +1,4 @@
 if MediaPlayer then
-	-- TODO: compare versions?
 	if MediaPlayer.__refresh then
 		MediaPlayer.__refresh = nil
 	else

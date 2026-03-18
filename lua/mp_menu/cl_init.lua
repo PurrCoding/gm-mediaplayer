@@ -14,10 +14,8 @@ MP.EVENTS.UI = {
 	MEDIA_PLAYER_CHANGED = "mp.events.ui.mediaPlayerChanged",
 
 	OPEN_REQUEST_MENU = "mp.events.ui.openRequestMenu",
-	FAVORITE_MEDIA = "mp.events.ui.favoriteMedia",
 	REMOVE_MEDIA = "mp.events.ui.removeMedia",
 	SKIP_MEDIA = "mp.events.ui.skipMedia",
-	VOTE_MEDIA = "mp.events.ui.voteMedia",
 	TOGGLE_LOCK = "mp.events.ui.toggleLock",
 	TOGGLE_PAUSE = "mp.events.ui.togglePause",
 	TOGGLE_REPEAT = "mp.events.ui.toggleRepeat",

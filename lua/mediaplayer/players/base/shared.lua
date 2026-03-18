@@ -49,6 +49,7 @@ function MEDIAPLAYER:Init(params)
 		self._TransmitState = TRANSMIT_ALWAYS
 		self._Listeners = {}
 		self._ListenerSet = {}  -- fast lookup set for listeners
+		self._Voteskip = MediaPlayer.VoteskipManager:New(self)
 
 	else
 
@@ -449,6 +450,9 @@ function MEDIAPLAYER:OnMediaFinished( media )
 
 	if SERVER then
 		self:SetPlayerState( MP_STATE_ENDED )
+		if self._Voteskip then
+			self._Voteskip:Clear()
+		end
 	end
 
 	self._Media = nil

@@ -15,7 +15,7 @@ function VoteskipManager:New( mp, ratio )
 	obj._mp = mp
 	obj._votes = {}
 	obj._value = 0
-	obj._ratio = VOTESKIP_REQ_VOTE_RATIO
+	obj._ratio = ratio or VOTESKIP_REQ_VOTE_RATIO
 	return obj
 end
 
@@ -117,15 +117,20 @@ end
 function VoteskipManager:Invalidate()
 	local value = 0
 	local changed = false
+	local toRemove = {}
 
 	for uid, vote in pairs(self._votes) do
 		local ply = vote.player
 		if IsValid( ply ) and self._mp:HasListener( ply ) then
 			value = value + vote.value
 		else
-			self._votes[ uid ] = nil
+			toRemove[#toRemove + 1] = uid
 			changed = true
 		end
+	end
+
+	for i = 1, #toRemove do
+		self._votes[ toRemove[i] ] = nil
 	end
 
 	if self._value ~= value then

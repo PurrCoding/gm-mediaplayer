@@ -144,9 +144,6 @@ function SIDEBAR_TAB:ApplySchemeSettings()
 
 	self:SetTextInset( 0, 0 )
 
-	-- TODO: this errors as of version 2015.03.09
-	-- DLabel.ApplySchemeSettings( self )
-
 end
 
 derma.DefineControl( "MP.SidebarTab", "", SIDEBAR_TAB, "DTab" )

@@ -165,7 +165,6 @@ function MEDIA_ITEM:Init()
 
 	self.MediaTitle = vgui.Create( "MP.MediaTitle", self )
 	self.MediaTime = vgui.Create( "MP.MediaTime", self )
-	self.FavBtn = vgui.Create( "MP.FavoriteButton", self )
 	self.AddedByLbl = vgui.Create( "MP.AddedBy", self )
 
 	self.BtnList = vgui.Create( "DHorizontalList", self )
@@ -178,8 +177,6 @@ function MEDIA_ITEM:SetMedia( media )
 	self.MediaTitle:SetText( media:Title() )
 	self.MediaTime:SetMedia( media )
 	self.AddedByLbl:SetPlayer( media:GetOwner(), media:OwnerName(), media:OwnerSteamID() )
-
-	self.FavBtn:SetMedia( media )
 
 	hook.Run( MP.EVENTS.UI.SETUP_MEDIA_PANEL, self, media )
 
@@ -224,10 +221,6 @@ function MEDIA_ITEM:PerformLayout()
 	self.MediaTime:AlignLeft( self.HPadding )
 	self.MediaTime:AlignBottom( self.VPadding - 3 )
 
-	self.FavBtn:Hide()
-	self.FavBtn:AlignTop( self.VPadding )
-	self.FavBtn:AlignRight( self.HPadding )
-
 	self.BtnList:InvalidateLayout(true)
 	self.BtnList:AlignBottom( self.VPadding )
 	self.BtnList:AlignRight( self.HPadding )
@@ -239,7 +232,7 @@ function MEDIA_ITEM:PerformLayout()
 	self.AddedByLbl:AlignBottom( self.VPadding )
 	self.AddedByLbl:MoveLeftOf( self.BtnList, 8 )
 
-	local maxTitleWidth = self.FavBtn:GetPos() -
+	local maxTitleWidth = ( w - self.HPadding ) -
 		( self.MediaTitle:GetPos() + 5 )
 
 	if self.MediaTitle:GetWide() > maxTitleWidth then

@@ -131,13 +131,45 @@ derma.DefineControl( "MP.AddVideoButton", "", ADD_VIDEO_BTN, "DIconLabeledButton
 
 local QUEUE_LIST = {}
 
+QUEUE_LIST.ScrollbarWidth = 6
+QUEUE_LIST.ScrollbarBgColor = Color( 7, 21, 33, 200 )
+QUEUE_LIST.ScrollbarGripColor = Color( 28, 100, 157, 180 )
+QUEUE_LIST.ScrollbarGripHoverColor = Color( 40, 120, 180, 220 )
+
 function QUEUE_LIST:Init()
 
 	self.BaseClass.Init( self )
 
 	self:SetSpacing( 1 )
-
 	self:EnableVerticalScrollbar()
+
+	local vbar = self.VBar
+	if not IsValid( vbar ) then return end
+
+	vbar:SetWide( self.ScrollbarWidth )
+	vbar.Paint = self.PaintScrollbar
+	vbar.btnUp.Paint = function() end
+	vbar.btnDown.Paint = function() end
+	vbar.btnGrip.Paint = self.PaintScrollbarGrip
+
+end
+
+function QUEUE_LIST:PaintScrollbar( w, h )
+
+	surface.SetDrawColor( QUEUE_LIST.ScrollbarBgColor )
+	surface.DrawRect( 0, 0, w, h )
+
+end
+
+function QUEUE_LIST:PaintScrollbarGrip( w, h )
+
+	local col = QUEUE_LIST.ScrollbarGripColor
+
+	if self:IsHovered() then
+		col = QUEUE_LIST.ScrollbarGripHoverColor
+	end
+
+	draw.RoundedBox( 3, 0, 0, w, h, col )
 
 end
 

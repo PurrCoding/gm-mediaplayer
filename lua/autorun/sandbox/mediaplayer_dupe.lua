@@ -322,6 +322,14 @@ local function SaveMediaPlayerDupe( Dupe, jpegdata )
 
 		MsgN( "Saved!" )
 
+		-- Open the spawnmenu and switch to the dupes tab
+		timer.Simple( 0, function()
+			if IsValid( g_SpawnMenu ) then
+				g_SpawnMenu:Open()
+				spawnmenu.SwitchCreationTab( "#spawnmenu.category.dupes" )
+			end
+		end )
+
 	end
 
 end

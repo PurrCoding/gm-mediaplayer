@@ -9,7 +9,7 @@ _G.browserpool = {}
 -- Debug variable which will allow outputting messages if enabled.
 -- @type boolean
 --
-local DEBUG = true
+local DEBUG = false
 
 ---
 -- Array of available, pooled browsers

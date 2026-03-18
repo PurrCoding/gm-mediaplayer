@@ -322,8 +322,6 @@ local function SaveMediaPlayerDupe( Dupe, jpegdata )
 
 		MsgN( "Saved!" )
 
-		-- TODO: Open tab and show dupe!
-
 	end
 
 end

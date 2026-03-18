@@ -102,8 +102,11 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 			Start3D2D( pos, ang, RenderScale )
 				media:Draw( rw, rh )
 			End3D2D()
+		else
+			Start3D2D( pos, ang, RenderScale )
+				draw.SimpleText( "Unsupported media type", "DermaDefault", rw / 2, rh / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+			End3D2D()
 		end
-		-- TODO: else draw 'not yet implemented' screen?
 
 		-- Skip the 3D2D pass entirely if media info has fully faded
 		local elapsed = RealTime() - self._LastMediaUpdate

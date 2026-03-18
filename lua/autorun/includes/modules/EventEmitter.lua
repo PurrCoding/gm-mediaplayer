@@ -33,8 +33,6 @@ function EventEmitter:getListeners(evt)
 	local events = self:_getEvents()
 	local response
 
-	-- TODO: accept pattern matching
-
 	if not events[evt] then
 		local tbl = {}
 		tbl.__array = true

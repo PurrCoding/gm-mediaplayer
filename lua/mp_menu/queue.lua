@@ -137,7 +137,6 @@ function QUEUE_LIST:Init()
 
 	self:SetSpacing( 1 )
 
-	-- TODO: Replace with custom scrollbar
 	self:EnableVerticalScrollbar()
 
 end

@@ -228,7 +228,11 @@ function MEDIA_TIME:Think()
 		end
 
 	else
-		-- TODO: hide info?
+
+		self.TimeLbl:SetText( "" )
+		self.DividerLbl:SetText( "" )
+		self.DurationLbl:SetText( "" )
+
 	end
 
 	self:InvalidateLayout(true)

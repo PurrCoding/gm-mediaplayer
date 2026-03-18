@@ -12,7 +12,7 @@ local FullscreenCvar = MediaPlayer.Cvars.Fullscreen
 
 local function OnFullscreenConVarChanged( name, old, new )
 
-	new = tobool(new) 
+	new = tobool(new)
 	old = tobool(old)
 
 	if new ~= old then
@@ -117,8 +117,9 @@ function MEDIAPLAYER:DrawFullscreen()
 		-- Custom media draw function
 		if media.Draw then
 			media:Draw( w, h )
+		else
+			draw.SimpleText( "Unsupported media type", "DermaDefault", w / 2, h / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		end
-		-- TODO: else draw 'not yet implemented' screen?
 
 		-- Draw media info
 		local succ, err = pcall( self.DrawMediaInfo, self, media, w, h )

@@ -296,7 +296,6 @@ end
 
 --
 -- Get the media queue.
--- TODO: Remove this as it should only be accessed internally?
 --
 -- @return table	Media queue.
 --
@@ -481,15 +480,23 @@ function MEDIAPLAYER:Remove()
 	MediaPlayer.Destroy( self )
 	self._removed = true
 
-	if SERVER then
+if SERVER then
 
-		-- Remove all listeners
-		local listeners = table.Copy( self._Listeners )
-		for _, ply in pairs( listeners ) do
-			-- TODO: it's probably better not to send individual net messages
-			-- for each player removed.
-			self:RemoveListener( ply )
+		-- Batch-notify all listeners of removal in a single net message
+		local listeners = self._Listeners
+		if #listeners > 0 then
+			net.Start( "MEDIAPLAYER.Remove" )
+				net.WriteString( self:GetId() )
+			net.Send( listeners )
+
+			-- Fire hook for each removed listener
+			for _, ply in ipairs( listeners ) do
+				hook.Run( "MediaPlayerRemoveListener", self, ply )
+			end
 		end
+
+		self._Listeners = {}
+		self._ListenerSet = {}
 
 	else
 

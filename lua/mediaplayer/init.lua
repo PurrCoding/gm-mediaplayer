@@ -24,7 +24,6 @@ AddCSLuaFile "i18n/sh_i18n.lua"
 include "shared.lua"
 include "sv_requests.lua"
 
--- TODO: move this into its own file
 MediaPlayer.net = MediaPlayer.net or {}
 
 function MediaPlayer.net.ReadMediaPlayer()

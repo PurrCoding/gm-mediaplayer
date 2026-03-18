@@ -263,8 +263,6 @@ local function MediaPlayerThink()
 		local succ, err = pcall(mp.Think, mp)
 		if not succ then
 			ErrorNoHalt(err .. "\n")
-
-			-- TODO: recreate mediaplayer object instead
 			mp:Remove()
 		end
 	end

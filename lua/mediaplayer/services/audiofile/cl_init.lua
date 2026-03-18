@@ -76,7 +76,8 @@ function SERVICE:Play()
 				self:emit("channelReady", channel)
 			end,
 			function()
-				LocalPlayer():ChatPrint(MediaPlayer.L("mp.error.audio_load_failed", self.url))
+				notification.AddLegacy(MediaPlayer.L("mp.error.audio_load_failed", self.url), NOTIFY_ERROR, 5)
+				surface.PlaySound("buttons/button10.wav")
 			end,
 			MAX_LOAD_ATTEMPTS
 		)

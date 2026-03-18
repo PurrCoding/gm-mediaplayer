@@ -303,8 +303,10 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 		end
 	end
 
-	-- TODO: prevent media from playing if this hook returns false(?)
-	hook.Run( "PreMediaPlayerMediaRequest", self, media, ply )
+	if hook.Run( "PreMediaPlayerMediaRequest", self, media, ply ) == false then
+		self:NotifyPlayer( ply, MediaPlayer.L("mp.error.request_denied") )
+		return
+	end
 
 	-- self:NotifyPlayer( ply, "Processing media request..." )
 

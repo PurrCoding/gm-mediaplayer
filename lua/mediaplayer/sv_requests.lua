@@ -37,7 +37,15 @@ net.Receive( "MEDIAPLAYER.RequestListen", RequestWrapper(function(mp, ply)
 		print("MEDIAPLAYER.RequestListen:", mp:GetId(), ply)
 	end
 
-	-- TODO: check if listener can actually be a listener
+	-- Validate listener eligibility
+	if ply:IsBot() then return end
+	if not ply:IsConnected() then return end
+
+	-- Allow hooks to block listener requests
+	if hook.Run( "CanPlayerListenToMediaPlayer", mp, ply ) == false then
+		return
+	end
+
 	if mp:HasListener(ply) then
 		mp:RemoveListener(ply)
 	else
@@ -45,7 +53,6 @@ net.Receive( "MEDIAPLAYER.RequestListen", RequestWrapper(function(mp, ply)
 	end
 
 end) )
-
 ---
 -- Event called when a player requests a media update. This will occur when
 -- a client determines it's not synced correctly.

@@ -74,7 +74,8 @@ function EntityMeta:GetMediaPlayerPosition()
 		pos = attach.pos
 		ang = attach.ang
 	else
-		pos = self:GetPos() -- TODO: use GetRenderOrigin?
+		-- Use render origin on client for smooth interpolation
+		pos = (CLIENT and self:GetRenderOrigin()) or self:GetPos()
 	end
 
 	-- Apply offset
@@ -85,8 +86,8 @@ function EntityMeta:GetMediaPlayerPosition()
 			self:GetUp() * cfg.offset.z
 	end
 
-	-- Set angles
-	ang = ang or self:GetAngles() -- TODO: use GetRenderAngles?
+	-- Set angles; use render angles on client for smooth interpolation
+	ang = ang or ((CLIENT and self:GetRenderAngles()) or self:GetAngles())
 
 	ang:RotateAroundAxis( ang:Right(), angles.p )
 	ang:RotateAroundAxis( ang:Up(), angles.y )

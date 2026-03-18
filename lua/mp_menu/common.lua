@@ -11,7 +11,8 @@ local FontTbl = {
 	font = "Roboto Medium",
 	size = 21,
 	weight = 400,
-	antialias = true
+	antialias = true,
+	extended = true
 }
 
 surface.CreateFont( "MP.MediaTitle", FontTbl )

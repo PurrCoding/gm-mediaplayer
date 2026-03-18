@@ -13,8 +13,7 @@ function SERVICE:GetMetadata( callback )
 		self._metadata = {
 			title 		= "Base service",
 			duration 	= -1,
-			url 		= "",
-			thumbnail 	= ""
+			url 		= ""
 		}
 	end
 
@@ -42,7 +41,6 @@ function SERVICE:GetCachedMetadata()
 		local metadata = {}
 		metadata.title = cache.title
 		metadata.duration = tonumber(cache.duration)
-		metadata.thumbnail = cache.thumbnail
 
 		self:SetMetadata(metadata)
 		MediaPlayer.Metadata:Save(self)

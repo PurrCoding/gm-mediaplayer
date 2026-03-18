@@ -1,34 +1,9 @@
 local MEDIAPLAYER_DUPE = nil
 local MEDIAPLAYER_SAVE = false
-local MEDIAPLAYER_THUMBNAIL = nil
 
 local mat_dupe_bg = Material( "gui/dupe_bg.png" )
 local mat_debugwhite = Material( "models/debug/debugwhite" )
 local mat_static = Material( "mediaplayer/static" )
-
-local HTMLMAT_STYLE_DUPE = "htmlmat.style.dupe"
--- AddHTMLMaterialStyle( HTMLMAT_STYLE_DUPE, {
--- 	width = 512,
--- 	height = 512,
--- 	css = [[
--- img {
--- 	width: 100%;
--- 	position: absolute;
--- 	top: 50%;
--- 	left: 50%;
--- 	-webkit-filter: blur(6px);
--- 	-webkit-transform: translate(-50%, -50%) scale(1.1,1.1);
--- }]]
--- } )
-AddHTMLMaterialStyle( HTMLMAT_STYLE_DUPE, {
-	width = 512,
-	height = 512,
-	css = [[
-img {
-	-webkit-filter: blur(6px) brightness(0.9);
-	-webkit-transform: translate(-50%, -50%) scale(1.05, 1.05);
-}]]
-}, HTMLMAT_STYLE_COVER_IMG )
 
 surface.CreateFont( "DupeMediaText", {
 	font		= "Roboto Medium",
@@ -39,7 +14,6 @@ surface.CreateFont( "DupeMediaText", {
 } )
 
 local function PreSaveMediaPlayerDupe( Dupe )
-
 	local mediaplayers = {}
 
 	for _, ent in pairs( Dupe.Entities or {} ) do
@@ -48,23 +22,7 @@ local function PreSaveMediaPlayerDupe( Dupe )
 		end
 	end
 
-	local mp = mediaplayers[1]
-	local snapshot = mp.MediaPlayerSnapshot
-
-	local media = snapshot.media
-	local metadata = media and media._metadata
-	local thumbnail = metadata and metadata.thumbnail
-
-	if thumbnail then
-		HTMLMaterial( thumbnail, HTMLMAT_STYLE_DUPE, function( material )
-			MEDIAPLAYER_THUMBNAIL = material
-			MEDIAPLAYER_SAVE = true
-		end )
-	else
-		MEDIAPLAYER_THUMBNAIL = mat_dupe_bg
-		MEDIAPLAYER_SAVE = true
-	end
-
+	MEDIAPLAYER_SAVE = true
 end
 
 local function DrawOutlinedText(text, font, x, y, colour, xalign, yalign)
@@ -171,8 +129,6 @@ local function RenderMediaPlayerDupe( Dupe )
 	render.SetMaterial( mat_dupe_bg )
 	render.DrawScreenQuadEx( 0, 0, 512, 512 )
 
-	render.SetMaterial( MEDIAPLAYER_THUMBNAIL )
-	render.DrawScreenQuadEx( 0, 0, 512, 512 )
 	render.SuppressEngineLighting( true )
 
 	--

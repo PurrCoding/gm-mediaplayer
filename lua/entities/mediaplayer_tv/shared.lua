@@ -23,8 +23,6 @@ list.Set( "MediaPlayerModelConfigs", ENT.Model, {
 
 function ENT:SetupDataTables()
 	BaseClass.SetupDataTables( self )
-
-	self:NetworkVar( "String", 1, "MediaThumbnail" )
 end
 
 if SERVER then
@@ -34,7 +32,7 @@ if SERVER then
 	end
 
 	function ENT:OnMediaChanged( media )
-		self:SetMediaThumbnail( media and media:Thumbnail() or "" )
+		-- empty
 	end
 
 else -- CLIENT
@@ -48,7 +46,6 @@ else -- CLIENT
 	local math_max = math.max
 	local Start3D2D = cam.Start3D2D
 	local End3D2D = cam.End3D2D
-	local DrawHTMLMaterial = DrawHTMLMaterial
 
 	local TEXT_ALIGN_CENTER = TEXT_ALIGN_CENTER
 	local color_white = color_white
@@ -67,31 +64,17 @@ else -- CLIENT
 		end
 	end
 
-	local HTMLMAT_STYLE_ARTWORK_BLUR = "htmlmat.style.artwork_blur"
-	AddHTMLMaterialStyle( HTMLMAT_STYLE_ARTWORK_BLUR, {
-		width = 720,
-		height = 480
-	}, HTMLMAT_STYLE_BLUR )
-
-	local DrawThumbnailsCvar = MediaPlayer.Cvars.DrawThumbnails
-
 	function ENT:DrawMediaPlayerOff()
 		local w, h, pos, ang = self:GetMediaPlayerPosition()
-		local thumbnail = self:GetMediaThumbnail()
 
 		Start3D2D( pos, ang, 1 )
-			if DrawThumbnailsCvar:GetBool() and thumbnail != "" then
-				DrawHTMLMaterial( thumbnail, HTMLMAT_STYLE_ARTWORK_BLUR, w, h )
-			else
-				surface_SetDrawColor( color_white )
-				surface_SetMaterial( StaticMaterial )
-				surface_DrawTexturedRect( 0, 0, w, h )
-			end
+			surface_SetDrawColor( color_white )
+			surface_SetMaterial( StaticMaterial )
+			surface_DrawTexturedRect( 0, 0, w, h )
 		End3D2D()
 
 		local info = MediaPlayer.L("mp.idle.press_e")
 
-		-- Measure text and widen the virtual canvas if the translation is longer
 		surface_SetFont( "MediaTitle" )
 		local textW = surface_GetTextSize( info )
 		local effectiveScale = math_max( TextScale, textW + TextPadding * 2 )

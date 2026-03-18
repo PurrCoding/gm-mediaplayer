@@ -264,21 +264,10 @@ end
 local FFT_2048 = FFT_2048
 local GMOD_CHANNEL_PLAYING = GMOD_CHANNEL_PLAYING
 
-local HTMLMAT_STYLE_ARTWORK = "htmlmat.style.artwork"
-AddHTMLMaterialStyle( HTMLMAT_STYLE_ARTWORK, {
-	width = 720,
-	height = 480
-}, HTMLMAT_STYLE_COVER )
-
 function SERVICE:Draw( w, h )
 
 	SetDrawColor( VisualizerBgColor )
 	DrawRect( 0, 0, w, h )
-
-	local thumbnail = self:Thumbnail()
-	if thumbnail then
-		DrawHTMLMaterial( thumbnail, HTMLMAT_STYLE_ARTWORK, w, h )
-	end
 
 	local channel = self.Channel
 	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then

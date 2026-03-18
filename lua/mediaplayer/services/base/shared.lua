@@ -113,10 +113,6 @@ function SERVICE:IsTimed()
 	return true
 end
 
-function SERVICE:Thumbnail()
-	return self._metadata and self._metadata.thumbnail
-end
-
 function SERVICE:Url()
 	return self.url
 end

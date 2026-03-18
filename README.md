@@ -28,7 +28,6 @@ A Garry's Mod addon for synchronized media streaming in multiplayer. Play videos
 - **Request Menu** — Built-in UI for players to request media via URL.
 - **Fullscreen Mode** — Watch media in fullscreen on your client.
 - **Idle Screen** — Displays an idle screen when no media is playing.
-- **Thumbnails** — Optionally display media thumbnails on inactive screens.
 - **Duplication Support** — Media player entities can be duplicated using Sandbox tools.
 - **Localization** — Translated into 21 languages.
 
@@ -88,7 +87,6 @@ Subscribe to the addon on the [Steam Workshop](https://steamcommunity.com/shared
 | `mediaplayer_3daudio` | `1` | Enable 3D spatial audio. |
 | `mediaplayer_mute_unfocused` | `1` | Mute media when the game window is unfocused. |
 | `mediaplayer_fullscreen` | `0` | Enable fullscreen media playback. |
-| `mediaplayer_draw_thumbnails` | `0` | Show media thumbnails on inactive screens. |
 | `mediaplayer_proximity_min` | `100` | Minimum distance for proximity-based volume. |
 | `mediaplayer_proximity_max` | `1000` | Maximum distance for proximity-based volume. |
 

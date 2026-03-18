@@ -52,7 +52,6 @@ function SERVICE:ParseOdyseeHTML( html )
 				metadata.duration = -1
 			end
 
-			metadata.thumbnail = videoData.thumbnailUrl or ""
 			metadata.embedUrl = videoData.embedUrl or ""
 
 			return metadata
@@ -91,7 +90,6 @@ function SERVICE:ParseOEmbedMetadata( body )
 
 	local metadata = {}
 	metadata.title = response.title or "Odysee Livestream"
-	metadata.thumbnail = response.thumbnail_url or ""
 	metadata.duration = 0
 
 	return metadata

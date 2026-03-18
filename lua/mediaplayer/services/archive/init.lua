@@ -73,24 +73,6 @@ local function GenerateTitle(response, file, identifier)
 	return "Internet Archive: " .. identifier
 end
 
--- thumbnail handling
-local function GetThumbnail(files, videoFileName)
-	local baseName = videoFileName:gsub("%.%w+$", "")
-
-	for _, file in pairs(files) do
-		if file.format == "Thumbnail" then
-			-- Look for thumbnails matching the video file
-			if file.original and file.original:find(baseName, 1, true) then
-				return file.name
-			end
-
-		end
-	end
-
-	-- no thumbnail
-	return nil
-end
-
 function SERVICE:GetMetadata( callback )
 	local cached, found = self:GetCachedMetadata()
 	if found then
@@ -120,7 +102,6 @@ function SERVICE:GetMetadata( callback )
 		local info = {
 			title = GenerateTitle(response, bestMatch, identifier),
 			duration = math.Round(bestMatch.length or 0),
-			thumbnail = GetThumbnail(response.files, bestMatch.name),
 		}
 
 		self:SetMetadata(info)

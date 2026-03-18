@@ -12,8 +12,7 @@ function SERVICE:GetMetadata( callback )
 
 	local channel = self:GetTwitchChannel()
 	local metadata = {
-		title = ("Twitch.TV Stream: %s"):format(channel),
-		thumbnail = ("https://static-cdn.jtvnw.net/previews-ttv/live_user_%s-1280x720.jpg"):format(channel)
+		title = ("Twitch.TV Stream: %s"):format(channel)
 	}
 
 	self:SetMetadata(metadata, true)

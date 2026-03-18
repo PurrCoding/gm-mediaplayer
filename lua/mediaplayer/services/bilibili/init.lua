@@ -27,8 +27,7 @@ local function BuildMetadata( self, payload )
 
 	return {
 		title = title,
-		duration = duration,
-		thumbnail = data.pic or "",
+		duration = duration
 	}
 end
 

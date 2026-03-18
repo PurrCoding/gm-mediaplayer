@@ -106,12 +106,18 @@
 						// Unload the captions module
 						player.unloadModule('captions');
 
+						// Start silent — Lua will push the correct volume
+						player.setVolume(0);
+
 						// Additional seek if needed (for more precise timing)
 						if (startTime > 0) {
 							player.seekTo(startTime, true);
 						}
 
 						window.MediaPlayer = wrapper;
+
+						// Signal Lua that the player is ready for volume
+						console.log("READY:");
 					},
 					onStateChange: (e) => wrapper._paused = e.data !== YT.PlayerState.PLAYING
 				}

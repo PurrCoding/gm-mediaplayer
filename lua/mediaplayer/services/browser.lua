@@ -51,6 +51,7 @@ if CLIENT then
 		BaseClass.Play( self )
 
 		if self.Browser and IsValid(self.Browser) then
+			self:HookBrowserReady( self.Browser )
 			self:OnBrowserReady( self.Browser )
 		else
 
@@ -65,11 +66,38 @@ if CLIENT then
 				end
 
 				self.Browser = panel
+				self:HookBrowserReady( panel )
 				self:OnBrowserReady( panel )
 
 			end)
 		end
 
+	end
+
+	function SERVICE:HookBrowserReady( browser )
+		if browser._mpReadyHooked then return end
+		browser._mpReadyHooked = true
+
+		local svc = self
+		local origConsoleMessage = browser.ConsoleMessage
+
+		function browser:ConsoleMessage( ... )
+			local args = { ... }
+			local msg = args[1]
+
+			if isstring(msg) and msg:StartWith("READY:") then
+				if IsValid(svc.Entity) then
+					local mp = svc.Entity:GetMediaPlayer()
+					if mp then
+						mp._cachedVolume = nil
+					end
+				end
+			end
+
+			if origConsoleMessage then
+				return origConsoleMessage(self, ...)
+			end
+		end
 	end
 
 	function SERVICE:Stop()

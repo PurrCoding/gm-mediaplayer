@@ -230,6 +230,9 @@ function PANEL:OnFinishLoading()
 
 end
 
+function PANEL:OnPlayerReady()
+	-- Override in child panels or services to handle player ready events
+end
 
 --[[---------------------------------------------------------
 	Lua => JavaScript queue
@@ -306,6 +309,12 @@ function PANEL:ConsoleMessage( ... )
 		if msg:StartWith( "PLAY:" ) then
 			local soundpath = msg:sub( 7 )
 			surface.PlaySound( soundpath )
+			return
+		end
+
+		-- Browser player is ready — invalidate volume cache to force re-push
+		if msg:StartWith( "READY:" ) then
+			self:OnPlayerReady()
 			return
 		end
 

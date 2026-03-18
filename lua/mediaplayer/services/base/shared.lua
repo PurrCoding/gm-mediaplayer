@@ -117,6 +117,10 @@ function SERVICE:Url()
 	return self.url
 end
 
+function SERVICE:Thumbnail()
+	return self._metadata and self._metadata.thumbnail or nil
+end
+
 SERVICE.URL = SERVICE.Url
 
 function SERVICE:SetMetadata( metadata, new )

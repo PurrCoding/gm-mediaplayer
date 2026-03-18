@@ -23,6 +23,8 @@ list.Set( "MediaPlayerModelConfigs", ENT.Model, {
 
 function ENT:SetupDataTables()
 	BaseClass.SetupDataTables( self )
+
+	self:NetworkVar( "String", 1, "MediaThumbnail" )
 end
 
 if SERVER then
@@ -32,7 +34,7 @@ if SERVER then
 	end
 
 	function ENT:OnMediaChanged( media )
-		-- empty
+		self:SetMediaThumbnail( media and media:Thumbnail() or "" )
 	end
 
 else -- CLIENT

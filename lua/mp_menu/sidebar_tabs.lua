@@ -110,7 +110,8 @@ local SIDEBAR_TAB = {}
 surface.CreateFont( "MP.TabTitle", {
 	font = "Roboto Regular",
 	size = 16,
-	weight = 400
+	weight = 400,
+	extended = true
 } )
 
 SIDEBAR_TAB.BgColor = Color( 28, 100, 157 )

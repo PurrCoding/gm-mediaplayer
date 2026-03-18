@@ -2,8 +2,8 @@ local MEDIAPLAYER_DUPE = nil
 local MEDIAPLAYER_SAVE = false
 local MEDIAPLAYER_THUMBNAIL = nil
 
-local mat_dupe_bg = Material( "gui/dupe_bg.png" )  
-local mat_debugwhite = Material( "models/debug/debugwhite" )  
+local mat_dupe_bg = Material( "gui/dupe_bg.png" )
+local mat_debugwhite = Material( "models/debug/debugwhite" )
 local mat_static = Material( "mediaplayer/static" )
 
 local HTMLMAT_STYLE_DUPE = "htmlmat.style.dupe"
@@ -33,6 +33,7 @@ img {
 surface.CreateFont( "DupeMediaText", {
 	font		= "Roboto Medium",
 	antialias	= true,
+	extended	= true,
 	weight		= 400,
 	size        = 80
 } )

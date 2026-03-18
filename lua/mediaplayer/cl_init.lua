@@ -126,6 +126,7 @@ end
 local common = {
 	font		= "Roboto Medium",
 	antialias	= true,
+	extended	= true,
 	weight		= 400
 }
 

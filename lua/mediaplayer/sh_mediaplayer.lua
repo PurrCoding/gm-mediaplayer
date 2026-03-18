@@ -258,12 +258,91 @@ end
 
 MediaPlayer.ThinkInterval = 0.2 -- seconds
 
+local MAX_RECREATE_ATTEMPTS = 3
+local RECREATE_COOLDOWN = 30 -- seconds; reset attempt counter after stable operation
+
+local function RecreateMediaPlayer( mp )
+	local attempts = mp._recreateAttempts or 0
+	local lastError = mp._lastRecreateTime or 0
+
+	-- Reset attempt counter if the player has been stable for a while
+	if (RealTime() - lastError) > RECREATE_COOLDOWN then
+		attempts = 0
+	end
+
+	attempts = attempts + 1
+
+	if attempts > MAX_RECREATE_ATTEMPTS then
+		ErrorNoHalt("MediaPlayer '" .. tostring(mp:GetId()) .. "' exceeded max recreation attempts, removing.\n")
+		mp:Remove()
+		return
+	end
+
+	-- Try to save state before destruction
+	local snapshot, listeners
+	local snapshotOk = pcall(function()
+		snapshot = mp:GetSnapshot()
+		if SERVER and mp.GetListeners then
+			listeners = table.Copy(mp:GetListeners())
+		end
+	end)
+
+	if not snapshotOk then
+		ErrorNoHalt("MediaPlayer '" .. tostring(mp:GetId()) .. "' failed to snapshot, removing.\n")
+		mp:Remove()
+		return
+	end
+
+	local mpId = mp:GetId()
+	local mpType = mp:GetType()
+	local ent = mp.GetEntity and mp:GetEntity()
+
+	mp:Remove()
+
+	-- Recreate: entity-based types reinstall via the entity,
+	-- base types create directly
+	local newMp
+	if IsValid(ent) then
+		ent:InstallMediaPlayer(mpType)
+		newMp = ent._mp
+	else
+		newMp = MediaPlayer.Create(mpId, mpType)
+	end
+
+	if newMp then
+		newMp._recreateAttempts = attempts
+		newMp._lastRecreateTime = RealTime()
+
+		if snapshot then
+			local restoreOk, restoreErr = pcall(newMp.RestoreSnapshot, newMp, snapshot)
+			if not restoreOk then
+				ErrorNoHalt("MediaPlayer '" .. tostring(mpId) .. "' failed to restore snapshot: " .. tostring(restoreErr) .. "\n")
+			end
+		end
+
+		if SERVER and listeners then
+			newMp:SetListeners(listeners)
+		end
+
+		ErrorNoHalt("MediaPlayer '" .. tostring(mpId) .. "' recreated (attempt " .. attempts .. "/" .. MAX_RECREATE_ATTEMPTS .. ")\n")
+	end
+end
+
 local function MediaPlayerThink()
+	local toRecreate = nil
+
 	for id, mp in pairs( MediaPlayer.List ) do
 		local succ, err = pcall(mp.Think, mp)
 		if not succ then
 			ErrorNoHalt(err .. "\n")
-			mp:Remove()
+			toRecreate = toRecreate or {}
+			toRecreate[#toRecreate + 1] = mp
+		end
+	end
+
+	if toRecreate then
+		for _, mp in ipairs(toRecreate) do
+			RecreateMediaPlayer(mp)
 		end
 	end
 end

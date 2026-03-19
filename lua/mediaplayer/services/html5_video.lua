@@ -11,7 +11,7 @@ SERVICE.FileExtensions = {
 	"mkv"
 }
 
-DEFINE_BASECLASS( "mp_service_base" )
+DEFINE_BASECLASS( "mp_service_browser" )
 
 function SERVICE:IsTimed()
 	if self._istimed == nil then
@@ -77,6 +77,20 @@ if CLIENT then
 		local mime = MimeTypes[ext]
 
 		return EmbedHTML:format(url, mime)
+	end
+
+	function SERVICE:OnBrowserReady( browser )
+		-- Resume paused player
+		if self._Paused then
+			self.Browser:RunJavascript( JS_Play )
+			self._Paused = nil
+			return
+		end
+
+		BaseClass.OnBrowserReady( self, browser )
+
+		local html = self.WrapHTML( self:GetHTML() )
+		browser:SetHTML( html )
 	end
 
 	function SERVICE:Pause()

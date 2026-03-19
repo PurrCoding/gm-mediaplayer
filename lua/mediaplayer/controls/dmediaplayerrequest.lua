@@ -166,4 +166,10 @@ function PANEL:OnVGUIMousePressed( pnl, key )
 
 end
 
+function PANEL:OnKeyCodePressed( key )
+	if key == KEY_ESCAPE then
+		self:Close()
+	end
+end
+
 vgui.Register( "MPRequestFrame", PANEL, "EditablePanel" )

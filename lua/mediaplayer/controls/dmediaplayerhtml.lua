@@ -481,6 +481,14 @@ function PANEL:HandleMouseActions()
 	end
 end
 
+function PANEL:OnRemove()
+	-- Clean up if removed mid-action to prevent stuck screen clicker
+	if self._handlingMouseAction then
+		gui.EnableScreenClicker( false )
+		self._handlingMouseAction = nil
+	end
+end
+
 function PANEL:MoveToCursor( xoffset, yoffset )
 	xoffset = xoffset or 0
 	yoffset = yoffset or 0

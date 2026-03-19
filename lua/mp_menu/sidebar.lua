@@ -187,15 +187,15 @@ function SidebarPresenter:HideSidebar()
 
 	self:ClearEvents()
 
-	if IsValid(self.Sidebar) then
-		self.Sidebar:SlideOut(function()
-			if IsValid(self.Sidebar) then
-				self.Sidebar:Remove()
+	local panel = self.Sidebar
+	self.Sidebar = nil
+
+	if IsValid(panel) then
+		panel:SlideOut(function()
+			if IsValid(panel) then
+				panel:Remove()
 			end
-			self.Sidebar = nil
 		end)
-	else
-		self.Sidebar = nil
 	end
 end
 
@@ -239,6 +239,11 @@ end
 hook.Add( "OnContextMenuOpen", "MP.ShowSidebar", function()
 	MediaPlayer.ShowSidebar()
 end )
+
 hook.Add( "OnContextMenuClose", "MP.HideSidebar", function()
 	MediaPlayer.HideSidebar()
+
+	if IsValid(MediaPlayer._RequestMenu) then
+		MediaPlayer._RequestMenu:Close()
+	end
 end )

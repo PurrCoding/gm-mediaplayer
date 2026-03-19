@@ -1,5 +1,3 @@
--- lua/mp_menu/sidebar.lua
-
 include "icons.lua"
 include "common.lua"
 include "sidebar_tabs.lua"
@@ -64,6 +62,20 @@ function PANEL:PerformLayout()
 		self:AlignLeft( 10 )
 	end
 	self.Tabs:SizeToContentWidth()
+end
+
+function PANEL:Think()
+	if self._sliding then return end
+	if not vgui.CursorVisible() then return end
+
+	local cx, cy = input.GetCursorPos()
+	local px, py = self:LocalToScreen(0, 0)
+	local pw, ph = self:GetSize()
+
+	if cx >= px and cx <= px + pw and cy >= py and cy <= py + ph then
+		self:MakePopup()
+		self:SetMouseInputEnabled(true)
+	end
 end
 
 function PANEL:SlideOut( callback )

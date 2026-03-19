@@ -242,8 +242,4 @@ end )
 
 hook.Add( "OnContextMenuClose", "MP.HideSidebar", function()
 	MediaPlayer.HideSidebar()
-
-	if IsValid(MediaPlayer._RequestMenu) then
-		MediaPlayer._RequestMenu:Close()
-	end
 end )

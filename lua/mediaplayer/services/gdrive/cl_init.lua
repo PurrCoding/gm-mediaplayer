@@ -130,52 +130,16 @@ do	-- Metadata Prefech
 	]]
 
 	function SERVICE:PreRequest( callback )
-
 		local trackid = self:GetGoogleDriveId()
 
-		local panel = vgui.Create("DHTML")
-		panel:SetSize(500,500)
-		panel:SetAlpha(0)
-		panel:SetMouseInputEnabled(false)
+		self:DHTMLPrefetch(callback, {
+			url = PREVIEW_URL:format(trackid),
+			js = METADATA_JS
+		})
+	end
 
-		local svc = self
-		function panel:ConsoleMessage(msg)
-
-			if msg:StartWith("METADATA:") then
-				local metadata = util.JSONToTable(string.sub(msg, 10))
-				if not metadata then
-					callback("Failed to parse metadata JSON")
-					panel:Remove()
-					return
-				end
-
-				svc._metaTitle = metadata.title
-				svc._metaDuration = metadata.duration
-				callback()
-				panel:Remove()
-			end
-
-			if msg:StartWith("ERROR:") then
-				local errmsg = string.sub(msg, 7)
-
-				callback(("Google Drive Error: %s"):format(errmsg))
-				panel:Remove()
-			end
-		end
-
-		function panel:OnDocumentReady(url)
-			if IsValid(panel) then
-				panel:QueueJavascript(METADATA_JS)
-			end
-		end
-
-		panel:OpenURL(PREVIEW_URL:format(trackid))
-
-		timer.Simple(10, function()
-			if IsValid(panel) then
-				panel:Remove()
-			end
-		end )
+	function SERVICE:OnPrefetchError( errmsg, callback )
+		callback(("Google Drive Error: %s"):format(errmsg))
 	end
 
 	function SERVICE:NetWriteRequest()

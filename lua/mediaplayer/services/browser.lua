@@ -100,6 +100,87 @@ if CLIENT then
 		end
 	end
 
+--[[---------------------------------------------------------
+		DHTML Metadata Prefetch Helper
+
+		Creates a temporary DHTML panel, routes ConsoleMessage
+		events to OnPrefetchMetadata / OnPrefetchError, and
+		handles automatic panel cleanup.
+
+		opts.url     - URL to open (mutually exclusive with html)
+		opts.html    - HTML string to set
+		opts.js      - JS to inject on OnDocumentReady
+		opts.timeout - seconds before auto-cleanup (default 10)
+	-----------------------------------------------------------]]
+
+	function SERVICE:DHTMLPrefetch( callback, opts )
+		local svc = self
+		local timeout = opts.timeout or 10
+
+		local panel = vgui.Create("DHTML")
+		panel:SetSize(500, 500)
+		panel:SetAlpha(0)
+		panel:SetMouseInputEnabled(false)
+
+		function panel:ConsoleMessage( msg )
+			if msg:StartWith("METADATA:") then
+				local metadata = util.JSONToTable(string.sub(msg, 10))
+				if not metadata then
+					svc:OnPrefetchError("Failed to parse metadata JSON", callback)
+					panel:Remove()
+					return
+				end
+
+				svc:OnPrefetchMetadata(metadata, callback)
+				panel:Remove()
+				return
+			end
+
+			if msg:StartWith("ERROR:") then
+				local errmsg = string.sub(msg, 7)
+				svc:OnPrefetchError(errmsg, callback)
+				panel:Remove()
+				return
+			end
+		end
+
+		if opts.js then
+			function panel:OnDocumentReady( url )
+				if IsValid(panel) then
+					panel:QueueJavascript(opts.js)
+				end
+			end
+		end
+
+		if opts.url then
+			panel:OpenURL(opts.url)
+		elseif opts.html then
+			panel:SetHTML(opts.html)
+		end
+
+		timer.Simple(timeout, function()
+			if IsValid(panel) then
+				panel:Remove()
+			end
+		end)
+
+		return panel
+	end
+
+	--- Default metadata handler. Override in child services for
+	--- service-specific fields (e.g. isLive).
+	function SERVICE:OnPrefetchMetadata( metadata, callback )
+		self._metaTitle = metadata.title
+		self._metaDuration = metadata.duration
+		callback()
+	end
+
+	--- Default error handler. Override in child services to
+	--- prefix service name or customize the error message.
+	function SERVICE:OnPrefetchError( errmsg, callback )
+		callback(errmsg)
+	end
+
 	function SERVICE:Stop()
 		BaseClass.Stop( self )
 

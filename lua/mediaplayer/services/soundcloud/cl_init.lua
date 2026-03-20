@@ -148,52 +148,19 @@ function SERVICE:IsMouseInputEnabled()
 	return IsValid( self.Browser )
 end
 
-do	-- Metadata Prefech
+do	-- Metadata Prefetch
 	function SERVICE:PreRequest( callback )
-
 		local trackid = self:GetSoundCloudTrackId()
-
-		local panel = vgui.Create("DHTML")
-		panel:SetSize(500,500)
-		panel:SetAlpha(0)
-		panel:SetMouseInputEnabled(false)
-
-		local svc = self
-		function panel:ConsoleMessage(msg)
-
-			if msg:StartWith("METADATA:") then
-				local metadata = util.JSONToTable(string.sub(msg, 10))
-				if not metadata then
-					callback("Failed to parse metadata JSON")
-					panel:Remove()
-					return
-				end
-
-				svc._metaTitle = metadata.title
-				svc._metaDuration = metadata.duration
-				callback()
-				panel:Remove()
-			end
-
-			if msg:StartWith("ERROR:") then
-				local errmsg = string.sub(msg, 7)
-
-				callback(("SoundCloud Error: %s"):format(errmsg))
-				panel:Remove()
-			end
-		end
 
 		local html = EMBED_HTML
 		html = html:Replace("{@audioPath}", trackid)
 		html = html:Replace("{@shouldPlay}", "false")
 
-		panel:SetHTML(html)
+		self:DHTMLPrefetch(callback, { html = html })
+	end
 
-		timer.Simple(10, function()
-			if IsValid(panel) then
-				panel:Remove()
-			end
-		end )
+	function SERVICE:OnPrefetchError( errmsg, callback )
+		callback(("SoundCloud Error: %s"):format(errmsg))
 	end
 
 	function SERVICE:NetWriteRequest()

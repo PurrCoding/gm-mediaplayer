@@ -69,27 +69,8 @@ function PANEL:Init()
 
 end
 
-local function GetServiceIDs( mp )
-	-- Send list of supported services to the request page for filtering out
-	-- service icons
-	local serviceIDs = mp:GetSupportedServiceIDs()
-	serviceIDs = table.concat( serviceIDs, "," )
-
-	return serviceIDs
-end
-
-function PANEL:SendServices( mp )
-	local js = "if (typeof window.setServices === 'function') { setServices('%s'); }"
-	js = js:format( GetServiceIDs(mp) )
-
-	self.Browser:RunJavascript( js )
-	self.Browser:QueueJavascript( js )
-end
-
 function PANEL:SetMediaPlayer( mp )
 	self.m_MediaPlayer = mp
-
-	self:SendServices( mp )
 end
 
 function PANEL:Paint( w, h )

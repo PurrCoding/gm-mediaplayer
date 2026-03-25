@@ -100,7 +100,7 @@ if CLIENT then
 		end
 	end
 
---[[---------------------------------------------------------
+	--[[---------------------------------------------------------
 		DHTML Metadata Prefetch Helper
 
 		Creates a temporary DHTML panel, routes ConsoleMessage
@@ -116,6 +116,15 @@ if CLIENT then
 	function SERVICE:DHTMLPrefetch( callback, opts )
 		local svc = self
 		local timeout = opts.timeout or 10
+		local callbackFired = false
+		local requestHostname = MediaPlayer.ChromeError
+			and MediaPlayer.ChromeError.ExtractHostname(opts.url)
+
+		local function safeCallback( err )
+			if callbackFired then return end
+			callbackFired = true
+			callback( err )
+		end
 
 		local panel = vgui.Create("DHTML")
 		panel:SetSize(500, 500)
@@ -123,32 +132,88 @@ if CLIENT then
 		panel:SetMouseInputEnabled(false)
 
 		function panel:ConsoleMessage( msg )
+			if callbackFired then return end
+
 			if msg:StartWith("METADATA:") then
 				local metadata = util.JSONToTable(string.sub(msg, 10))
 				if not metadata then
-					svc:OnPrefetchError("Failed to parse metadata JSON", callback)
+					svc:OnPrefetchError("Failed to parse metadata JSON", safeCallback)
 					panel:Remove()
 					return
 				end
 
-				svc:OnPrefetchMetadata(metadata, callback)
+				svc:OnPrefetchMetadata(metadata, safeCallback)
 				panel:Remove()
 				return
 			end
 
 			if msg:StartWith("ERROR:") then
 				local errmsg = string.sub(msg, 7)
-				svc:OnPrefetchError(errmsg, callback)
+				svc:OnPrefetchError(errmsg, safeCallback)
 				panel:Remove()
+				return
+			end
+
+			-- Chrome error code extracted from error page DOM
+			if msg:StartWith("CHROME_ERROR:") and MediaPlayer.ChromeError then
+				local errorCode = msg:sub(14)
+				local responseText = MediaPlayer.ChromeError.Resolve(errorCode)
+				MediaPlayer.ChromeError.ShowError(responseText, errorCode, requestHostname)
+				svc:OnPrefetchError(responseText, safeCallback)
+				panel:Remove()
+				return
+			end
+
+			-- Heartbeat: continuous URL check via JS→Lua bridge
+			if msg:StartWith("HEARTBEAT:") and MediaPlayer.ChromeError then
+				local payload = msg:sub(11)
+				local url, code = payload:match("^(.-)%|(.*)$")
+				if isstring(url) and url:StartWith("chrome-error://") then
+					local errorCode = (code and code ~= "") and code or "UNKNOWN"
+					local responseText = MediaPlayer.ChromeError.Resolve(errorCode)
+					MediaPlayer.ChromeError.ShowError(responseText, errorCode, requestHostname)
+					svc:OnPrefetchError(responseText, safeCallback)
+					panel:Remove()
+				end
 				return
 			end
 		end
 
-		if opts.js then
-			function panel:OnDocumentReady( url )
-				if IsValid(panel) then
-					panel:QueueJavascript(opts.js)
-				end
+		-- Always hook OnDocumentReady for chrome-error detection + JS injection
+		function panel:OnDocumentReady( url )
+			if callbackFired then return end
+
+			-- Detect chrome error pages via URL parameter
+			if isstring(url) and url:StartWith("chrome-error://") then
+				timer.Simple(0.3, function()
+					if IsValid(panel) and not callbackFired and MediaPlayer.ChromeError then
+						panel:RunJavascript(MediaPlayer.ChromeError.EXTRACT_JS)
+					end
+				end)
+
+				-- Fallback if JS injection is blocked on chrome-error pages
+				timer.Simple(2, function()
+					if not callbackFired and MediaPlayer.ChromeError then
+						MediaPlayer.ChromeError.ShowError(
+							"Page failed to load (network error)",
+							"UNKNOWN",
+							requestHostname
+						)
+						svc:OnPrefetchError("Page failed to load (network error)", safeCallback)
+						if IsValid(panel) then panel:Remove() end
+					end
+				end)
+				return
+			end
+
+			-- Normal page loaded — inject error monitoring JS
+			if IsValid(panel) and MediaPlayer.ChromeError then
+				panel:QueueJavascript(MediaPlayer.ChromeError.MONITOR_JS)
+			end
+
+			-- Inject custom JS if provided (e.g. TikTok, Google Drive metadata extraction)
+			if opts.js and IsValid(panel) then
+				panel:QueueJavascript(opts.js)
 			end
 		end
 
@@ -158,9 +223,32 @@ if CLIENT then
 			panel:SetHTML(opts.html)
 		end
 
+		-- Continuous heartbeat: poll for chrome-error pages via JS→Lua bridge
+		local timerName = "mp_prefetch_" .. tostring(panel)
+		timer.Create(timerName, 1, 0, function()
+			if not IsValid(panel) or callbackFired then
+				timer.Remove(timerName)
+				return
+			end
+
+			if MediaPlayer.ChromeError then
+				panel:RunJavascript(MediaPlayer.ChromeError.HEARTBEAT_JS)
+			end
+		end)
+
+		-- Timeout: clean up and report error if callback was never fired
 		timer.Simple(timeout, function()
+			timer.Remove(timerName)
+
 			if IsValid(panel) then
 				panel:Remove()
+			end
+
+			if not callbackFired then
+				if MediaPlayer.ChromeError then
+					MediaPlayer.ChromeError.ShowError("Request timed out", "TIMEOUT", requestHostname)
+				end
+				svc:OnPrefetchError("Request timed out", safeCallback)
 			end
 		end)
 

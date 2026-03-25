@@ -47,6 +47,33 @@ end
 
 function PANEL:OnDocumentReady( url )
 
+	-- Detect CEF error pages
+	if isstring(url) and url:StartWith("chrome-error://") then
+		self._chromeErrorHostname = MediaPlayer.ChromeError
+			and MediaPlayer.ChromeError.ExtractHostname(self.URL)
+
+		timer.Simple(0.5, function()
+			if IsValid(self) and MediaPlayer.ChromeError then
+				self:RunJavascript(MediaPlayer.ChromeError.EXTRACT_JS)
+			end
+		end)
+
+		-- Fallback if JS injection is blocked on chrome-error pages
+		timer.Simple(2, function()
+			if IsValid(self) and not self._chromeErrorHandled and MediaPlayer.ChromeError then
+				self._chromeErrorHandled = true
+				MediaPlayer.ChromeError.ShowError(
+					"Page failed to load (network error)",
+					"UNKNOWN",
+					self._chromeErrorHostname
+				)
+			end
+		end)
+		return
+	end
+
+	self._chromeErrorHandled = nil
+
 	--
 	-- Implement a console - because awesomium doesn't provide it for us anymore
 	--
@@ -142,6 +169,11 @@ end
 function PANEL:OnURLChanged( new, old )
 	if FilterCVar:GetInt() > FILTER_ALL then
 		print( "URL Changed: " .. tostring(new) )
+	end
+
+	-- Track the last known good URL for hostname extraction
+	if isstring(new) and not new:StartWith("chrome-error://") then
+		self._lastGoodURL = new
 	end
 end
 
@@ -315,6 +347,17 @@ function PANEL:ConsoleMessage( ... )
 		-- Browser player is ready — invalidate volume cache to force re-push
 		if msg:StartWith( "READY:" ) then
 			self:OnPlayerReady()
+			return
+		end
+
+		-- Handle Chrome/CEF error code extraction
+		if msg:StartWith( "CHROME_ERROR:" ) and MediaPlayer.ChromeError then
+			local errorCode = msg:sub( 14 )
+			self._chromeErrorHandled = true
+			local responseText = MediaPlayer.ChromeError.Resolve( errorCode )
+			local hostname = self._chromeErrorHostname
+				or MediaPlayer.ChromeError.ExtractHostname( self._lastGoodURL )
+			MediaPlayer.ChromeError.ShowError( responseText, errorCode, hostname )
 			return
 		end
 

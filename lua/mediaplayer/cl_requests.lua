@@ -71,8 +71,7 @@ function MediaPlayer.Request( obj, url )
 
 	-- Verify valid URL as to not waste time networking
 	if not MediaPlayer.ValidUrl( url ) and not allowWebpage then
-		notification.AddLegacy(MediaPlayer.L("mp.error.invalid_url"), NOTIFY_ERROR, 5)
-		surface.PlaySound("buttons/button10.wav")
+		MediaPlayer.ChatError(MediaPlayer.L("mp.error.invalid_url"))
 		return false
 	end
 
@@ -80,8 +79,7 @@ function MediaPlayer.Request( obj, url )
 
 	local function request( err )
 		if err then
-			notification.AddLegacy(MediaPlayer.L("mp.error.request_failed", err), NOTIFY_ERROR, 5)
-			surface.PlaySound("buttons/button10.wav")
+			MediaPlayer.ChatError(MediaPlayer.L("mp.error.request_failed", err))
 			return
 		end
 

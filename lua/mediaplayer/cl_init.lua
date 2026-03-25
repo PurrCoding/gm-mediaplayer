@@ -10,6 +10,7 @@ include "controls/dmediaplayerhtml.lua"
 include "controls/dhtmlcontrols.lua"
 include "controls/dmediaplayerrequest.lua"
 include "shared.lua"
+include "cl_chromeerror.lua"
 include "cl_requests.lua"
 include "cl_idlescreen.lua"
 include "cl_screen.lua"
@@ -117,6 +118,41 @@ function MediaPlayer.MenuRequest( url )
 
 end
 
+--[[---------------------------------------------------------
+	Chat Notifications
+-----------------------------------------------------------]]
+
+local COLOR_PREFIX  = Color(52, 152, 219)
+local COLOR_ERROR   = Color(255, 80, 80)
+local COLOR_SUCCESS = Color(80, 255, 80)
+local COLOR_TEXT    = Color(255, 255, 255)
+
+local MessageTypes = {
+	["error"]   = { color = COLOR_ERROR,   sound = "buttons/button10.wav" },
+	["success"] = { color = COLOR_SUCCESS, sound = "buttons/button15.wav" },
+	["info"]    = { color = COLOR_PREFIX,   sound = nil },
+}
+
+function MediaPlayer.ChatPrint( message, messageType )
+	local mt = MessageTypes[messageType or "info"] or MessageTypes["info"]
+
+	chat.AddText(
+		mt.color, "[Media Player] ",
+		COLOR_TEXT, tostring(message)
+	)
+
+	if mt.sound then
+		surface.PlaySound(mt.sound)
+	end
+end
+
+function MediaPlayer.ChatError( message )
+	MediaPlayer.ChatPrint(message, "error")
+end
+
+function MediaPlayer.ChatSuccess( message )
+	MediaPlayer.ChatPrint(message, "success")
+end
 
 --[[---------------------------------------------------------
 	Fonts

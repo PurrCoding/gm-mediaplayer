@@ -130,8 +130,7 @@ AddMediaPlayerProperty( "mp-copy-url", {
 		if not IsValid(media) then return end
 
 		SetClipboardText( media:Url() )
-		notification.AddLegacy(MediaPlayer.L("mp.success.url_copied"), NOTIFY_GENERIC, 3)
-		surface.PlaySound("buttons/button15.wav")
+		MediaPlayer.ChatSuccess(MediaPlayer.L("mp.success.url_copied"))
 
 	end
 })

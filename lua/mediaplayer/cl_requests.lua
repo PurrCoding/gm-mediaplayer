@@ -67,15 +67,13 @@ function MediaPlayer.Request( obj, url )
 
 	local mp = MediaPlayer.GetById( mpId )
 
-	local allowWebpage = MediaPlayer.Cvars.AllowWebpages:GetBool()
-
 	-- Verify valid URL as to not waste time networking
-	if not MediaPlayer.ValidUrl( url ) and not allowWebpage then
+	if not MediaPlayer.ValidUrl( url ) then
 		MediaPlayer.ChatError(MediaPlayer.L("mp.error.invalid_url"))
 		return false
 	end
 
-	local media = MediaPlayer.GetMediaForUrl( url, allowWebpage )
+	local media = MediaPlayer.GetMediaForUrl( url )
 
 	local function request( err )
 		if err then

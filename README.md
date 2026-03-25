@@ -20,7 +20,6 @@ A Garry's Mod addon for synchronized media streaming in multiplayer. Play videos
   - Direct audio files (`.mp3`, `.ogg`, etc.)
   - HTML5 video
   - Images
-  - Webpages (when enabled by server)
 - **Spatial Media Player** — Attach audio to any props using the Spatial Media tool. Audio fades based on distance from the source.
 - **Queue System** — Queue up media with support for skip, seek, pause, repeat, shuffle, and lock controls.
 - **Vote Skip** — Players can vote to skip the current media.
@@ -74,7 +73,6 @@ Subscribe to the addon on the [Steam Workshop](https://steamcommunity.com/shared
 | ConVar | Default | Description |
 |---|---|---|
 | `mediaplayer_debug` | `0` | Enable debug mode; logs actions to the console. |
-| `mediaplayer_allow_webpages` | `0` | Allow any webpage URL to be requested. |
 | `mediaplayer_queue_limit` | `64` | Maximum number of items in a media player queue. |
 | `mediaplayer_spatial_hear_radius` | `1800` | How far spatial media sources can be heard. |
 

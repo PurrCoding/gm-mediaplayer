@@ -131,6 +131,12 @@ if CLIENT then
 		panel:SetAlpha(0)
 		panel:SetMouseInputEnabled(false)
 
+		--- Shared error handler for all chrome-error paths
+		local function onChromeError( responseText, errorCode )
+			svc:OnPrefetchError(responseText, safeCallback)
+			if IsValid(panel) then panel:Remove() end
+		end
+
 		function panel:ConsoleMessage( msg )
 			if callbackFired then return end
 
@@ -154,56 +160,23 @@ if CLIENT then
 				return
 			end
 
-			-- Chrome error code extracted from error page DOM
-			if msg:StartWith("CHROME_ERROR:") and MediaPlayer.ChromeError then
-				local errorCode = msg:sub(14)
-				local responseText = MediaPlayer.ChromeError.Resolve(errorCode)
-				MediaPlayer.ChromeError.ShowError(responseText, errorCode, requestHostname)
-				svc:OnPrefetchError(responseText, safeCallback)
-				panel:Remove()
-				return
-			end
-
-			-- Heartbeat: continuous URL check via JS→Lua bridge
-			if msg:StartWith("HEARTBEAT:") and MediaPlayer.ChromeError then
-				local payload = msg:sub(11)
-				local url, code = payload:match("^(.-)%|(.*)$")
-				if isstring(url) and url:StartWith("chrome-error://") then
-					local errorCode = (code and code ~= "") and code or "UNKNOWN"
-					local responseText = MediaPlayer.ChromeError.Resolve(errorCode)
-					MediaPlayer.ChromeError.ShowError(responseText, errorCode, requestHostname)
-					svc:OnPrefetchError(responseText, safeCallback)
-					panel:Remove()
-				end
-				return
+			-- Handle CHROME_ERROR: and HEARTBEAT: via centralized helper
+			if MediaPlayer.ChromeError then
+				MediaPlayer.ChromeError.HandleConsoleMessage(msg, requestHostname, onChromeError)
 			end
 		end
 
-		-- Always hook OnDocumentReady for chrome-error detection + JS injection
 		function panel:OnDocumentReady( url )
 			if callbackFired then return end
 
-			-- Detect chrome error pages via URL parameter
-			if isstring(url) and url:StartWith("chrome-error://") then
-				timer.Simple(0.3, function()
-					if IsValid(panel) and not callbackFired and MediaPlayer.ChromeError then
-						panel:RunJavascript(MediaPlayer.ChromeError.EXTRACT_JS)
-					end
-				end)
+			-- Detect chrome-error pages via centralized helper
+			if MediaPlayer.ChromeError then
+				local handled = MediaPlayer.ChromeError.HandleDocumentReady(panel, url, {
+					hostname = requestHostname,
+					onError = onChromeError,
+				})
 
-				-- Fallback if JS injection is blocked on chrome-error pages
-				timer.Simple(2, function()
-					if not callbackFired and MediaPlayer.ChromeError then
-						MediaPlayer.ChromeError.ShowError(
-							"Page failed to load (network error)",
-							"UNKNOWN",
-							requestHostname
-						)
-						svc:OnPrefetchError("Page failed to load (network error)", safeCallback)
-						if IsValid(panel) then panel:Remove() end
-					end
-				end)
-				return
+				if handled then return end
 			end
 
 			-- Normal page loaded — inject error monitoring JS

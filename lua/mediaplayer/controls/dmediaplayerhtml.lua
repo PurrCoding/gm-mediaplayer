@@ -47,32 +47,22 @@ end
 
 function PANEL:OnDocumentReady( url )
 
-	-- Detect CEF error pages
-	if isstring(url) and url:StartWith("chrome-error://") then
-		self._chromeErrorHostname = MediaPlayer.ChromeError
-			and MediaPlayer.ChromeError.ExtractHostname(self.URL)
+	-- Detect CEF error pages via centralized helper
+	if MediaPlayer.ChromeError then
+		local hostname = MediaPlayer.ChromeError.ExtractHostname(self.URL)
 
-		timer.Simple(0.5, function()
-			if IsValid(self) and MediaPlayer.ChromeError then
-				self:RunJavascript(MediaPlayer.ChromeError.EXTRACT_JS)
-			end
-		end)
+		local handled = MediaPlayer.ChromeError.HandleDocumentReady(self, url, {
+			hostname = hostname,
+		})
 
-		-- Fallback if JS injection is blocked on chrome-error pages
-		timer.Simple(2, function()
-			if IsValid(self) and not self._chromeErrorHandled and MediaPlayer.ChromeError then
-				self._chromeErrorHandled = true
-				MediaPlayer.ChromeError.ShowError(
-					"Page failed to load (network error)",
-					"UNKNOWN",
-					self._chromeErrorHostname
-				)
-			end
-		end)
-		return
+		if handled then
+			self._chromeErrorHostname = hostname
+			return
+		end
 	end
 
 	self._chromeErrorHandled = nil
+	self._chromeErrorHostname = nil
 
 	--
 	-- Implement a console - because awesomium doesn't provide it for us anymore
@@ -350,15 +340,16 @@ function PANEL:ConsoleMessage( ... )
 			return
 		end
 
-		-- Handle Chrome/CEF error code extraction
-		if msg:StartWith( "CHROME_ERROR:" ) and MediaPlayer.ChromeError then
-			local errorCode = msg:sub( 14 )
-			self._chromeErrorHandled = true
-			local responseText = MediaPlayer.ChromeError.Resolve( errorCode )
+		-- Handle Chrome/CEF error signals via centralized helper
+		if MediaPlayer.ChromeError then
 			local hostname = self._chromeErrorHostname
-				or MediaPlayer.ChromeError.ExtractHostname( self._lastGoodURL )
-			MediaPlayer.ChromeError.ShowError( responseText, errorCode, hostname )
-			return
+				or MediaPlayer.ChromeError.ExtractHostname(self._lastGoodURL)
+
+			local handled = MediaPlayer.ChromeError.HandleConsoleMessage(msg, hostname, function()
+				self._chromeErrorHandled = true
+			end)
+
+			if handled then return end
 		end
 
 		if filterLevel == FILTER_ALL then return end

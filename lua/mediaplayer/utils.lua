@@ -300,12 +300,25 @@ if CLIENT then
 			panel:SetAlpha(0)
 			panel:SetMouseInputEnabled(false)
 
+			local callbackFired = false
+			local timerName = "GatherVideoDuration_" .. tostring(panel)
+
+			local function safeRemove()
+				timer.Remove(timerName)
+				if IsValid(panel) then
+					panel:Remove()
+				end
+			end
+
 			function panel:ConsoleMessage(msg)
 				if MediaPlayer.DEBUG then
 					print("MediaPlayer Gathering: ", msg)
 				end
 
 				if msg:StartWith("DURATION:") then
+					if callbackFired then return end
+					callbackFired = true
+
 					local str_duration = string.sub(msg, 10)
 
 					local duration
@@ -315,24 +328,36 @@ if CLIENT then
 						local num = tonumber(str_duration)
 						if not num then
 							callback(false, "Invalid duration: " .. str_duration)
-							panel:Remove()
+							safeRemove()
 							return
 						end
 						duration = math.ceil(num)
 					end
 
 					callback(true, duration)
-					panel:Remove()
+					safeRemove()
 				end
 
 				if msg:StartWith("ERROR:") then
+					if callbackFired then return end
+					callbackFired = true
+
 					local code = tonumber(string.sub(msg, 7))
 					local err = ErrorCodes[code] or ErrorCodes[5]
 
 					callback(false, err)
-					panel:Remove()
+					safeRemove()
 				end
 			end
+
+			-- Safety timeout: remove the panel if no response after 30 seconds
+			timer.Create(timerName, 30, 1, function()
+				if callbackFired then return end
+				callbackFired = true
+
+				callback(false, "Timed out gathering video duration")
+				safeRemove()
+			end)
 
 			panel:SetHTML(HTML_Code:Replace( "{@VideoSrc}", uri ))
 		end

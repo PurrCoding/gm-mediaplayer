@@ -80,6 +80,7 @@ if CLIENT then
 
 		local svc = self
 		local origConsoleMessage = browser.ConsoleMessage
+		browser._origConsoleMessage = origConsoleMessage  -- save for setupPanel restore
 
 		function browser:ConsoleMessage( ... )
 			local args = { ... }

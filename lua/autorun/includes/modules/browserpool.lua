@@ -103,11 +103,6 @@ local function setupPanel( panel )
 	-- Set default URL
 	panel:OpenURL( defaultUrl )
 
-	-- Clear the HookBrowserReady flag so the next service can re-hook
-	panel._mpReadyHooked = nil
-	panel.ConsoleMessage = panel._origConsoleMessage or nil
-	panel._origConsoleMessage = nil
-
 	-- Remove any added function callbacks
 	for obj, tbl in pairs(panel.Callbacks) do
 		if obj ~= "console" then

@@ -8,13 +8,8 @@ local pow = math.pow
 local tblconcat = table.concat
 
 local cache = {}
-local cacheOrder = {}  -- tracks insertion order for LRU eviction
-local MAX_CACHE_SIZE = 128
-
 local downloads = {}
 local styles = {}
-
-local DOWNLOAD_TIMEOUT = 15  -- seconds before a stuck download is cleaned up
 
 local embedHtml = [[
 <!doctype html>
@@ -98,14 +93,7 @@ local DefaultWidth = 128
 local DefaultStyle = {}
 
 local function enqueueUrl( url, styleName, key, callback )
-	-- Evict oldest entries if cache is full
-	while #cacheOrder >= MAX_CACHE_SIZE do
-		local oldKey = table.remove(cacheOrder, 1)
-		cache[oldKey] = nil
-	end
-
 	cache[key] = DefaultMat
-	table.insert(cacheOrder, key)
 
 	browserpool.get(function(browser)
 		local style = styles[styleName] or DefaultStyle
@@ -122,25 +110,8 @@ local function enqueueUrl( url, styleName, key, callback )
 
 		table.insert(downloads, download)
 
-		local cleaned = false
-
 		browser:AddFunction("gmod", "imageLoaded", function()
-			if cleaned then return end
-			cleaned = true
-
 			updateCache(download)
-			onImageLoaded(key, browser)
-
-			if isfunction(callback) then
-				callback( cache[key] )
-			end
-		end)
-
-		-- Safety timeout: clean up if imageLoaded never fires
-		timer.Simple(DOWNLOAD_TIMEOUT, function()
-			if cleaned then return end
-			cleaned = true
-
 			onImageLoaded(key, browser)
 
 			if isfunction(callback) then

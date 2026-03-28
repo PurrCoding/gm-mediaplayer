@@ -477,13 +477,10 @@ end
 -- Event called when the media player is to be removed/destroyed.
 --
 function MEDIAPLAYER:Remove()
-	-- Clear all event listeners to release closures
-	self:removeAllListeners()
-
 	MediaPlayer.Destroy( self )
 	self._removed = true
 
-	if SERVER then
+if SERVER then
 
 		-- Batch-notify all listeners of removal in a single net message
 		local listeners = self._Listeners
@@ -502,10 +499,6 @@ function MEDIAPLAYER:Remove()
 		self._ListenerSet = {}
 
 	else
-
-		-- Remove input hooks to prevent holding references to this object
-		inputhook.Remove( KEY_Q, self )
-		inputhook.Remove( KEY_C, self )
 
 		-- Clean up fullscreen state
 		if self._isFullscreen then

@@ -11,11 +11,8 @@ util.AddNetworkString( "MEDIAPLAYER.RequestLock" )
 
 local REQUEST_DELAY = 0.2
 
-local allNextRequests = {}  -- tracks all nextRequests tables for cleanup
-
 local function RequestWrapper( func )
 	local nextRequests = {}
-	table.insert(allNextRequests, nextRequests)
 	return function( len, ply )
 		if not IsValid(ply) then return end
 
@@ -33,14 +30,6 @@ local function RequestWrapper( func )
 		nextRequests[sid] = RealTime() + REQUEST_DELAY
 	end
 end
-
-hook.Add("PlayerDisconnected", "MediaPlayer.CleanupRequests", function(ply)
-	local sid = ply:SteamID64()
-	if not sid then return end
-	for _, nextRequests in ipairs(allNextRequests) do
-		nextRequests[sid] = nil
-	end
-end)
 
 net.Receive( "MEDIAPLAYER.RequestListen", RequestWrapper(function(mp, ply)
 

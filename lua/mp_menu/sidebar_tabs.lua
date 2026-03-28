@@ -171,27 +171,6 @@ end
 
 function CURRENTLY_PLAYING_TAB:OnMediaPlayerChanged( mp )
 
-	-- Remove listeners from the previous media player if switching
-	local oldMpId = self:GetMediaPlayerId()
-	if oldMpId then
-		local oldMp = MediaPlayer.GetById( oldMpId )
-		if oldMp then
-			if self.MediaChangedHandle then
-				oldMp:removeListener( MP.EVENTS.MEDIA_CHANGED, self.MediaChangedHandle )
-			end
-			if self.QueueChangedHandle then
-				oldMp:removeListener( MP.EVENTS.QUEUE_CHANGED, self.QueueChangedHandle )
-			end
-			if self.PlayerStateChangeHandle then
-				oldMp:removeListener( MP.EVENTS.PLAYER_STATE_CHANGED, self.PlayerStateChangeHandle )
-			end
-		end
-		-- Reset handles so they get re-registered on the new mp
-		self.MediaChangedHandle = nil
-		self.QueueChangedHandle = nil
-		self.PlayerStateChangeHandle = nil
-	end
-
 	self:SetMediaPlayerId( mp:GetId() )
 
 	self.QueuePanel.Header.AddVidBtn:SetLocked( mp:GetQueueLocked() )

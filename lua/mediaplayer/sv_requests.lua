@@ -78,14 +78,16 @@ net.Receive( "MEDIAPLAYER.RequestMedia", RequestWrapper(function(mp, ply)
 		print("MEDIAPLAYER.RequestMedia:", url, mp:GetId(), ply)
 	end
 
+	local allowWebpage = MediaPlayer.Cvars.AllowWebpages:GetBool()
+
 	-- Validate the URL
-	if not MediaPlayer.ValidUrl( url ) then
+	if not MediaPlayer.ValidUrl( url ) and not allowWebpage then
 		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.invalid_url") )
 		return
 	end
 
 	-- Build the media object for the URL
-	local media = MediaPlayer.GetMediaForUrl( url )
+	local media = MediaPlayer.GetMediaForUrl( url, allowWebpage )
 	if not media then
 		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.media_url_failed") )
 		return

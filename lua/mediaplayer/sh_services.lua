@@ -82,7 +82,7 @@ function MediaPlayer.GetServiceByUrl( url )
 
 end
 
-function MediaPlayer.GetMediaForUrl( url )
+function MediaPlayer.GetMediaForUrl( url, webpageFallback )
 
 	local service
 
@@ -94,7 +94,11 @@ function MediaPlayer.GetMediaForUrl( url )
 	end
 
 	if not service then
-		service = MediaPlayer.Services.base
+		if webpageFallback then
+			service = MediaPlayer.Services.www
+		else
+			service = MediaPlayer.Services.base
+		end
 	end
 
 	return service:New( url )
@@ -126,6 +130,7 @@ do
 		"resource", -- base
 		"image",
 		"html5_video",
+		"webpage",
 
 		-- IGModAudioChannel
 		"audiofile",

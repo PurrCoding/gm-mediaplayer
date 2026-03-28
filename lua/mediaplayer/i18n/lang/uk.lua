@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("uk", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "У вас немає дозволу керувати цим просторовим джерелом медіа.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Досягнуто ліміт браузерів",
+	["mp.error.browser_limit_detail"]   = "Усі слоти браузера зайняті (%d/%d активних).",
+	["mp.error.browser_limit_note"]     = "Очікування звільнення слота. Це не помилка.",
 })

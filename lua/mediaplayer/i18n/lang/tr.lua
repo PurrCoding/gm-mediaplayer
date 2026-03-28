@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("tr", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Bu uzamsal medya kaynağını kontrol etme yetkiniz yok.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Tarayıcı limitine ulaşıldı",
+	["mp.error.browser_limit_detail"]   = "Tüm tarayıcı yuvaları kullanımda (%d/%d aktif).",
+	["mp.error.browser_limit_note"]     = "Bir yuvanın boşalması bekleniyor. Bu bir hata değildir.",
 })

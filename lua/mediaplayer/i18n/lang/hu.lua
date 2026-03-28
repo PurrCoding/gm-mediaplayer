@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("hu", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Nincs jogosultságod ennek a térbeli médiaforrásnak a vezérléséhez.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Böngésző limit elérve",
+	["mp.error.browser_limit_detail"]   = "Minden böngészőhely foglalt (%d/%d aktív).",
+	["mp.error.browser_limit_note"]     = "Várakozás egy szabad helyre. Ez nem hiba.",
 })

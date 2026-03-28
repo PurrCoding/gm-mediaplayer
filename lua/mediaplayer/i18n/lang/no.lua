@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("no", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Du har ikke tillatelse til å kontrollere denne romlige mediekilden.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Nettlesergrense nådd",
+	["mp.error.browser_limit_detail"]   = "Alle nettleserplasser er i bruk (%d/%d aktive).",
+	["mp.error.browser_limit_note"]     = "Venter på at en plass skal bli ledig. Dette er ikke en feil.",
 })

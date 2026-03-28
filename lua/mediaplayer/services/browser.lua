@@ -320,6 +320,21 @@ if CLIENT then
 	local SetDrawColor = surface.SetDrawColor
 	local DrawRect = surface.DrawRect
 	local DrawHTMLPanel = MediaPlayerUtils.DrawHTMLPanel
+	local SimpleText = draw.SimpleText
+	local SetFont = surface.SetFont
+	local GetTextSize = surface.GetTextSize
+	local TEXT_ALIGN_CENTER = TEXT_ALIGN_CENTER
+	local math_min = math.min
+	local Matrix = Matrix
+	local PushModelMatrix = cam.PushModelMatrix
+	local PopModelMatrix = cam.PopModelMatrix
+	local Vector = Vector
+
+	local colorWarn = Color(255, 200, 60, 255)
+	local colorText = Color(200, 200, 200, 255)
+
+	local LinePadding = 20    -- vertical gap between lines
+	local EdgePadding = 40    -- horizontal margin from screen edges
 
 	function SERVICE:Draw( w, h )
 
@@ -327,6 +342,57 @@ if CLIENT then
 			SetDrawColor( 0, 0, 0, 255 )
 			DrawRect( 0, 0, w, h )
 			DrawHTMLPanel( self.Browser, w, h )
+		elseif self._promise then
+			-- Browser pool exhausted — draw informational warning on screen
+			SetDrawColor( 0, 0, 0, 255 )
+			DrawRect( 0, 0, w, h )
+
+			local status = browserpool.status()
+			local title = MediaPlayer.L("mp.error.browser_limit_title")
+			local detail = string.format(
+				MediaPlayer.L("mp.error.browser_limit_detail"),
+				status.active, status.max
+			)
+			local note = MediaPlayer.L("mp.error.browser_limit_note")
+
+			-- Measure all three lines
+			SetFont( "MediaTitle" )
+			local tw1, th1 = GetTextSize( title )
+			local tw2, th2 = GetTextSize( detail )
+			local tw3, th3 = GetTextSize( note )
+
+			-- Find widest line and total height
+			local maxTextW = math.max( tw1, tw2, tw3 )
+			local totalH = th1 + LinePadding + th2 + LinePadding + th3
+
+			-- Scale factor: shrink uniformly if the widest line exceeds available width
+			local availW = w - EdgePadding * 2
+			local availH = h - EdgePadding * 2
+			local scale = math_min( 1, availW / maxTextW, availH / totalH )
+
+			-- Apply scale via matrix (multiply with current 3D2D matrix)
+			local mat = Matrix()
+			mat:Translate( Vector( w / 2, h / 2, 0 ) )
+			mat:Scale( Vector( scale, scale, 1 ) )
+			mat:Translate( Vector( -w / 2, -h / 2, 0 ) )
+			PushModelMatrix( mat, true )
+
+			-- Vertical start: center the text block in the screen
+			local startY = h / 2 - totalH / 2
+
+			SimpleText( title, "MediaTitle",
+				w / 2, startY + th1 / 2, colorWarn,
+				TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+			SimpleText( detail, "MediaTitle",
+				w / 2, startY + th1 + LinePadding + th2 / 2, colorText,
+				TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+			SimpleText( note, "MediaTitle",
+				w / 2, startY + th1 + LinePadding + th2 + LinePadding + th3 / 2, colorText,
+				TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+			PopModelMatrix()
 		end
 
 	end

@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("nl", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Je hebt geen toestemming om deze ruimtelijke mediabron te bedienen.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Browserlimiet bereikt",
+	["mp.error.browser_limit_detail"]   = "Alle browserslots zijn in gebruik (%d/%d actief).",
+	["mp.error.browser_limit_note"]     = "Wachten tot een slot vrijkomt. Dit is geen bug.",
 })

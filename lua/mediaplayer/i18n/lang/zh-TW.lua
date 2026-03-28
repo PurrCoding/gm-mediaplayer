@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("zh-TW", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "您沒有權限控制此空間媒體源。",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "已達瀏覽器上限",
+	["mp.error.browser_limit_detail"]   = "所有瀏覽器槽位均在使用中（%d/%d 活躍）。",
+	["mp.error.browser_limit_note"]     = "正在等待槽位釋放。這不是一個錯誤。",
 })

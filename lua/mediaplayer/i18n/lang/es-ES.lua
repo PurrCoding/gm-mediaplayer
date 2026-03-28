@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("es-ES", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "No tienes permiso para controlar esta fuente de medios espacial.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Límite de navegadores alcanzado",
+	["mp.error.browser_limit_detail"]   = "Todas las ranuras del navegador están en uso (%d/%d activas).",
+	["mp.error.browser_limit_note"]     = "Esperando a que se libere una ranura. Esto no es un error.",
 })

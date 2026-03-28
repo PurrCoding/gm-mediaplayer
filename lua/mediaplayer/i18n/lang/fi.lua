@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("fi", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Sinulla ei ole oikeutta hallita tätä tilamedialähdetä.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Selaimen raja saavutettu",
+	["mp.error.browser_limit_detail"]   = "Kaikki selainpaikat ovat käytössä (%d/%d aktiivista).",
+	["mp.error.browser_limit_note"]     = "Odotetaan paikan vapautumista. Tämä ei ole virhe.",1
 })

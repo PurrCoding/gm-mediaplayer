@@ -300,3 +300,17 @@ function browserpool.release( panel, destroy )
 	return true
 
 end
+
+---
+-- Returns the current status of the browser pool.
+--
+-- @return table  Table with keys: active, max, pending, available.
+--
+function browserpool.status()
+	return {
+		active = numActive,
+		max = numMax,
+		pending = numPending,
+		available = #available,
+	}
+end

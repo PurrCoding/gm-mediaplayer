@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Du hast keine Berechtigung, diese räumliche Medienquelle zu steuern.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Browser-Limit erreicht",
+	["mp.error.browser_limit_detail"]   = "Alle Browser-Slots sind belegt (%d/%d aktiv).",
+	["mp.error.browser_limit_note"]     = "Warte auf einen freien Slot. Dies ist kein Fehler.",
 })

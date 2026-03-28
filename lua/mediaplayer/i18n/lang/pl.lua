@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("pl", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Nie masz uprawnień do sterowania tym źródłem mediów przestrzennych.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Osiągnięto limit przeglądarek",
+	["mp.error.browser_limit_detail"]   = "Wszystkie sloty przeglądarki są zajęte (%d/%d aktywnych).",
+	["mp.error.browser_limit_note"]     = "Oczekiwanie na zwolnienie slotu. To nie jest błąd.",
 })

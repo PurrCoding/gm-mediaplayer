@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("tlh", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "logh much jan DaSeHmeH chaw' Daghajbe'.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "browser ghap'a' lImIt",
+	["mp.error.browser_limit_detail"]   = "Hoch browser Daq lo'lu' (%d/%d Qap).",
+	["mp.error.browser_limit_note"]     = "loS. Qagh 'oHbe'.",
 })

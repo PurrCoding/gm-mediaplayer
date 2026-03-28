@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("fr", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Vous n'avez pas la permission de contrôler cette source de média spatial.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Limite de navigateurs atteinte",
+	["mp.error.browser_limit_detail"]   = "Tous les emplacements sont utilisés (%d/%d actifs).",
+	["mp.error.browser_limit_note"]     = "En attente d'un emplacement libre. Ce n'est pas un bug.",
 })

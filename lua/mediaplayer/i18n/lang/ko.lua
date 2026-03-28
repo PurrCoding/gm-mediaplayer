@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("ko", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "이 공간 미디어 소스를 제어할 권한이 없습니다.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "브라우저 한도 도달",
+	["mp.error.browser_limit_detail"]   = "모든 브라우저 슬롯이 사용 중입니다 (%d/%d 활성).",
+	["mp.error.browser_limit_note"]     = "슬롯이 비워지기를 기다리는 중입니다. 이것은 버그가 아닙니다.",
 })

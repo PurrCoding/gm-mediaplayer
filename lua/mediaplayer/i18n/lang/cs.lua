@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Nemáte oprávnění ovládat tento prostorový zdroj médií.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Dosažen limit prohlížečů",
+	["mp.error.browser_limit_detail"]   = "Všechny sloty prohlížeče jsou obsazeny (%d/%d aktivních).",
+	["mp.error.browser_limit_note"]     = "Čekání na uvolnění slotu. Toto není chyba.",
 })

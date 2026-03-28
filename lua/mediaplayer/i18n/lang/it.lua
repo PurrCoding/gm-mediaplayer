@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("it", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Non hai il permesso di controllare questa sorgente media spaziale.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Limite browser raggiunto",
+	["mp.error.browser_limit_detail"]   = "Tutti gli slot del browser sono in uso (%d/%d attivi).",
+	["mp.error.browser_limit_note"]     = "In attesa che uno slot si liberi. Questo non è un bug.",
 })

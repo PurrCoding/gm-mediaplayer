@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("ja", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "この空間メディアソースを制御する権限がありません。",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "ブラウザの上限に達しました",
+	["mp.error.browser_limit_detail"]   = "すべてのブラウザスロットが使用中です（%d/%d アクティブ）。",
+	["mp.error.browser_limit_note"]     = "スロットが空くのを待っています。これはバグではありません。",
 })

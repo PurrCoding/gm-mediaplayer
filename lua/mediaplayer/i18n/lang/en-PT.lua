@@ -91,4 +91,9 @@ MediaPlayer.i18n.RegisterLanguage("en-PT", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Ye don't have permission to control this spatial media source, landlubber!",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Browser Limit Reached, Arr!",
+	["mp.error.browser_limit_detail"]   = "All browser slots be taken (%d/%d active).",
+	["mp.error.browser_limit_note"]     = "Waitin' fer a slot to free up. This be no bug, matey.",
 })

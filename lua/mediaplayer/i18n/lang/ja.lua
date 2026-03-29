@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("ja", {
 	["mp.settings.proximity_max"]       = "近接最大距離",
 	["mp.settings.proximity_units"]     = "%s ユニット",
 	["mp.settings.mute_unfocused"]      = "非アクティブ時にミュート",
-	["mp.settings.language"]            = "言語",
-	["mp.settings.language_auto"]       = "自動（システム）",
 	["mp.settings.show_radius"]         = "近接半径を表示",
 	["mp.settings.subtitles"]           = "字幕",
 	["mp.settings.subtitles_off"]       = "オフ",

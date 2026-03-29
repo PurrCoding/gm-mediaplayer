@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("fi", {
 	["mp.settings.proximity_max"]       = "Läheisyyden maksimietäisyys",
 	["mp.settings.proximity_units"]     = "%s yksikköä",
 	["mp.settings.mute_unfocused"]      = "Mykistä kun ei aktiivinen",
-	["mp.settings.language"]            = "Kieli",
-	["mp.settings.language_auto"]       = "Automaattinen (järjestelmä)",
 	["mp.settings.show_radius"]         = "Näytä läheisyyssäde",
 	["mp.settings.subtitles"]           = "Tekstitykset",
 	["mp.settings.subtitles_off"]       = "Pois",

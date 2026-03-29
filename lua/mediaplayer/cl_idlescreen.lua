@@ -96,7 +96,7 @@ function MediaPlayer.GetIdlescreen()
 
 end
 
-cvars.AddChangeCallback("mediaplayer_language", function()
+cvars.AddChangeCallback("gmod_language", function()
 
 	if IsValid(MediaPlayer._idlescreen) then
 		local setup = hook.Run("MediaPlayerSetupIdlescreen", MediaPlayer._idlescreen)

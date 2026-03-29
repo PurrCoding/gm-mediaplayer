@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("hu", {
 	["mp.settings.proximity_max"]       = "Közelségi maximális távolság",
 	["mp.settings.proximity_units"]     = "%s egység",
 	["mp.settings.mute_unfocused"]      = "Némítás ha nincs fókuszban",
-	["mp.settings.language"]            = "Nyelv",
-	["mp.settings.language_auto"]       = "Automatikus (rendszer)",
 	["mp.settings.show_radius"]         = "Közelségi sugár megjelenítése",
 	["mp.settings.subtitles"]           = "Feliratok",
 	["mp.settings.subtitles_off"]       = "Ki",

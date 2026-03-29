@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("no", {
 	["mp.settings.proximity_max"]       = "Maksimum nærhet",
 	["mp.settings.proximity_units"]     = "%s enheter",
 	["mp.settings.mute_unfocused"]      = "Demp når ufokusert",
-	["mp.settings.language"]            = "Språk",
-	["mp.settings.language_auto"]       = "Automatisk (system)",
 	["mp.settings.show_radius"]         = "Vis nærhetsradius",
 	["mp.settings.subtitles"]           = "Undertekster",
 	["mp.settings.subtitles_off"]       = "Av",

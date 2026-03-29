@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("it", {
 	["mp.settings.proximity_max"]       = "Distanza massima di prossimità",
 	["mp.settings.proximity_units"]     = "%s unità",
 	["mp.settings.mute_unfocused"]      = "Silenzia quando non in primo piano",
-	["mp.settings.language"]            = "Lingua",
-	["mp.settings.language_auto"]       = "Automatico (sistema)",
 	["mp.settings.show_radius"]         = "Mostra raggio di prossimità",
 	["mp.settings.subtitles"]           = "Sottotitoli",
 	["mp.settings.subtitles_off"]       = "Disattivato",

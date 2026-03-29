@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("ko", {
 	["mp.settings.proximity_max"]       = "근접 최대 거리",
 	["mp.settings.proximity_units"]     = "%s 유닛",
 	["mp.settings.mute_unfocused"]      = "비활성 시 음소거",
-	["mp.settings.language"]            = "언어",
-	["mp.settings.language_auto"]       = "자동 (시스템)",
 	["mp.settings.show_radius"]         = "근접 반경 표시",
 	["mp.settings.subtitles"]           = "자막",
 	["mp.settings.subtitles_off"]       = "끄기",

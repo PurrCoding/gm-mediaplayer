@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("uk", {
 	["mp.settings.proximity_max"]       = "Максимальна відстань наближення",
 	["mp.settings.proximity_units"]     = "%s одиниць",
 	["mp.settings.mute_unfocused"]      = "Вимкнути звук при втраті фокусу",
-	["mp.settings.language"]            = "Мова",
-	["mp.settings.language_auto"]       = "Автоматично (системна)",
 	["mp.settings.show_radius"]         = "Показати радіус наближення",
 	["mp.settings.subtitles"]           = "Субтитри",
 	["mp.settings.subtitles_off"]       = "Вимк.",

@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("tr", {
 	["mp.settings.proximity_max"]       = "Yakınlık maksimum mesafesi",
 	["mp.settings.proximity_units"]     = "%s birim",
 	["mp.settings.mute_unfocused"]      = "Odak dışındayken sessize al",
-	["mp.settings.language"]            = "Dil",
-	["mp.settings.language_auto"]       = "Otomatik (sistem)",
 	["mp.settings.show_radius"]         = "Yakınlık yarıçapını göster",
 	["mp.settings.subtitles"]           = "Altyazılar",
 	["mp.settings.subtitles_off"]       = "Kapalı",

@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("tlh", {
 	["mp.settings.proximity_max"]       = "chuq'a' rav",
 	["mp.settings.proximity_units"]     = "%s 'uj",
 	["mp.settings.mute_unfocused"]      = "buQbe'DI' QoQ yItammoH",
-	["mp.settings.language"]            = "Hol",
-	["mp.settings.language_auto"]       = "tlhoS (De'wI')",
 	["mp.settings.show_radius"]         = "chuq'a' 'aghmeH",
 	["mp.settings.subtitles"]           = "ghItlh bIngDaq",
 	["mp.settings.subtitles_off"]       = "Qotlh",

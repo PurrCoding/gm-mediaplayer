@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("ru", {
 	["mp.settings.proximity_max"]       = "Максимальное расстояние близости",
 	["mp.settings.proximity_units"]     = "%s единиц",
 	["mp.settings.mute_unfocused"]      = "Отключить звук при потере фокуса",
-	["mp.settings.language"]            = "Язык",
-	["mp.settings.language_auto"]       = "Автоматически (системный)",
 	["mp.settings.show_radius"]         = "Показать радиус близости",
 	["mp.settings.subtitles"]           = "Субтитры",
 	["mp.settings.subtitles_off"]       = "Выкл.",

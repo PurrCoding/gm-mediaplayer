@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("zh-TW", {
 	["mp.settings.proximity_max"]       = "最大接近距離",
 	["mp.settings.proximity_units"]     = "%s 單位",
 	["mp.settings.mute_unfocused"]      = "失去焦點時靜音",
-	["mp.settings.language"]            = "語言",
-	["mp.settings.language_auto"]       = "自動（系統）",
 	["mp.settings.show_radius"]         = "顯示接近半徑",
 	["mp.settings.subtitles"]           = "字幕",
 	["mp.settings.subtitles_off"]       = "關閉",

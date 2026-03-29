@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("pl", {
 	["mp.settings.proximity_max"]       = "Maksymalna odległość bliskości",
 	["mp.settings.proximity_units"]     = "%s jednostek",
 	["mp.settings.mute_unfocused"]      = "Wycisz gdy nieaktywne",
-	["mp.settings.language"]            = "Język",
-	["mp.settings.language_auto"]       = "Automatyczny (systemowy)",
 	["mp.settings.show_radius"]         = "Pokaż promień bliskości",
 	["mp.settings.subtitles"]           = "Napisy",
 	["mp.settings.subtitles_off"]       = "Wyłączone",

@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("nl", {
 	["mp.settings.proximity_max"]       = "Maximale nabijheidsafstand",
 	["mp.settings.proximity_units"]     = "%s eenheden",
 	["mp.settings.mute_unfocused"]      = "Dempen wanneer niet gefocust",
-	["mp.settings.language"]            = "Taal",
-	["mp.settings.language_auto"]       = "Automatisch (systeem)",
 	["mp.settings.show_radius"]         = "Nabijheidsradius tonen",
 	["mp.settings.subtitles"]           = "Ondertiteling",
 	["mp.settings.subtitles_off"]       = "Uit",

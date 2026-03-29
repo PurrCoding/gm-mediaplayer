@@ -117,29 +117,29 @@ end
 -- Language display names
 -- ─────────────────────────────────────────────
 
-local LanguageNames = {
-	["en"]    = "English",
-	["de"]    = "Deutsch",
-	["fr"]    = "Français",
-	["es-ES"] = "Español",
-	["it"]    = "Italiano",
-	["pt-BR"] = "Português (BR)",
-	["ru"]    = "Русский",
-	["uk"]    = "Українська",
-	["pl"]    = "Polski",
-	["nl"]    = "Nederlands",
-	["cs"]    = "Čeština",
-	["hu"]    = "Magyar",
-	["no"]    = "Norsk",
-	["fi"]    = "Suomi",
-	["tr"]    = "Türkçe",
-	["ja"]    = "日本語",
-	["ko"]    = "한국어",
-	["zh-CN"] = "简体中文",
-	["zh-TW"] = "繁體中文",
-	["en-PT"] = "Pirate Speak",
-	["tlh"]   = "Klingon (tlhIngan Hol)",
-}
+-- local LanguageNames = {
+-- 	["en"]    = "English",
+-- 	["de"]    = "Deutsch",
+-- 	["fr"]    = "Français",
+-- 	["es-ES"] = "Español",
+-- 	["it"]    = "Italiano",
+-- 	["pt-BR"] = "Português (BR)",
+-- 	["ru"]    = "Русский",
+-- 	["uk"]    = "Українська",
+-- 	["pl"]    = "Polski",
+-- 	["nl"]    = "Nederlands",
+-- 	["cs"]    = "Čeština",
+-- 	["hu"]    = "Magyar",
+-- 	["no"]    = "Norsk",
+-- 	["fi"]    = "Suomi",
+-- 	["tr"]    = "Türkçe",
+-- 	["ja"]    = "日本語",
+-- 	["ko"]    = "한국어",
+-- 	["zh-CN"] = "简体中文",
+-- 	["zh-TW"] = "繁體中文",
+-- 	["en-PT"] = "Pirate Speak",
+-- 	["tlh"]   = "Klingon (tlhIngan Hol)",
+-- }
 
 -- ─────────────────────────────────────────────
 -- Control factory functions
@@ -180,47 +180,6 @@ local function CreateSlider(parent, i18nKey, convar, min, max, decimals)
 	slider:Dock(TOP)
 	slider:DockMargin(0, 5, 0, 0)
 	return slider
-end
-
-local function CreateLanguageDropdown(parent, i18nKey, settingsPanel)
-	local label = vgui.Create("DLabel", parent)
-	label:SetText(L(i18nKey))
-	label:SetTextColor(Color(200, 200, 200))
-	label:Dock(TOP)
-	label:DockMargin(0, 10, 0, 3)
-	label:SizeToContents()
-
-	local combo = vgui.Create("DComboBox", parent)
-	combo:SetTall(25)
-	combo:Dock(TOP)
-	combo:DockMargin(0, 0, 0, 0)
-
-	combo:AddChoice(L("mp.settings.language_auto"), "", false)
-
-	local langs = MediaPlayer.i18n.GetAvailableLanguages()
-	local currentOverride = MediaPlayer.Cvars.LanguageOverride:GetString()
-
-	for _, code in ipairs(langs) do
-		local displayName = LanguageNames[code] or code
-		local isSelected = (code == currentOverride)
-		combo:AddChoice(displayName, code, isSelected)
-	end
-
-	if currentOverride == "" then
-		combo:ChooseOptionID(1)
-	end
-
-	combo.OnSelect = function(_, _, _, data)
-		RunConsoleCommand("mediaplayer_language", data)
-		if IsValid(settingsPanel) then
-			timer.Simple(0.1, function()
-				if IsValid(settingsPanel) then
-					settingsPanel:BuildContent()
-				end
-			end)
-		end
-	end
-	return combo
 end
 
 local function CreateDisabledDropdown(parent, text, options)
@@ -300,10 +259,6 @@ function PANEL:BuildContent()
 	radiusToggle.OnChange = function(_, checked)
 		SetProximityRadius(checked)
 	end
-
-	-- Language section
-	CreateSectionLabel(scroll, "mp.settings.language")
-	CreateLanguageDropdown(scroll, "mp.settings.language", self)
 
 	-- Subtitles (placeholder)
 	CreateDisabledDropdown(scroll, L("mp.settings.subtitles"), {

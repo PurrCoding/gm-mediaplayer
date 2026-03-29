@@ -72,8 +72,6 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	["mp.settings.proximity_max"]       = "Maximální vzdálenost",
 	["mp.settings.proximity_units"]     = "%s jednotek",
 	["mp.settings.mute_unfocused"]      = "Ztlumit při ztrátě fokusu",
-	["mp.settings.language"]            = "Jazyk",
-	["mp.settings.language_auto"]       = "Automaticky (systém)",
 	["mp.settings.show_radius"]         = "Zobrazit poloměr blízkosti",
 	["mp.settings.subtitles"]           = "Titulky",
 	["mp.settings.subtitles_off"]       = "Vypnuto",

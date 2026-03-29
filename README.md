@@ -29,7 +29,7 @@ A Garry's Mod addon for synchronized media streaming in multiplayer. Play videos
 - **Fullscreen Mode** — Watch media in fullscreen on your client.
 - **Idle Screen** — Displays an idle screen when no media is playing.
 - **Duplication Support** — Media player entities can be duplicated using Sandbox tools.
-- **Localization** — Translated into 21 languages.
+- **Localization** — Translated into 20 languages.
 
 ## Spawnable Entities
 

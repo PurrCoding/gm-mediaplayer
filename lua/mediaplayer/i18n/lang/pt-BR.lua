@@ -1,5 +1,5 @@
 -- Portuguese (Brazil) / Português (Brasil)
-MediaPlayer.i18n.RegisterLanguage("pt-BR", {
+MediaPlayer.i18n.RegisterLanguage("pt-br", {
 
 	-- Idle screen
 	["mp.idle.no_media"]                = "Nenhuma mídia reproduzindo",

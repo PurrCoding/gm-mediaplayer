@@ -1,5 +1,5 @@
 -- Simplified Chinese / 简体中文
-MediaPlayer.i18n.RegisterLanguage("zh-CN", {
+MediaPlayer.i18n.RegisterLanguage("zh-cn", {
 
 	-- Idle screen
 	["mp.idle.no_media"]                = "没有正在播放的媒体",

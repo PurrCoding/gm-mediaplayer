@@ -1,5 +1,5 @@
 -- Pirate Speak
-MediaPlayer.i18n.RegisterLanguage("en-PT", {
+MediaPlayer.i18n.RegisterLanguage("en-pt", {
 
 	-- Idle screen
 	["mp.idle.no_media"]                = "No shanties playin'",

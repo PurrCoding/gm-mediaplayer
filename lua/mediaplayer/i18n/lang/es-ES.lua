@@ -1,5 +1,5 @@
 -- Spanish (Spain) / Español
-MediaPlayer.i18n.RegisterLanguage("es-ES", {
+MediaPlayer.i18n.RegisterLanguage("es-es", {
 
 	-- Idle screen
 	["mp.idle.no_media"]                = "No se está reproduciendo ningún medio",

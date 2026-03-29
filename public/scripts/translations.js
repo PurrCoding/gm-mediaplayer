@@ -380,22 +380,3 @@ MP_I18N.registerLanguage('en-PT', {
   "request.status_checking":       "Checkin' th' URL...",
   "request.status_sent":           "Request sent, arr!"
 });
-
-// Klingon
-MP_I18N.registerLanguage('tlh', {
-  "request.codec_required_title":  "GModPatchTool poQlu' (Required)",
-  "request.codec_required_body":   "GModPatchTool poQlu' QaQ vangmeH (requires GModPatchTool).",
-  "request.codec_steps_title":     "Dochvam yIchu'meH: (To enable:)",
-  "request.codec_step1":           "GModPatchTool yIQuv yIlo' (Download and apply)",
-  "request.codec_step2":           "Garry's Mod yIchuqqa' naQ (Restart completely)",
-  "request.codec_step3":           "Media Player yIchegh 'ej yInIDqa' (Return and retry)",
-  "request.codec_cancel":          "yImev (Cancel)",
-  "request.codec_get":             "GModPatchTool yISuq (Get)",
-  "request.codec_overlay":         "codec poQlu' (Codec Required)",
-  "request.url_title":             "ghap URL yInob (Or paste a URL)",
-  "request.url_placeholder":       "naDev URL yIlan... (Paste URL here...)",
-  "request.url_submit":            "yItlhob (Request)",
-  "request.url_formats":           "links, images (JPG, PNG, GIF), video (MP4, MOV, MKV, WebM), audio (MP3, WAV, OGG), Google Drive links lumughlaH (Supported formats)",
-  "request.status_checking":       "URL wIbej... (Checking...)",
-  "request.status_sent":           "tlhob ngeHta'! (Request sent!)"
-});

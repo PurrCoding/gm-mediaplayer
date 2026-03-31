@@ -74,7 +74,7 @@ Subscribe to the addon on the [Steam Workshop](https://steamcommunity.com/shared
 | ConVar | Default | Description |
 |---|---|---|
 | `mediaplayer_debug` | `0` | Enable debug mode; logs actions to the console. |
-| `mediaplayer_allow_webpages` | `0` | Allow any webpage URL to be requested. |
+| `mediaplayer_allow_webpages` | `0` | Allow any webpage URL to be requested. (Use at your own risk) |
 | `mediaplayer_queue_limit` | `64` | Maximum number of items in a media player queue. |
 | `mediaplayer_spatial_hear_radius` | `1800` | How far spatial media sources can be heard. |
 

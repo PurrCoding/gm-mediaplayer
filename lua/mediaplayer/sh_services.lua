@@ -13,8 +13,15 @@ function MediaPlayer.RegisterService( service )
 	-- Inherit base service
 	setmetatable( service, { __index = base } )
 
+	-- Clear existing baseclass to avoid Lua refresh table.Merge errors
+	local classname = "mp_service_" .. service.Id
+	local _, BaseClassTable = debug.getupvalue(baseclass.Get, 1)
+	if BaseClassTable[classname] then
+		BaseClassTable[classname] = nil
+	end
+
 	-- Create base class for service
-	baseclass.Set( "mp_service_" .. service.Id, service )
+	baseclass.Set( classname, service )
 
 	-- Store service
 	MediaPlayer.Services[ service.Id ] = service

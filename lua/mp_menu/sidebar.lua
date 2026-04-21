@@ -163,9 +163,32 @@ function SidebarPresenter:SetupEvents()
 		MediaPlayer.Seek( mp, seekTime )
 	end )
 
-	self:RegisterHook( MP.EVENTS.UI.PRIVILEGED_PLAYER, function()
+	self:RegisterHook( MP.EVENTS.UI.PRIVILEGED_PLAYER, function(action)
 		local ply = LocalPlayer()
-		return mp:IsPlayerPrivileged(ply)
+
+		-- Owner and MediaPlayer_Admin always have full control
+		if mp:IsPlayerPrivileged(ply) then return true end
+
+		-- If no specific action requested, check if player has any privilege
+		if not action then
+			return MediaPlayer.PlayerHasAnyMediaPrivilege(ply)
+		end
+
+		-- Map action names to CAMI privilege names
+		local privilegeMap = {
+			pause         = "MediaPlayer_Pause",
+			seek          = "MediaPlayer_Seek",
+			skip          = "MediaPlayer_Skip",
+			remove        = "MediaPlayer_Remove",
+			queue_control = "MediaPlayer_QueueControl",
+		}
+
+		local privilege = privilegeMap[action]
+		if privilege then
+			return MediaPlayer.PlayerHasPrivilege(ply, privilege)
+		end
+
+		return false
 	end )
 
 end

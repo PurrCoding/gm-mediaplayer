@@ -174,7 +174,8 @@ end
 -- etc.). Override this for custom behavior.
 --
 function MEDIAPLAYER:IsPlayerPrivileged( ply )
-	return ply == self:GetOwner() or ply:IsAdmin() or
+	return ply == self:GetOwner() or
+		MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_Admin") or
 		hook.Run( "MediaPlayerIsPlayerPrivileged", self, ply )
 end
 

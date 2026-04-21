@@ -212,7 +212,7 @@ function MEDIA_ITEM:SetMedia( media )
 	hook.Run( MP.EVENTS.UI.SETUP_MEDIA_PANEL, self, media )
 
 	-- Detect if player has privileges to remove media from queue
-	local privileged = hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER )
+	local privileged = hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER, "remove" )
 	if privileged or media:IsOwner( LocalPlayer() ) then
 		self.RemoveBtn = vgui.Create( "MP.RemoveButton" )
 		self:AddButton( self.RemoveBtn )

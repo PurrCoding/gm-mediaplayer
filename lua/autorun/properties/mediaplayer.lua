@@ -19,9 +19,9 @@ local function IsMediaPlayer( self, ent, ply )
 			gamemode.Call( "CanProperty", ply, self.InternalName, ent )
 end
 
-local function IsPrivilegedMediaPlayer( self, ent, ply )
+local function HasMediaPlayerPrivilege( self, ent, ply, privilege )
 	return IsMediaPlayer( self, ent, ply ) and
-		( ply:IsAdmin() or ent:GetOwner() == ply )
+		( ent:GetOwner() == ply or MediaPlayer.PlayerHasAnyPrivilege(ply, privilege) )
 end
 
 local function HasMedia( mp )
@@ -32,8 +32,8 @@ AddMediaPlayerProperty( "mp-pause", {
 	MenuLabel	=	MediaPlayer.L("mp.property.pause"),
 	MenuIcon	=	"icon16/control_pause_blue.png",
 
-	Filter		=	function( self, ent, ply )
-		if not IsPrivilegedMediaPlayer(self, ent, ply) then return end
+	Filter = function( self, ent, ply )
+		if not HasMediaPlayerPrivilege(self, ent, ply, "MediaPlayer_Pause") then return end
 		local mp = ent:GetMediaPlayer()
 		return IsValid(mp) and mp:GetPlayerState() == MP_STATE_PLAYING
 	end,
@@ -47,8 +47,8 @@ AddMediaPlayerProperty( "mp-resume", {
 	MenuLabel	=	MediaPlayer.L("mp.property.resume"),
 	MenuIcon	=	"icon16/control_play_blue.png",
 
-	Filter		=	function( self, ent, ply )
-		if not IsPrivilegedMediaPlayer(self, ent, ply) then return end
+	Filter = function( self, ent, ply )
+		if not HasMediaPlayerPrivilege(self, ent, ply, "MediaPlayer_Pause") then return end
 		local mp = ent:GetMediaPlayer()
 		return IsValid(mp) and mp:GetPlayerState() == MP_STATE_PAUSED
 	end,
@@ -62,8 +62,8 @@ AddMediaPlayerProperty( "mp-skip", {
 	MenuLabel	=	MediaPlayer.L("mp.property.skip"),
 	MenuIcon	=	"icon16/control_end_blue.png",
 
-	Filter		=	function( self, ent, ply )
-		if not IsPrivilegedMediaPlayer(self, ent, ply) then return end
+	Filter = function( self, ent, ply )
+		if not HasMediaPlayerPrivilege(self, ent, ply, "MediaPlayer_Skip") then return end
 		local mp = ent:GetMediaPlayer()
 		return IsValid(mp) and HasMedia(mp)
 	end,
@@ -78,8 +78,8 @@ AddMediaPlayerProperty( "mp-seek", {
 	-- MenuIcon	=	"icon16/timeline_marker.png",
 	MenuIcon	=	"icon16/control_fastforward_blue.png",
 
-	Filter		=	function( self, ent, ply )
-		if not IsPrivilegedMediaPlayer(self, ent, ply) then return end
+	Filter = function( self, ent, ply )
+		if not HasMediaPlayerPrivilege(self, ent, ply, "MediaPlayer_Seek") then return end
 		local mp = ent:GetMediaPlayer()
 		return IsValid(mp) and HasMedia(mp)
 	end,

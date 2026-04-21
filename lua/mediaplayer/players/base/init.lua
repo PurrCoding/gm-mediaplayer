@@ -238,8 +238,8 @@ function MEDIAPLAYER:CanPlayerRequestMedia( ply, media )
 	-- Check service whitelist if it exists on the mediaplayer
 	if self.ServiceWhitelist and not (
 			table.HasValue(self.ServiceWhitelist, media.Id) or
-			ply:IsAdmin()
-		) then
+			MediaPlayer.PlayerHasAnyPrivilege(ply, "MediaPlayer_BypassWhitelist")
+	) then
 		local names = MediaPlayer.GetValidServiceNames(self.ServiceWhitelist)
 
 		local msg = MediaPlayer.L("mp.error.service_whitelist")
@@ -352,8 +352,8 @@ function MEDIAPLAYER:RequestPause( ply )
 		return
 	end
 
-	-- Non-privileged players vote to skip
-	if not self._Voteskip then
+	-- Check player privileges
+	if not (self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_Pause")) then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
@@ -376,7 +376,7 @@ function MEDIAPLAYER:RequestSkip( ply )
 	end
 
 	-- Privileged players can skip instantly
-	if self:IsPlayerPrivileged(ply) then
+	if self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_Skip") then
 		if MediaPlayer.DEBUG then
 			print( "MEDIAPLAYER.RequestSkip (privileged)", ply )
 		end
@@ -424,7 +424,7 @@ function MEDIAPLAYER:RequestSeek( ply, seekTime )
 	end
 
 	-- Check player priviledges
-	if not self:IsPlayerPrivileged(ply) then
+	if not (self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_Seek")) then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
@@ -472,7 +472,7 @@ function MEDIAPLAYER:RequestRemove( ply, mediaUID )
 		print( "MEDIAPLAYER.RequestRemove", ply, mediaUID )
 	end
 
-	local privileged = self:IsPlayerPrivileged(ply)
+	local privileged = self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_Remove")
 	local currentMedia = self:GetMedia()
 	if not currentMedia then return end
 
@@ -506,7 +506,7 @@ function MEDIAPLAYER:RequestRepeat( ply )
 		return
 	end
 
-	if not self:IsPlayerPrivileged(ply) then
+	if not (self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_QueueControl")) then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
@@ -522,7 +522,7 @@ function MEDIAPLAYER:RequestShuffle( ply )
 		return
 	end
 
-	if not self:IsPlayerPrivileged(ply) then
+	if not (self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_QueueControl")) then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end
@@ -538,7 +538,7 @@ function MEDIAPLAYER:RequestLock( ply )
 		return
 	end
 
-	if not self:IsPlayerPrivileged(ply) then
+	if not (self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_QueueControl")) then
 		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
 		return
 	end

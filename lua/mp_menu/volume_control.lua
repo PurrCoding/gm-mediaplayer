@@ -23,7 +23,7 @@ function PANEL:Init()
 	self.BtnList = vgui.Create( "DHorizontalList", self )
 	self.BtnList:SetSpacing( self.ButtonSpacing )
 
-	if hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER ) then
+	if hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER, "queue_control" ) then
 		self.RepeatBtn = vgui.Create( "MP.RepeatButton" )
 		self:AddButton( self.RepeatBtn )
 		self.ShuffleBtn = vgui.Create( "MP.ShuffleButton" )
@@ -53,7 +53,7 @@ end
 
 function PANEL:OnMediaPlayerChanged( mp )
 
-	if hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER ) then
+	if hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER, "queue_control" ) then
 		self.RepeatBtn:SetEnabled( mp:GetQueueRepeat() )
 		self.ShuffleBtn:SetEnabled( mp:GetQueueShuffle() )
 		self.LockBtn:SetEnabled( mp:GetQueueLocked() )

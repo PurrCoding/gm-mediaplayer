@@ -20,6 +20,7 @@ AddCSLuaFile "sh_mediaplayer.lua"
 AddCSLuaFile "sh_services.lua"
 AddCSLuaFile "sh_metadata.lua"
 AddCSLuaFile "sh_cvars.lua"
+AddCSLuaFile "sh_cami.lua"
 AddCSLuaFile "i18n/sh_i18n.lua"
 
 include "shared.lua"

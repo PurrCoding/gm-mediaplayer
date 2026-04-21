@@ -76,6 +76,10 @@ if SERVER then
 		anchor:Spawn()
 		anchor:Activate()
 
+		if anchor.CPPISetOwner then
+			anchor:CPPISetOwner(ply)
+		end
+
 		local mp = anchor:GetMediaPlayer()
 		if IsValid(mp) then
 			mp:SetOwner( ply )

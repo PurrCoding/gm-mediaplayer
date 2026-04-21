@@ -34,6 +34,32 @@ function ENT:Initialize()
 	end
 end
 
+if SERVER then
+	function ENT:CPPIGetOwner()
+		local mp = self:GetMediaPlayer()
+		if mp then
+			local owner = mp:GetOwner()
+			if IsValid(owner) then
+				return owner
+			end
+		end
+		-- Fall back to GetCreator (standard GMod ownership)
+		local creator = self:GetCreator()
+		if IsValid(creator) then
+			return creator
+		end
+		return nil
+	end
+
+	function ENT:CPPISetOwner(ply)
+		self:SetCreator(ply)
+		local mp = self:GetMediaPlayer()
+		if mp then
+			mp:SetOwner(ply)
+		end
+	end
+end
+
 function ENT:SetupDataTables()
 	self:NetworkVar( "String", 0, "MediaPlayerID" )
 end

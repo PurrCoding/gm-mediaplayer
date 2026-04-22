@@ -352,6 +352,12 @@ function MEDIAPLAYER:RequestPause( ply )
 		return
 	end
 
+	-- Non-privileged players vote to skip
+	if not self._Voteskip then
+		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
+		return
+	end
+
 	if MediaPlayer.DEBUG then
 		print( "MEDIAPLAYER.RequestPause", ply )
 	end

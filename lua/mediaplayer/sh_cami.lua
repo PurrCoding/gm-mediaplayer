@@ -18,11 +18,6 @@ local privileges = {
 		Description = "Seek within the currently playing media on any media player"
 	},
 	{
-		Name = "MediaPlayer_Pause",
-		MinAccess = "admin",
-		Description = "Pause or resume any media player"
-	},
-	{
 		Name = "MediaPlayer_Remove",
 		MinAccess = "admin",
 		Description = "Remove any queued media from any media player (not just own)"
@@ -97,7 +92,6 @@ function MediaPlayer.PlayerHasAnyMediaPrivilege(ply)
 	local granularPrivileges = {
 		"MediaPlayer_Skip",
 		"MediaPlayer_Seek",
-		"MediaPlayer_Pause",
 		"MediaPlayer_Remove",
 		"MediaPlayer_QueueControl",
 		"MediaPlayer_BypassWhitelist",

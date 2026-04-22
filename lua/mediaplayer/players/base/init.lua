@@ -352,12 +352,6 @@ function MEDIAPLAYER:RequestPause( ply )
 		return
 	end
 
-	-- Check player privileges
-	if not (self:IsPlayerPrivileged(ply) or MediaPlayer.PlayerHasPrivilege(ply, "MediaPlayer_Pause")) then
-		self:NotifyPlayer(ply, MediaPlayer.L("mp.error.no_permission"))
-		return
-	end
-
 	if MediaPlayer.DEBUG then
 		print( "MEDIAPLAYER.RequestPause", ply )
 	end

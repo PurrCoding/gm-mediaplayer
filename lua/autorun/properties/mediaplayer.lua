@@ -33,7 +33,7 @@ AddMediaPlayerProperty( "mp-pause", {
 	MenuIcon	=	"icon16/control_pause_blue.png",
 
 	Filter = function( self, ent, ply )
-		if not HasMediaPlayerPrivilege(self, ent, ply, "MediaPlayer_Pause") then return end
+		if not IsMediaPlayer(self, ent, ply) then return end
 		local mp = ent:GetMediaPlayer()
 		return IsValid(mp) and mp:GetPlayerState() == MP_STATE_PLAYING
 	end,
@@ -48,7 +48,7 @@ AddMediaPlayerProperty( "mp-resume", {
 	MenuIcon	=	"icon16/control_play_blue.png",
 
 	Filter = function( self, ent, ply )
-		if not HasMediaPlayerPrivilege(self, ent, ply, "MediaPlayer_Pause") then return end
+		if not IsMediaPlayer(self, ent, ply) then return end
 		local mp = ent:GetMediaPlayer()
 		return IsValid(mp) and mp:GetPlayerState() == MP_STATE_PAUSED
 	end,

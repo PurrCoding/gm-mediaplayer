@@ -127,20 +127,11 @@ function PANEL:PerformLayout()
 
 	self:SetTall( self.Height )
 
-	local btnVisible = self.PlayPauseBtn:IsVisible()
-
-	if btnVisible then
-		self.PlayPauseBtn:CenterVertical()
-		self.PlayPauseBtn:AlignLeft( self.Padding )
-	end
+	self.PlayPauseBtn:CenterVertical()
+	self.PlayPauseBtn:AlignLeft( self.Padding )
 
 	self.MediaTitle:SizeToContents()
-
-	if btnVisible then
-		self.MediaTitle:MoveRightOf( self.PlayPauseBtn, self.Padding )
-	else
-		self.MediaTitle:AlignLeft( self.Padding )
-	end
+	self.MediaTitle:MoveRightOf( self.PlayPauseBtn, self.Padding )
 
 	if self._Media then
 		self.MediaTitle:AlignTop( self.Padding )
@@ -149,12 +140,7 @@ function PANEL:PerformLayout()
 	end
 
 	self.MediaTime:InvalidateLayout()
-
-	if btnVisible then
-		self.MediaTime:MoveRightOf( self.PlayPauseBtn, self.Padding )
-	else
-		self.MediaTime:AlignLeft( self.Padding )
-	end
+	self.MediaTime:MoveRightOf( self.PlayPauseBtn, self.Padding )
 
 	self.MediaTime:AlignBottom( self.Padding - 2 )
 
@@ -218,20 +204,12 @@ function PLAYPAUSE_BTN:SetPlayerState( playerState )
 		self:SetIconVisible(false)
 	end
 
-	-- Hide button if player doesn't have pause privilege
-	if hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER, "pause" ) then
-		self:SetCursor( "hand" )
-		self:Show()
-	else
-		self:SetCursor( "arrow" )
-		self:Hide()
-	end
-
+	self:SetCursor( "hand" )
+	self:Show()
 end
 
 function PLAYPAUSE_BTN:DoClick()
 
-	if not hook.Run( MP.EVENTS.UI.PRIVILEGED_PLAYER, "pause" ) then return end
 	hook.Run( MP.EVENTS.UI.TOGGLE_PAUSE )
 
 end

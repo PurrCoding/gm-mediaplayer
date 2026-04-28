@@ -225,14 +225,24 @@ else -- CLIENT
 		end
 	end
 
+	function TOOL:Think()
+		if not self._hooksActive then
+			hook.Add( "PreDrawHalos", "MP.SpatialTool.Halo", SpatialToolHalo )
+			hook.Add( "PostDrawTranslucentRenderables", "MP.SpatialTool.Labels", SpatialToolLabels )
+			self._hooksActive = true
+		end
+	end
+
 	function TOOL:Deploy()
 		hook.Add( "PreDrawHalos", "MP.SpatialTool.Halo", SpatialToolHalo )
 		hook.Add( "PostDrawTranslucentRenderables", "MP.SpatialTool.Labels", SpatialToolLabels )
+		self._hooksActive = true
 	end
 
 	function TOOL:Holster()
 		hook.Remove( "PreDrawHalos", "MP.SpatialTool.Halo" )
 		hook.Remove( "PostDrawTranslucentRenderables", "MP.SpatialTool.Labels" )
+		self._hooksActive = false
 	end
 end
 

@@ -98,7 +98,8 @@ do
 	local players = {
 		"base", -- MUST LOAD FIRST!
 		"entity",
-		"spatial"
+		"spatial",
+		"mimick"
 	}
 
 	for _, player in ipairs(players) do

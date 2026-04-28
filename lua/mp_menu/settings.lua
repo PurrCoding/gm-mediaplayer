@@ -61,6 +61,7 @@ local function ProximityRadiusHook(depth, skybox, skybox3d)
 
 	for _, mp in pairs(MediaPlayer.List) do
 		if not IsValid(mp) then continue end
+		if mp:GetType() == "mimick" then continue end
 		local ent = mp.Entity
 		if not IsValid(ent) then continue end
 		local pos = ent:GetPos()

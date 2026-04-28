@@ -99,7 +99,7 @@ do
 		"base", -- MUST LOAD FIRST!
 		"entity",
 		"spatial",
-		"mimick"
+		"mimic"
 	}
 
 	for _, player in ipairs(players) do

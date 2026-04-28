@@ -1,5 +1,11 @@
 local basepath = "mediaplayer/"
 
+local playerTypes = {
+	["entity"] = true,
+	["spatial"] = true,
+	["mimic"] = true,
+}
+
 local function IncludeMP( filepath )
 	include( basepath .. filepath )
 end
@@ -25,7 +31,7 @@ local function PostLoadMediaPlayer()
 		for _, mp in pairs(MediaPlayer.GetAll()) do
 			local mpType = mp:GetType()
 
-			if ( mpType == "entity" or mpType == "spatial" or mpType == "mimick" ) and IsValid(mp) then
+			if playerTypes[mpType] and IsValid(mp) then
 				local ent = mp:GetEntity()
 				local snapshot = mp:GetSnapshot()
 				local listeners = table.Copy(mp:GetListeners())

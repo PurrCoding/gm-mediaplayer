@@ -1,12 +1,12 @@
 TOOL.Category = "Media Player"
-TOOL.Name = "#tool.mediaplayer_mimick.name"
+TOOL.Name = "#tool.mediaplayer_mimic.name"
 TOOL.Command = nil
 TOOL.ConfigName = ""
 
 if CLIENT then
-	language.Add( "tool.mediaplayer_mimick.name", MediaPlayer.L("mp.tool.mimick.name") )
-	language.Add( "tool.mediaplayer_mimick.desc", MediaPlayer.L("mp.tool.mimick.desc") )
-	language.Add( "tool.mediaplayer_mimick.0", MediaPlayer.L("mp.tool.mimick.usage") )
+	language.Add( "tool.mediaplayer_mimic.name", MediaPlayer.L("mp.tool.mimic.name") )
+	language.Add( "tool.mediaplayer_mimic.desc", MediaPlayer.L("mp.tool.mimic.desc") )
+	language.Add( "tool.mediaplayer_mimic.0", MediaPlayer.L("mp.tool.mimic.usage") )
 end
 
 ---
@@ -41,26 +41,26 @@ if SERVER then
 
 		-- Reject spatial type
 		if mp:GetType() == "spatial" then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_spatial") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_spatial") )
 			return false
 		end
 
-		-- Reject mimick type as source — must copy from a real player
-		if mp:GetType() == "mimick" then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_mimick_source") )
+		-- Reject mimic type as source — must copy from a real player
+		if mp:GetType() == "mimic" then
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_mimic_source") )
 			return false
 		end
 
 		-- Store the source entity and its MP ID
-		ply:SetNWInt( "MimickTool_SourceEnt", ent:EntIndex() )
-		ply:SetNWString( "MimickTool_SourceMPId", mp:GetId() )
-		ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.source_copied") )
+		ply:SetNWInt( "MimicTool_SourceEnt", ent:EntIndex() )
+		ply:SetNWString( "MimicTool_SourceMPId", mp:GetId() )
+		ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.source_copied") )
 
 		return true
 	end
 
 	---
-	-- Right click = PASTE (apply mimick to the targeted entity).
+	-- Right click = PASTE (apply mimic to the targeted entity).
 	-- Can be used on multiple entities without re-selecting the source.
 	--
 	function TOOL:RightClick( tr )
@@ -70,54 +70,54 @@ if SERVER then
 		local ent = tr.Entity
 
 		-- Check we have a source copied
-		local sourceMPId = ply:GetNWString( "MimickTool_SourceMPId", "" )
-		local sourceEntIndex = ply:GetNWInt( "MimickTool_SourceEnt", 0 )
+		local sourceMPId = ply:GetNWString( "MimicTool_SourceMPId", "" )
+		local sourceEntIndex = ply:GetNWInt( "MimicTool_SourceEnt", 0 )
 
 		if sourceMPId == "" or sourceEntIndex == 0 then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_no_source") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_no_source") )
 			return false
 		end
 
 		-- Validate source still exists
 		local sourceEnt = Entity( sourceEntIndex )
 		if not IsValid( sourceEnt ) then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_source_gone") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_source_gone") )
 			return false
 		end
 
 		local sourceMP = sourceEnt:GetMediaPlayer()
 		if not sourceMP or not sourceMP:IsValid() then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_source_gone") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_source_gone") )
 			return false
 		end
 
-		-- Can't mimick onto the same entity
+		-- Can't mimic onto the same entity
 		if ent == sourceEnt then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_same") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_same") )
 			return false
 		end
 
 		local mp = ent:GetMediaPlayer()
 		if not mp or not mp:IsValid() then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_not_mp") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_not_mp") )
 			return false
 		end
 
 		-- Reject spatial
 		if mp:GetType() == "spatial" then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_spatial") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_spatial") )
 			return false
 		end
 
 		-- NEW: Reject if target is already serving its own content
 		if mp:GetPlayerState() >= MP_STATE_PLAYING or not mp:IsQueueEmpty() then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_has_content") )
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_has_content") )
 			return false
 		end
 
-		-- Already a mimick linked to the same source?
-		if mp:GetType() == "mimick" and mp:GetSourceId() == sourceMPId then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_already_linked") )
+		-- Already a mimic linked to the same source?
+		if mp:GetType() == "mimic" and mp:GetSourceId() == sourceMPId then
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_already_linked") )
 			return false
 		end
 
@@ -129,8 +129,8 @@ if SERVER then
 		-- Remove old media player
 		mp:Remove()
 
-		-- Install mimick
-		ent:InstallMediaPlayer( "mimick" )
+		-- Install mimic
+		ent:InstallMediaPlayer( "mimic" )
 		local newMP = ent:GetMediaPlayer()
 
 		if not newMP then
@@ -148,18 +148,18 @@ if SERVER then
 		newMP:AddListener( ply )
 
 		-- Store old state on entity for restore
-		ent._mimickOldType = oldType
-		ent._mimickOldSnapshot = oldSnapshot
+		ent._mimicOldType = oldType
+		ent._mimicOldSnapshot = oldSnapshot
 
-		undo.Create( MediaPlayer.L("mp.tool.mimick.undo") )
+		undo.Create( MediaPlayer.L("mp.tool.mimic.undo") )
 			undo.SetPlayer( ply )
 			undo.AddFunction( function( tab, ent )
 				if not IsValid( ent ) then return end
 				local m = ent:GetMediaPlayer()
-				if not m or m:GetType() ~= "mimick" then return end
+				if not m or m:GetType() ~= "mimic" then return end
 
-				local oType = ent._mimickOldType or "entity"
-				local oSnap = ent._mimickOldSnapshot
+				local oType = ent._mimicOldType or "entity"
+				local oSnap = ent._mimicOldSnapshot
 
 				m:Remove()
 				ent:InstallMediaPlayer( oType )
@@ -171,12 +171,12 @@ if SERVER then
 			end, ent )
 		undo.Finish()
 
-		ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.pasted") )
+		ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.pasted") )
 		return true
 	end
 
 	---
-	-- Reload (R) = REMOVE mimick from the targeted entity and restore original.
+	-- Reload (R) = REMOVE mimic from the targeted entity and restore original.
 	--
 	function TOOL:Reload( tr )
 		if not IsMediaPlayerTarget( tr ) then return false end
@@ -185,14 +185,14 @@ if SERVER then
 		local ent = tr.Entity
 		local mp = ent:GetMediaPlayer()
 
-		if not mp or not mp:IsValid() or mp:GetType() ~= "mimick" then
-			ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.error_not_mimick") )
+		if not mp or not mp:IsValid() or mp:GetType() ~= "mimic" then
+			ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.error_not_mimic") )
 			return false
 		end
 
 		-- Restore original player type
-		local oldType = ent._mimickOldType or "entity"
-		local oldSnapshot = ent._mimickOldSnapshot
+		local oldType = ent._mimicOldType or "entity"
+		local oldSnapshot = ent._mimicOldSnapshot
 
 		mp:Remove()
 		ent:InstallMediaPlayer( oldType )
@@ -204,10 +204,10 @@ if SERVER then
 			end
 		end
 
-		ent._mimickOldType = nil
-		ent._mimickOldSnapshot = nil
+		ent._mimicOldType = nil
+		ent._mimicOldSnapshot = nil
 
-		ply:ChatPrint( MediaPlayer.L("mp.tool.mimick.removed") )
+		ply:ChatPrint( MediaPlayer.L("mp.tool.mimic.removed") )
 		return true
 	end
 
@@ -242,13 +242,13 @@ else -- CLIENT
 	local TEXT_ALIGN_CENTER = TEXT_ALIGN_CENTER
 
 	local HALO_SOURCE_COLOR = Color( 0, 200, 0, 255 )
-	local HALO_MIMICK_COLOR = Color( 255, 140, 0, 255 )
+	local HALO_MIMIC_COLOR = Color( 255, 140, 0, 255 )
 	local LABEL_COLOR = Color( 255, 255, 255, 255 )
 	local LABEL_BG = Color( 0, 0, 0, 200 )
 
 	local cachedFrame = 0
 	local cachedSourceHalos = {}
-	local cachedMimickHalos = {}
+	local cachedMimicHalos = {}
 	local cachedLabels = {}
 
 	local function UpdateTargets()
@@ -261,11 +261,11 @@ else -- CLIENT
 		local radiusSqr = 2500 * 2500
 
 		local sourceHalos = {}
-		local mimickHalos = {}
+		local mimicHalos = {}
 		local labels = {}
 
 		-- Highlight the currently copied source entity
-		local sourceEntIndex = ply:GetNWInt( "MimickTool_SourceEnt", 0 )
+		local sourceEntIndex = ply:GetNWInt( "MimicTool_SourceEnt", 0 )
 		if sourceEntIndex > 0 then
 			local sourceEnt = Entity( sourceEntIndex )
 			if IsValid( sourceEnt ) and plyPos:DistToSqr( sourceEnt:GetPos() ) <= radiusSqr then
@@ -277,37 +277,37 @@ else -- CLIENT
 			end
 		end
 
-		-- Highlight all mimick players
+		-- Highlight all mimic players
 		for _, mp in pairs( MediaPlayer.List ) do
-			if mp:GetType() == "mimick" and mp.GetEntity then
+			if mp:GetType() == "mimic" and mp.GetEntity then
 				local ent = mp:GetEntity()
 				if IsValid( ent ) and plyPos:DistToSqr( ent:GetPos() ) <= radiusSqr then
-					mimickHalos[#mimickHalos + 1] = ent
+					mimicHalos[#mimicHalos + 1] = ent
 					labels[#labels + 1] = {
 						pos = ent:GetPos() + Vector( 0, 0, ent:OBBMaxs().z + 15 ),
-						text = "MIMICK"
+						text = "MIMIC"
 					}
 				end
 			end
 		end
 
 		cachedSourceHalos = sourceHalos
-		cachedMimickHalos = mimickHalos
+		cachedMimicHalos = mimicHalos
 		cachedLabels = labels
 	end
 
-	local function MimickToolHalo()
+	local function MimicToolHalo()
 		UpdateTargets()
 
 		if #cachedSourceHalos > 0 then
 			halo.Add( cachedSourceHalos, HALO_SOURCE_COLOR, 3, 3, 3 )
 		end
-		if #cachedMimickHalos > 0 then
-			halo.Add( cachedMimickHalos, HALO_MIMICK_COLOR, 3, 3, 3 )
+		if #cachedMimicHalos > 0 then
+			halo.Add( cachedMimicHalos, HALO_MIMIC_COLOR, 3, 3, 3 )
 		end
 	end
 
-	local function MimickToolLabels( depth, skybox, skybox3d )
+	local function MimicToolLabels( depth, skybox, skybox3d )
 		if skybox or skybox3d then return end
 
 		UpdateTargets()
@@ -330,28 +330,28 @@ else -- CLIENT
 
 	function TOOL:Think()
 		if not self._hooksActive then
-			hook.Add( "PreDrawHalos", "MP.MimickTool.Halo", MimickToolHalo )
-			hook.Add( "PostDrawTranslucentRenderables", "MP.MimickTool.Labels", MimickToolLabels )
+			hook.Add( "PreDrawHalos", "MP.MimicTool.Halo", MimicToolHalo )
+			hook.Add( "PostDrawTranslucentRenderables", "MP.MimicTool.Labels", MimicToolLabels )
 			self._hooksActive = true
 		end
 	end
 
 	function TOOL:Deploy()
-		hook.Add( "PreDrawHalos", "MP.MimickTool.Halo", MimickToolHalo )
-		hook.Add( "PostDrawTranslucentRenderables", "MP.MimickTool.Labels", MimickToolLabels )
+		hook.Add( "PreDrawHalos", "MP.MimicTool.Halo", MimicToolHalo )
+		hook.Add( "PostDrawTranslucentRenderables", "MP.MimicTool.Labels", MimicToolLabels )
 		self._hooksActive = true
 	end
 
 	function TOOL:Holster()
-		hook.Remove( "PreDrawHalos", "MP.MimickTool.Halo" )
-		hook.Remove( "PostDrawTranslucentRenderables", "MP.MimickTool.Labels" )
+		hook.Remove( "PreDrawHalos", "MP.MimicTool.Halo" )
+		hook.Remove( "PostDrawTranslucentRenderables", "MP.MimicTool.Labels" )
 		self._hooksActive = false
 	end
 end
 
 function TOOL.BuildCPanel( panel )
-	panel:Help( MediaPlayer.L("mp.tool.mimick.help_copy") )
-	panel:Help( MediaPlayer.L("mp.tool.mimick.help_paste") )
+	panel:Help( MediaPlayer.L("mp.tool.mimic.help_copy") )
+	panel:Help( MediaPlayer.L("mp.tool.mimic.help_paste") )
 	panel:Help( "" )
-	panel:Help( MediaPlayer.L("mp.tool.mimick.help_remove") )
+	panel:Help( MediaPlayer.L("mp.tool.mimic.help_remove") )
 end

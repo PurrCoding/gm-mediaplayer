@@ -1,7 +1,7 @@
 DEFINE_BASECLASS( "mp_entity" )
 
 local MEDIAPLAYER = MEDIAPLAYER
-MEDIAPLAYER.Name = "mimick"
+MEDIAPLAYER.Name = "mimic"
 MEDIAPLAYER.Base = "entity"
 
 function MEDIAPLAYER:Init( ... )
@@ -32,7 +32,7 @@ end
 
 function MEDIAPLAYER:RequestMedia( media, ply )
 	if IsValid( ply ) then
-		ply:ChatPrint( "This is a mimick player — request media on the source screen instead." )
+		ply:ChatPrint( "This is a mimic player — request media on the source screen instead." )
 	end
 end
 

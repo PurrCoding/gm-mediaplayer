@@ -13,21 +13,21 @@ function MEDIAPLAYER:NetWriteUpdate()
 end
 
 ---
--- Mimick players don't advance their own queue.
+-- Mimic players don't advance their own queue.
 --
 function MEDIAPLAYER:NextMedia()
 	-- no-op
 end
 
 ---
--- Mimick players don't set their own media.
+-- Mimic players don't set their own media.
 --
 function MEDIAPLAYER:SetMedia( media )
 	-- no-op
 end
 
 ---
--- When a player becomes a mimick listener, also add them to the source
+-- When a player becomes a mimic listener, also add them to the source
 -- so the source's browser/DHTML panel exists on their client.
 --
 function MEDIAPLAYER:AddListener( ply )
@@ -43,7 +43,7 @@ function MEDIAPLAYER:AddListener( ply )
 end
 
 ---
--- When a player is removed from the mimick, also remove them from the
+-- When a player is removed from the mimic, also remove them from the
 -- source IF we were the ones who added them.
 --
 function MEDIAPLAYER:RemoveListener( ply )

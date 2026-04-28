@@ -32,11 +32,11 @@ local InfoFadeTime = 1
 
 local RenderScale = 0.1
 
--- Mimick states
-local MIMICK_STATE_NO_SOURCE    = 0
-local MIMICK_STATE_NO_CLIENT_MP = 1
-local MIMICK_STATE_NO_MEDIA     = 2
-local MIMICK_STATE_ACTIVE       = 3
+-- Mimic states
+local MIMIC_STATE_NO_SOURCE    = 0
+local MIMIC_STATE_NO_CLIENT_MP = 1
+local MIMIC_STATE_NO_MEDIA     = 2
+local MIMIC_STATE_ACTIVE       = 3
 
 -- Colors
 local colorBg       = Color( 20, 20, 25, 255 )
@@ -54,37 +54,37 @@ local EdgePadding = 50
 local DotRadius   = 8
 
 ---
--- Resolve the current mimick state and return (state, media).
+-- Resolve the current mimic state and return (state, media).
 --
-local function ResolveMimickState( self )
+local function ResolveMimicState( self )
 	local sourceId = self._SourceMPId
 	if not sourceId then
-		return MIMICK_STATE_NO_SOURCE, nil
+		return MIMIC_STATE_NO_SOURCE, nil
 	end
 
 	local sourceMP = MediaPlayer.GetById( sourceId )
 	if not sourceMP or not sourceMP:IsValid() then
-		return MIMICK_STATE_NO_CLIENT_MP, nil
+		return MIMIC_STATE_NO_CLIENT_MP, nil
 	end
 
 	local media = sourceMP:GetMedia()
 	if not IsValid( media ) then
-		return MIMICK_STATE_NO_MEDIA, nil
+		return MIMIC_STATE_NO_MEDIA, nil
 	end
 
-	return MIMICK_STATE_ACTIVE, media
+	return MIMIC_STATE_ACTIVE, media
 end
 
 ---
 -- Update state and track transitions.
 --
-local function UpdateMimickState( self )
-	local state, media = ResolveMimickState( self )
+local function UpdateMimicState( self )
+	local state, media = ResolveMimicState( self )
 
-	if state ~= self._mimickState then
-		self._mimickStatePrev = self._mimickState
-		self._mimickState = state
-		self._mimickStateChanged = RealTime()
+	if state ~= self._mimicState then
+		self._mimicStatePrev = self._mimicState
+		self._mimicState = state
+		self._mimicStateChanged = RealTime()
 	end
 
 	return state, media
@@ -94,21 +94,21 @@ end
 -- Get the status text lines and dot color for a given state.
 --
 local function GetStatusInfo( state )
-	if state == MIMICK_STATE_NO_SOURCE then
-		return "MIMICK", "No source linked", "Use the Mimick tool to link a source.", colorDotRed
-	elseif state == MIMICK_STATE_NO_CLIENT_MP then
-		return "MIMICK", "Waiting for source...", "The source player is currently unavailable.", colorDotYellow
-	elseif state == MIMICK_STATE_NO_MEDIA then
-		return "MIMICK", "Source idle", "No media is playing on the source.", colorDotYellow
+	if state == MIMIC_STATE_NO_SOURCE then
+		return "MIMIC", "No source linked", "Use the Mimic tool to link a source.", colorDotRed
+	elseif state == MIMIC_STATE_NO_CLIENT_MP then
+		return "MIMIC", "Waiting for source...", "The source player is currently unavailable.", colorDotYellow
+	elseif state == MIMIC_STATE_NO_MEDIA then
+		return "MIMIC", "Source idle", "No media is playing on the source.", colorDotYellow
 	end
-	return "MIMICK", "", "", colorDotGreen
+	return "MIMIC", "", "", colorDotGreen
 end
 
 ---
--- Draw the mimick status screen, scaled to fit the given w x h area.
+-- Draw the mimic status screen, scaled to fit the given w x h area.
 -- Uses a model matrix to uniformly shrink text so it's always readable.
 --
-local function DrawMimickStatus( self, w, h, state )
+local function DrawMimicStatus( self, w, h, state )
 	-- Background
 	SetDrawColor( colorBg )
 	DrawRect( 0, 0, w, h )
@@ -147,7 +147,7 @@ local function DrawMimickStatus( self, w, h, state )
 	-- Vertical start: center the text block
 	local startY = h / 2 - totalH / 2
 
-	-- Title row: dot + "MIMICK"
+	-- Title row: dot + "MIMIC"
 	local titleCenterX = w / 2
 	local titleRowStartX = titleCenterX - titleRowW / 2
 
@@ -175,11 +175,11 @@ local function DrawMimickStatus( self, w, h, state )
 end
 
 ---
--- Override idle screen to show mimick-specific status.
+-- Override idle screen to show mimic-specific status.
 --
 function MEDIAPLAYER:DrawIdlescreen( w, h )
-	local state = UpdateMimickState( self )
-	DrawMimickStatus( self, w, h, state )
+	local state = UpdateMimicState( self )
+	DrawMimicStatus( self, w, h, state )
 end
 
 function MEDIAPLAYER:NetReadUpdate()
@@ -203,7 +203,7 @@ function MEDIAPLAYER:NetReadUpdate()
 end
 
 function MEDIAPLAYER:SetMedia( media )
-	-- no-op: mimick has no media of its own
+	-- no-op: mimic has no media of its own
 end
 
 ---
@@ -227,19 +227,19 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 		return
 	end
 
-	local state, media = UpdateMimickState( self )
+	local state, media = UpdateMimicState( self )
 	local w, h, pos, ang = self:GetOrientation()
 	if not w then return end
 
 	local rw, rh = w / RenderScale, h / RenderScale
 
-	if state == MIMICK_STATE_ACTIVE and IsValid( media ) and media.Draw then
+	if state == MIMIC_STATE_ACTIVE and IsValid( media ) and media.Draw then
 		Start3D2D( pos, ang, RenderScale )
 			media:Draw( rw, rh )
 		End3D2D()
 	else
 		Start3D2D( pos, ang, RenderScale )
-			DrawMimickStatus( self, rw, rh, state )
+			DrawMimicStatus( self, rw, rh, state )
 		End3D2D()
 	end
 end
@@ -253,12 +253,12 @@ function MEDIAPLAYER:DrawFullscreen()
 	self._hudPaintFired = true
 
 	local w, h = ScrW(), ScrH()
-	local state, media = UpdateMimickState( self )
+	local state, media = UpdateMimicState( self )
 
-	if state == MIMICK_STATE_ACTIVE and IsValid( media ) and media.Draw then
+	if state == MIMIC_STATE_ACTIVE and IsValid( media ) and media.Draw then
 		media:Draw( w, h )
 	else
-		DrawMimickStatus( self, w, h, state )
+		DrawMimicStatus( self, w, h, state )
 	end
 end
 

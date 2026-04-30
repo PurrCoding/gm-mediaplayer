@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("fi", {
 	["mp.ui.added_by"]                  = "LISÄNNYT",
 	["mp.ui.unknown"]                   = "Tuntematon",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Olet jo äänestänyt ohittamisesta.",
+	["mp.voteskip.vote_cast"]           = "Äänestys: %d/%d ääntä (vielä %d tarvitaan)",
+	["mp.voteskip.passed"]              = "Äänestys hyväksytty! Ohitetaan...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Toista uudelleen",
 	["mp.ui.shuffle"]                   = "Sekoita",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("fi", {
 	["mp.settings.subtitles"]           = "Tekstitykset",
 	["mp.settings.subtitles_off"]       = "Pois",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Ei-tuettu mediatyyppi",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Tilamediasoitin",
 	["mp.tool.spatial.label"]           = "Tilamedia",
@@ -90,8 +98,29 @@ MediaPlayer.i18n.RegisterLanguage("fi", {
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Sinulla ei ole oikeutta hallita tätä tilamedialähdetä.",
 
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Peili-mediasoitin",
+	["mp.tool.mimic.desc"]              = "Peilaa toisen mediasoittimen videolähtö toiselle näytölle.",
+	["mp.tool.mimic.usage"]             = "Vasen klikkaus: kopioi lähde. Oikea klikkaus: liitä kohteeseen. Lataa uudelleen (R): poista peili.",
+	["mp.tool.mimic.help_copy"]         = "Napsauta vasemmalla mediasoitinta kopioidaksesi sen videolähteeksi.",
+	["mp.tool.mimic.help_paste"]        = "Napsauta oikealla muita mediasoittimia liittääksesi — ne peilaavat lähteen. Voit liittää useille näytöille.",
+	["mp.tool.mimic.help_remove"]       = "Paina Lataa uudelleen (R) peilisoittimella poistaaksesi sen ja palauttaaksesi alkuperäisen.",
+	["mp.tool.mimic.source_copied"]     = "Lähde kopioitu! Napsauta oikealla muita mediasoittimia liittääksesi.",
+	["mp.tool.mimic.pasted"]            = "Peili käytössä! Tämä näyttö peilaa nyt lähteen.",
+	["mp.tool.mimic.removed"]           = "Peili poistettu. Entiteetti palautettu.",
+	["mp.tool.mimic.undo"]              = "Peili-mediasoitin",
+	["mp.tool.mimic.error_not_mp"]      = "Tällä entiteetillä ei ole mediasoitinta.",
+	["mp.tool.mimic.error_spatial"]     = "Tilamediasoitinta ei voi peilata.",
+	["mp.tool.mimic.error_same"]        = "Lähde ja kohde eivät voi olla sama entiteetti.",
+	["mp.tool.mimic.error_no_source"]   = "Lähdettä ei ole vielä kopioitu. Napsauta ensin vasemmalla mediasoitinta.",
+	["mp.tool.mimic.error_source_gone"] = "Kopioitu lähde ei ole enää olemassa. Napsauta vasemmalla uutta lähdettä.",
+	["mp.tool.mimic.error_mimic_source"] = "Peilisoittimesta ei voi kopioida. Kopioi alkuperäisestä lähteestä.",
+	["mp.tool.mimic.error_already_linked"] = "Tämä entiteetti peilaa jo kyseistä lähdettä.",
+	["mp.tool.mimic.error_not_mimic"]   = "Tämä entiteetti ei ole peilisoitin.",
+	["mp.tool.mimic.error_has_content"] = "Omaa sisältöä toistavaa mediasoitinta ei voi peilata. Pysäytä tai tyhjennä sen media ensin.",
+
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Selaimen raja saavutettu",
 	["mp.error.browser_limit_detail"]   = "Kaikki selainpaikat ovat käytössä (%d/%d aktiivista).",
-	["mp.error.browser_limit_note"]     = "Odotetaan paikan vapautumista. Tämä ei ole virhe.",1
+	["mp.error.browser_limit_note"]     = "Odotetaan paikan vapautumista. Tämä ei ole virhe.",
 })

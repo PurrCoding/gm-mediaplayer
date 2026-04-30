@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("it", {
 	["mp.ui.added_by"]                  = "AGGIUNTO DA",
 	["mp.ui.unknown"]                   = "Sconosciuto",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Hai già votato per saltare.",
+	["mp.voteskip.vote_cast"]           = "Voteskip: %d/%d voti (%d ancora necessari)",
+	["mp.voteskip.passed"]              = "Voteskip approvato! Salto in corso...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Ripeti",
 	["mp.ui.shuffle"]                   = "Casuale",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("it", {
 	["mp.settings.subtitles"]           = "Sottotitoli",
 	["mp.settings.subtitles_off"]       = "Disattivato",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Tipo di media non supportato",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Lettore multimediale spaziale",
 	["mp.tool.spatial.label"]           = "Media spaziale",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("it", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Non hai il permesso di controllare questa sorgente media spaziale.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Lettore multimediale specchio",
+	["mp.tool.mimic.desc"]              = "Rifletti l'uscita video di un altro lettore multimediale su un secondo schermo.",
+	["mp.tool.mimic.usage"]             = "Clic sinistro: copia sorgente. Clic destro: incolla sul/sui bersaglio/i. Ricarica (R): rimuovi specchio.",
+	["mp.tool.mimic.help_copy"]         = "Fai clic sinistro su un lettore multimediale per copiarlo come sorgente video.",
+	["mp.tool.mimic.help_paste"]        = "Fai clic destro su altri lettori multimediali per incollare — rifletteranno la sorgente. Puoi incollare su più schermi.",
+	["mp.tool.mimic.help_remove"]       = "Premi Ricarica (R) su un lettore specchio per rimuoverlo e ripristinare l'originale.",
+	["mp.tool.mimic.source_copied"]     = "Sorgente copiata! Fai clic destro su altri lettori multimediali per incollare.",
+	["mp.tool.mimic.pasted"]            = "Specchio applicato! Questo schermo ora riflette la sorgente.",
+	["mp.tool.mimic.removed"]           = "Specchio rimosso. Entità ripristinata.",
+	["mp.tool.mimic.undo"]              = "Lettore multimediale specchio",
+	["mp.tool.mimic.error_not_mp"]      = "Questa entità non ha un lettore multimediale.",
+	["mp.tool.mimic.error_spatial"]     = "Non è possibile riflettere un lettore multimediale spaziale.",
+	["mp.tool.mimic.error_same"]        = "Sorgente e bersaglio non possono essere la stessa entità.",
+	["mp.tool.mimic.error_no_source"]   = "Nessuna sorgente copiata. Fai prima clic sinistro su un lettore multimediale.",
+	["mp.tool.mimic.error_source_gone"] = "La sorgente copiata non esiste più. Fai clic sinistro su una nuova sorgente.",
+	["mp.tool.mimic.error_mimic_source"] = "Non è possibile copiare da un lettore specchio. Copia dalla sorgente originale.",
+	["mp.tool.mimic.error_already_linked"] = "Questa entità sta già riflettendo quella sorgente.",
+	["mp.tool.mimic.error_not_mimic"]   = "Questa entità non è un lettore specchio.",
+	["mp.tool.mimic.error_has_content"] = "Non è possibile riflettere un lettore che sta riproducendo il proprio contenuto. Ferma o cancella prima i suoi media.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Limite browser raggiunto",

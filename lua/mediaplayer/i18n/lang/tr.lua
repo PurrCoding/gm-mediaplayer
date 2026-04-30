@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("tr", {
 	["mp.ui.added_by"]                  = "EKLEYEN",
 	["mp.ui.unknown"]                   = "Bilinmiyor",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Atlamak için zaten oy verdiniz.",
+	["mp.voteskip.vote_cast"]           = "Oylama: %d/%d oy (%d daha gerekli)",
+	["mp.voteskip.passed"]              = "Oylama kabul edildi! Atlanıyor...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Tekrarla",
 	["mp.ui.shuffle"]                   = "Karıştır",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("tr", {
 	["mp.settings.subtitles"]           = "Altyazılar",
 	["mp.settings.subtitles_off"]       = "Kapalı",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Desteklenmeyen medya türü",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Uzamsal Medya Oynatıcı",
 	["mp.tool.spatial.label"]           = "Uzamsal Medya",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("tr", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Bu uzamsal medya kaynağını kontrol etme yetkiniz yok.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Ayna Medya Oynatıcı",
+	["mp.tool.mimic.desc"]              = "Başka bir medya oynatıcının video çıkışını ikinci bir ekrana yansıtın.",
+	["mp.tool.mimic.usage"]             = "Sol tık: kaynağı kopyala. Sağ tık: hedefe yapıştır. Yeniden yükle (R): aynayı kaldır.",
+	["mp.tool.mimic.help_copy"]         = "Bir medya oynatıcıya sol tıklayarak video kaynağı olarak kopyalayın.",
+	["mp.tool.mimic.help_paste"]        = "Diğer medya oynatıcılara sağ tıklayarak yapıştırın — kaynağı yansıtacaklar. Birden fazla ekrana yapıştırabilirsiniz.",
+	["mp.tool.mimic.help_remove"]       = "Bir ayna oynatıcıda Yeniden Yükle (R) tuşuna basarak kaldırın ve orijinali geri yükleyin.",
+	["mp.tool.mimic.source_copied"]     = "Kaynak kopyalandı! Yapıştırmak için diğer medya oynatıcılara sağ tıklayın.",
+	["mp.tool.mimic.pasted"]            = "Ayna uygulandı! Bu ekran artık kaynağı yansıtıyor.",
+	["mp.tool.mimic.removed"]           = "Ayna kaldırıldı. Varlık eski haline döndürüldü.",
+	["mp.tool.mimic.undo"]              = "Ayna Medya Oynatıcı",
+	["mp.tool.mimic.error_not_mp"]      = "Bu varlığın bir medya oynatıcısı yok.",
+	["mp.tool.mimic.error_spatial"]     = "Uzamsal bir medya oynatıcı yansıtılamaz.",
+	["mp.tool.mimic.error_same"]        = "Kaynak ve hedef aynı varlık olamaz.",
+	["mp.tool.mimic.error_no_source"]   = "Henüz kaynak kopyalanmadı. Önce bir medya oynatıcıya sol tıklayın.",
+	["mp.tool.mimic.error_source_gone"] = "Kopyalanan kaynak artık mevcut değil. Yeni bir kaynağa sol tıklayın.",
+	["mp.tool.mimic.error_mimic_source"] = "Bir ayna oynatıcıdan kopyalanamaz. Orijinal kaynaktan kopyalayın.",
+	["mp.tool.mimic.error_already_linked"] = "Bu varlık zaten o kaynağı yansıtıyor.",
+	["mp.tool.mimic.error_not_mimic"]   = "Bu varlık bir ayna oynatıcı değil.",
+	["mp.tool.mimic.error_has_content"] = "Kendi içeriğini sunan bir medya oynatıcı yansıtılamaz. Önce medyasını durdurun veya temizleyin.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Tarayıcı limitine ulaşıldı",

@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("es-es", {
 	["mp.ui.added_by"]                  = "AÑADIDO POR",
 	["mp.ui.unknown"]                   = "Desconocido",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Ya has votado para saltar.",
+	["mp.voteskip.vote_cast"]           = "Voteskip: %d/%d votos (%d más necesarios)",
+	["mp.voteskip.passed"]              = "¡Voteskip aprobado! Saltando...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Repetir",
 	["mp.ui.shuffle"]                   = "Aleatorio",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("es-es", {
 	["mp.settings.subtitles"]           = "Subtítulos",
 	["mp.settings.subtitles_off"]       = "Desactivado",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Tipo de medio no compatible",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Reproductor de medios espacial",
 	["mp.tool.spatial.label"]           = "Medios espaciales",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("es-es", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "No tienes permiso para controlar esta fuente de medios espacial.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Reproductor de medios espejo",
+	["mp.tool.mimic.desc"]              = "Refleja la salida de vídeo de otro reproductor de medios en una segunda pantalla.",
+	["mp.tool.mimic.usage"]             = "Clic izquierdo: copiar fuente. Clic derecho: pegar en objetivo(s). Recargar (R): eliminar espejo.",
+	["mp.tool.mimic.help_copy"]         = "Haz clic izquierdo en un reproductor de medios para copiarlo como fuente de vídeo.",
+	["mp.tool.mimic.help_paste"]        = "Haz clic derecho en otros reproductores para pegar — reflejarán la fuente. Puedes pegar en múltiples pantallas.",
+	["mp.tool.mimic.help_remove"]       = "Pulsa Recargar (R) en un reproductor espejo para eliminarlo y restaurar el original.",
+	["mp.tool.mimic.source_copied"]     = "¡Fuente copiada! Haz clic derecho en otros reproductores para pegar.",
+	["mp.tool.mimic.pasted"]            = "¡Espejo aplicado! Esta pantalla ahora refleja la fuente.",
+	["mp.tool.mimic.removed"]           = "Espejo eliminado. Entidad restaurada.",
+	["mp.tool.mimic.undo"]              = "Reproductor de medios espejo",
+	["mp.tool.mimic.error_not_mp"]      = "Esta entidad no tiene un reproductor de medios.",
+	["mp.tool.mimic.error_spatial"]     = "No se puede reflejar un reproductor de medios espacial.",
+	["mp.tool.mimic.error_same"]        = "La fuente y el objetivo no pueden ser la misma entidad.",
+	["mp.tool.mimic.error_no_source"]   = "Aún no se ha copiado ninguna fuente. Haz clic izquierdo primero en un reproductor de medios.",
+	["mp.tool.mimic.error_source_gone"] = "La fuente copiada ya no existe. Haz clic izquierdo en una nueva fuente.",
+	["mp.tool.mimic.error_mimic_source"] = "No se puede copiar desde un reproductor espejo. Copia desde la fuente original.",
+	["mp.tool.mimic.error_already_linked"] = "Esta entidad ya está reflejando esa fuente.",
+	["mp.tool.mimic.error_not_mimic"]   = "Esta entidad no es un reproductor espejo.",
+	["mp.tool.mimic.error_has_content"] = "No se puede reflejar un reproductor que está sirviendo su propio contenido. Detén o limpia sus medios primero.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Límite de navegadores alcanzado",

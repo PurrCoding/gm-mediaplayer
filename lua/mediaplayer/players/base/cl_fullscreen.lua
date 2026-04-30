@@ -118,7 +118,7 @@ function MEDIAPLAYER:DrawFullscreen()
 		if media.Draw then
 			media:Draw( w, h )
 		else
-			draw.SimpleText( "Unsupported media type", "DermaDefault", w / 2, h / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+			draw.SimpleText( MediaPlayer.L("mp.ui.unsupported_media"), "DermaDefault", w / 2, h / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		end
 
 		-- Draw media info

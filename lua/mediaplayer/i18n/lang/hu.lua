@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("hu", {
 	["mp.ui.added_by"]                  = "HOZZÁADTA",
 	["mp.ui.unknown"]                   = "Ismeretlen",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Már szavaztál a kihagyásra.",
+	["mp.voteskip.vote_cast"]           = "Szavazás: %d/%d szavazat (még %d szükséges)",
+	["mp.voteskip.passed"]              = "Szavazás elfogadva! Kihagyás...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Ismétlés",
 	["mp.ui.shuffle"]                   = "Keverés",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("hu", {
 	["mp.settings.subtitles"]           = "Feliratok",
 	["mp.settings.subtitles_off"]       = "Ki",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Nem támogatott médiatípus",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Térbeli médialejátszó",
 	["mp.tool.spatial.label"]           = "Térbeli média",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("hu", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Nincs jogosultságod ennek a térbeli médiaforrásnak a vezérléséhez.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Tükör médialejátszó",
+	["mp.tool.mimic.desc"]              = "Tükrözd egy másik médialejátszó videokimenetét egy második képernyőre.",
+	["mp.tool.mimic.usage"]             = "Bal kattintás: forrás másolása. Jobb kattintás: beillesztés célpontra. Újratöltés (R): tükör eltávolítása.",
+	["mp.tool.mimic.help_copy"]         = "Kattints bal gombbal egy médialejátszóra, hogy videoforrásként másold.",
+	["mp.tool.mimic.help_paste"]        = "Kattints jobb gombbal más médialejátszókra a beillesztéshez — tükrözni fogják a forrást. Több képernyőre is beilleszthetsz.",
+	["mp.tool.mimic.help_remove"]       = "Nyomd meg az Újratöltés (R) gombot egy tükör lejátszón az eltávolításához és az eredeti visszaállításához.",
+	["mp.tool.mimic.source_copied"]     = "Forrás másolva! Kattints jobb gombbal más médialejátszókra a beillesztéshez.",
+	["mp.tool.mimic.pasted"]            = "Tükör alkalmazva! Ez a képernyő most a forrást tükrözi.",
+	["mp.tool.mimic.removed"]           = "Tükör eltávolítva. Entitás visszaállítva.",
+	["mp.tool.mimic.undo"]              = "Tükör médialejátszó",
+	["mp.tool.mimic.error_not_mp"]      = "Ennek az entitásnak nincs médialejátszója.",
+	["mp.tool.mimic.error_spatial"]     = "Térbeli médialejátszó nem tükrözhető.",
+	["mp.tool.mimic.error_same"]        = "A forrás és a célpont nem lehet ugyanaz az entitás.",
+	["mp.tool.mimic.error_no_source"]   = "Még nincs forrás másolva. Először kattints bal gombbal egy médialejátszóra.",
+	["mp.tool.mimic.error_source_gone"] = "A másolt forrás már nem létezik. Kattints bal gombbal egy új forrásra.",
+	["mp.tool.mimic.error_mimic_source"] = "Tükör lejátszóról nem lehet másolni. Másold az eredeti forrásból.",
+	["mp.tool.mimic.error_already_linked"] = "Ez az entitás már tükrözi azt a forrást.",
+	["mp.tool.mimic.error_not_mimic"]   = "Ez az entitás nem tükör lejátszó.",
+	["mp.tool.mimic.error_has_content"] = "Nem tükrözhető olyan médialejátszó, amely saját tartalmat játszik le. Először állítsd le vagy töröld a médiáját.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Böngésző limit elérve",

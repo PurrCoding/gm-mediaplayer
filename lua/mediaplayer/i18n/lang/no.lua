@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("no", {
 	["mp.ui.added_by"]                  = "LAGT TIL AV",
 	["mp.ui.unknown"]                   = "Ukjent",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Du har allerede stemt for å hoppe over.",
+	["mp.voteskip.vote_cast"]           = "Avstemning: %d/%d stemmer (%d til trengs)",
+	["mp.voteskip.passed"]              = "Avstemning godkjent! Hopper over...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Gjenta",
 	["mp.ui.shuffle"]                   = "Tilfeldig",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("no", {
 	["mp.settings.subtitles"]           = "Undertekster",
 	["mp.settings.subtitles_off"]       = "Av",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Ikke-støttet medietype",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Romlig mediaspiller",
 	["mp.tool.spatial.label"]           = "Romlig media",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("no", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Du har ikke tillatelse til å kontrollere denne romlige mediekilden.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Speiling-mediaspiller",
+	["mp.tool.mimic.desc"]              = "Speil videoutgangen til en annen mediaspiller på en annen skjerm.",
+	["mp.tool.mimic.usage"]             = "Venstreklikk: kopier kilde. Høyreklikk: lim inn på mål. Omlading (R): fjern speiling.",
+	["mp.tool.mimic.help_copy"]         = "Venstreklikk på en mediaspiller for å kopiere den som videokilde.",
+	["mp.tool.mimic.help_paste"]        = "Høyreklikk på andre mediaspillere for å lime inn — de vil speile kilden. Du kan lime inn på flere skjermer.",
+	["mp.tool.mimic.help_remove"]       = "Trykk Omlading (R) på en speilingsspiller for å fjerne den og gjenopprette originalen.",
+	["mp.tool.mimic.source_copied"]     = "Kilde kopiert! Høyreklikk på andre mediaspillere for å lime inn.",
+	["mp.tool.mimic.pasted"]            = "Speiling brukt! Denne skjermen speiler nå kilden.",
+	["mp.tool.mimic.removed"]           = "Speiling fjernet. Entitet gjenopprettet.",
+	["mp.tool.mimic.undo"]              = "Speiling-mediaspiller",
+	["mp.tool.mimic.error_not_mp"]      = "Denne entiteten har ikke en mediaspiller.",
+	["mp.tool.mimic.error_spatial"]     = "Kan ikke speile en romlig mediaspiller.",
+	["mp.tool.mimic.error_same"]        = "Kilde og mål kan ikke være samme entitet.",
+	["mp.tool.mimic.error_no_source"]   = "Ingen kilde kopiert ennå. Venstreklikk på en mediaspiller først.",
+	["mp.tool.mimic.error_source_gone"] = "Den kopierte kilden eksisterer ikke lenger. Venstreklikk på en ny kilde.",
+	["mp.tool.mimic.error_mimic_source"] = "Kan ikke kopiere fra en speilingsspiller. Kopier fra den originale kilden.",
+	["mp.tool.mimic.error_already_linked"] = "Denne entiteten speiler allerede den kilden.",
+	["mp.tool.mimic.error_not_mimic"]   = "Denne entiteten er ikke en speilingsspiller.",
+	["mp.tool.mimic.error_has_content"] = "Kan ikke speile en mediaspiller som spiller eget innhold. Stopp eller tøm mediene først.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Nettlesergrense nådd",

@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	["mp.ui.added_by"]                  = "PŘIDAL",
 	["mp.ui.unknown"]                   = "Neznámý",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Již jste hlasovali pro přeskočení.",
+	["mp.voteskip.vote_cast"]           = "Hlasování: %d/%d hlasů (potřeba ještě %d)",
+	["mp.voteskip.passed"]              = "Hlasování přijato! Přeskakuji...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Opakovat",
 	["mp.ui.shuffle"]                   = "Náhodně",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 	["mp.settings.subtitles"]           = "Titulky",
 	["mp.settings.subtitles_off"]       = "Vypnuto",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Nepodporovaný typ média",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Prostorový přehrávač médií",
 	["mp.tool.spatial.label"]           = "Prostorová média",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("cs", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Nemáte oprávnění ovládat tento prostorový zdroj médií.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Zrcadlový přehrávač médií",
+	["mp.tool.mimic.desc"]              = "Zrcadlete video výstup jiného přehrávače médií na druhou obrazovku.",
+	["mp.tool.mimic.usage"]             = "Levé tlačítko: kopírovat zdroj. Pravé tlačítko: vložit na cíl(e). Přebít (R): odstranit zrcadlo.",
+	["mp.tool.mimic.help_copy"]         = "Klikněte levým tlačítkem na přehrávač médií pro zkopírování jako zdroj videa.",
+	["mp.tool.mimic.help_paste"]        = "Klikněte pravým tlačítkem na jiné přehrávače pro vložení — budou zrcadlit zdroj. Můžete vložit na více obrazovek.",
+	["mp.tool.mimic.help_remove"]       = "Stiskněte Přebít (R) na zrcadlovém přehrávači pro jeho odstranění a obnovení originálu.",
+	["mp.tool.mimic.source_copied"]     = "Zdroj zkopírován! Klikněte pravým tlačítkem na jiné přehrávače pro vložení.",
+	["mp.tool.mimic.pasted"]            = "Zrcadlo aplikováno! Tato obrazovka nyní zrcadlí zdroj.",
+	["mp.tool.mimic.removed"]           = "Zrcadlo odstraněno. Entita obnovena.",
+	["mp.tool.mimic.undo"]              = "Zrcadlový přehrávač médií",
+	["mp.tool.mimic.error_not_mp"]      = "Tato entita nemá přehrávač médií.",
+	["mp.tool.mimic.error_spatial"]     = "Nelze zrcadlit prostorový přehrávač médií.",
+	["mp.tool.mimic.error_same"]        = "Zdroj a cíl nemohou být stejná entita.",
+	["mp.tool.mimic.error_no_source"]   = "Zatím nebyl zkopírován žádný zdroj. Nejprve klikněte levým tlačítkem na přehrávač médií.",
+	["mp.tool.mimic.error_source_gone"] = "Zkopírovaný zdroj již neexistuje. Klikněte levým tlačítkem na nový zdroj.",
+	["mp.tool.mimic.error_mimic_source"] = "Nelze kopírovat ze zrcadlového přehrávače. Kopírujte z původního zdroje.",
+	["mp.tool.mimic.error_already_linked"] = "Tato entita již zrcadlí tento zdroj.",
+	["mp.tool.mimic.error_not_mimic"]   = "Tato entita není zrcadlový přehrávač.",
+	["mp.tool.mimic.error_has_content"] = "Nelze zrcadlit přehrávač, který přehrává vlastní obsah. Nejprve zastavte nebo vymažte jeho média.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Dosažen limit prohlížečů",

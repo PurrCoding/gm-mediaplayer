@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("zh-tw", {
 	["mp.ui.added_by"]                  = "新增者",
 	["mp.ui.unknown"]                   = "未知",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "您已經投過跳過票了。",
+	["mp.voteskip.vote_cast"]           = "投票跳過：%d/%d 票（還需 %d 票）",
+	["mp.voteskip.passed"]              = "投票跳過通過！正在跳過...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "重複",
 	["mp.ui.shuffle"]                   = "隨機播放",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("zh-tw", {
 	["mp.settings.subtitles"]           = "字幕",
 	["mp.settings.subtitles_off"]       = "關閉",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "不支援的媒體類型",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "空間媒體播放器",
 	["mp.tool.spatial.label"]           = "空間媒體",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("zh-tw", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "您沒有權限控制此空間媒體源。",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "鏡像媒體播放器",
+	["mp.tool.mimic.desc"]              = "將另一個媒體播放器的影片輸出鏡像到第二個螢幕。",
+	["mp.tool.mimic.usage"]             = "左鍵點擊：複製來源。右鍵點擊：貼上到目標。重新裝填 (R)：移除鏡像。",
+	["mp.tool.mimic.help_copy"]         = "左鍵點擊一個媒體播放器將其複製為影片來源。",
+	["mp.tool.mimic.help_paste"]        = "右鍵點擊其他媒體播放器進行貼上——它們將鏡像來源。可以貼上到多個螢幕。",
+	["mp.tool.mimic.help_remove"]       = "在鏡像播放器上按重新裝填 (R) 以移除並恢復原始狀態。",
+	["mp.tool.mimic.source_copied"]     = "來源已複製！右鍵點擊其他媒體播放器進行貼上。",
+	["mp.tool.mimic.pasted"]            = "鏡像已套用！此螢幕現在鏡像來源。",
+	["mp.tool.mimic.removed"]           = "鏡像已移除。實體已恢復正常。",
+	["mp.tool.mimic.undo"]              = "鏡像媒體播放器",
+	["mp.tool.mimic.error_not_mp"]      = "此實體沒有媒體播放器。",
+	["mp.tool.mimic.error_spatial"]     = "無法鏡像空間媒體播放器。",
+	["mp.tool.mimic.error_same"]        = "來源和目標不能是同一個實體。",
+	["mp.tool.mimic.error_no_source"]   = "尚未複製來源。請先左鍵點擊一個媒體播放器。",
+	["mp.tool.mimic.error_source_gone"] = "複製的來源已不存在。請左鍵點擊一個新的來源。",
+	["mp.tool.mimic.error_mimic_source"] = "無法從鏡像播放器複製。請從原始來源複製。",
+	["mp.tool.mimic.error_already_linked"] = "此實體已在鏡像該來源。",
+	["mp.tool.mimic.error_not_mimic"]   = "此實體不是鏡像播放器。",
+	["mp.tool.mimic.error_has_content"] = "無法鏡像正在播放自身內容的媒體播放器。請先停止或清除其媒體。",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "已達瀏覽器上限",

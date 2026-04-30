@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("ru", {
 	["mp.ui.added_by"]                  = "ДОБАВИЛ",
 	["mp.ui.unknown"]                   = "Неизвестно",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Вы уже проголосовали за пропуск.",
+	["mp.voteskip.vote_cast"]           = "Голосование: %d/%d голосов (нужно ещё %d)",
+	["mp.voteskip.passed"]              = "Голосование принято! Пропускаем...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Повтор",
 	["mp.ui.shuffle"]                   = "Перемешать",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("ru", {
 	["mp.settings.subtitles"]           = "Субтитры",
 	["mp.settings.subtitles_off"]       = "Выкл.",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Неподдерживаемый тип медиа",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Пространственный медиаплеер",
 	["mp.tool.spatial.label"]           = "Пространственное медиа",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("ru", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "У вас нет разрешения управлять этим пространственным источником медиа.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Зеркальный медиаплеер",
+	["mp.tool.mimic.desc"]              = "Отразите видеовыход другого медиаплеера на второй экран.",
+	["mp.tool.mimic.usage"]             = "ЛКМ: скопировать источник. ПКМ: вставить на цель(и). Перезарядка (R): удалить зеркало.",
+	["mp.tool.mimic.help_copy"]         = "Нажмите ЛКМ на медиаплеер, чтобы скопировать его как источник видео.",
+	["mp.tool.mimic.help_paste"]        = "Нажмите ПКМ на другие медиаплееры, чтобы вставить — они будут отражать источник. Можно вставить на несколько экранов.",
+	["mp.tool.mimic.help_remove"]       = "Нажмите Перезарядку (R) на зеркальном плеере, чтобы удалить его и восстановить оригинал.",
+	["mp.tool.mimic.source_copied"]     = "Источник скопирован! Нажмите ПКМ на другие медиаплееры, чтобы вставить.",
+	["mp.tool.mimic.pasted"]            = "Зеркало применено! Этот экран теперь отражает источник.",
+	["mp.tool.mimic.removed"]           = "Зеркало удалено. Объект восстановлен.",
+	["mp.tool.mimic.undo"]              = "Зеркальный медиаплеер",
+	["mp.tool.mimic.error_not_mp"]      = "У этой сущности нет медиаплеера.",
+	["mp.tool.mimic.error_spatial"]     = "Невозможно отразить пространственный медиаплеер.",
+	["mp.tool.mimic.error_same"]        = "Источник и цель не могут быть одной и той же сущностью.",
+	["mp.tool.mimic.error_no_source"]   = "Источник ещё не скопирован. Сначала нажмите ЛКМ на медиаплеер.",
+	["mp.tool.mimic.error_source_gone"] = "Скопированный источник больше не существует. Нажмите ЛКМ на новый источник.",
+	["mp.tool.mimic.error_mimic_source"] = "Невозможно копировать с зеркального плеера. Копируйте с оригинального источника.",
+	["mp.tool.mimic.error_already_linked"] = "Эта сущность уже отражает этот источник.",
+	["mp.tool.mimic.error_not_mimic"]   = "Эта сущность не является зеркальным плеером.",
+	["mp.tool.mimic.error_has_content"] = "Невозможно отразить медиаплеер, который воспроизводит собственный контент. Сначала остановите или очистите его медиа.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Достигнут лимит браузеров",

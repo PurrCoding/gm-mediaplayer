@@ -15,9 +15,9 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.ui.unknown"]                   = "Unknown",
 
 	-- Voteskip
-	["mp.voteskip.already_voted"]   = "You have already voted to skip.",
-	["mp.voteskip.vote_cast"]       = "Voteskip: %d/%d votes (%d more needed)",
-	["mp.voteskip.passed"]          = "Voteskip passed! Skipping...",
+	["mp.voteskip.already_voted"]       = "You have already voted to skip.",
+	["mp.voteskip.vote_cast"]           = "Voteskip: %d/%d votes (%d more needed)",
+	["mp.voteskip.passed"]              = "Voteskip passed! Skipping...",
 
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Repeat",
@@ -81,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.settings.subtitles"]           = "Subtitles",
 	["mp.settings.subtitles_off"]       = "Off",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Unsupported media type",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Spatial Media Player",
 	["mp.tool.spatial.label"]           = "Spatial Media",
@@ -95,11 +98,6 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "You don't have permission to control this spatial media source.",
 
-	-- Browser pool
-	["mp.error.browser_limit_title"]    = "Browser Limit Reached",
-	["mp.error.browser_limit_detail"]   = "All browser slots are in use (%d/%d active).",
-	["mp.error.browser_limit_note"]     = "Waiting for a slot to free up. This is not a bug.",
-
 	-- Mimic tool
 	["mp.tool.mimic.name"]              = "Mimic Media Player",
 	["mp.tool.mimic.desc"]              = "Mirror another media player's video output onto a second screen.",
@@ -111,12 +109,18 @@ MediaPlayer.i18n.RegisterLanguage("en", {
 	["mp.tool.mimic.pasted"]            = "Mimic applied! This screen now mirrors the source.",
 	["mp.tool.mimic.removed"]           = "Mimic removed. Entity restored to normal.",
 	["mp.tool.mimic.undo"]              = "Mimic Media Player",
+	["mp.tool.mimic.error_not_mp"]      = "This entity does not have a media player.",
 	["mp.tool.mimic.error_spatial"]     = "Cannot mimic a spatial media player.",
 	["mp.tool.mimic.error_same"]        = "Source and target cannot be the same entity.",
 	["mp.tool.mimic.error_no_source"]   = "No source copied yet. Left click a media player first.",
 	["mp.tool.mimic.error_source_gone"] = "The copied source no longer exists. Left click a new source.",
 	["mp.tool.mimic.error_mimic_source"] = "Cannot copy from a mimic player. Copy from the original source instead.",
 	["mp.tool.mimic.error_already_linked"] = "This entity is already mimicing that source.",
-	["mp.tool.mimic.error_not_mimic"]  = "This entity is not a mimic player.",
+	["mp.tool.mimic.error_not_mimic"]   = "This entity is not a mimic player.",
 	["mp.tool.mimic.error_has_content"] = "Cannot mimic a media player that is currently serving its own content. Stop or clear its media first.",
+
+	-- Browser pool
+	["mp.error.browser_limit_title"]    = "Browser Limit Reached",
+	["mp.error.browser_limit_detail"]   = "All browser slots are in use (%d/%d active).",
+	["mp.error.browser_limit_note"]     = "Waiting for a slot to free up. This is not a bug.",
 })

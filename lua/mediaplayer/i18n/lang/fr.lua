@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("fr", {
 	["mp.ui.added_by"]                  = "AJOUTÉ PAR",
 	["mp.ui.unknown"]                   = "Inconnu",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Vous avez déjà voté pour passer.",
+	["mp.voteskip.vote_cast"]           = "Voteskip : %d/%d votes (%d de plus nécessaires)",
+	["mp.voteskip.passed"]              = "Voteskip accepté ! Passage en cours...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Répéter",
 	["mp.ui.shuffle"]                   = "Aléatoire",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("fr", {
 	["mp.settings.subtitles"]           = "Sous-titres",
 	["mp.settings.subtitles_off"]       = "Désactivé",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Type de média non pris en charge",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Lecteur multimédia spatial",
 	["mp.tool.spatial.label"]           = "Média spatial",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("fr", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Vous n'avez pas la permission de contrôler cette source de média spatial.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Lecteur multimédia miroir",
+	["mp.tool.mimic.desc"]              = "Reflétez la sortie vidéo d'un autre lecteur multimédia sur un second écran.",
+	["mp.tool.mimic.usage"]             = "Clic gauche : copier la source. Clic droit : coller sur la/les cible(s). Recharger (R) : supprimer le miroir.",
+	["mp.tool.mimic.help_copy"]         = "Cliquez gauche sur un lecteur multimédia pour le copier comme source vidéo.",
+	["mp.tool.mimic.help_paste"]        = "Cliquez droit sur d'autres lecteurs pour coller — ils refléteront la source. Vous pouvez coller sur plusieurs écrans.",
+	["mp.tool.mimic.help_remove"]       = "Appuyez sur Recharger (R) sur un lecteur miroir pour le supprimer et restaurer l'original.",
+	["mp.tool.mimic.source_copied"]     = "Source copiée ! Cliquez droit sur d'autres lecteurs pour coller.",
+	["mp.tool.mimic.pasted"]            = "Miroir appliqué ! Cet écran reflète maintenant la source.",
+	["mp.tool.mimic.removed"]           = "Miroir supprimé. Entité restaurée.",
+	["mp.tool.mimic.undo"]              = "Lecteur multimédia miroir",
+	["mp.tool.mimic.error_not_mp"]      = "Cette entité ne possède pas de lecteur multimédia.",
+	["mp.tool.mimic.error_spatial"]     = "Impossible de refléter un lecteur multimédia spatial.",
+	["mp.tool.mimic.error_same"]        = "La source et la cible ne peuvent pas être la même entité.",
+	["mp.tool.mimic.error_no_source"]   = "Aucune source copiée. Cliquez d'abord gauche sur un lecteur multimédia.",
+	["mp.tool.mimic.error_source_gone"] = "La source copiée n'existe plus. Cliquez gauche sur une nouvelle source.",
+	["mp.tool.mimic.error_mimic_source"] = "Impossible de copier depuis un lecteur miroir. Copiez depuis la source originale.",
+	["mp.tool.mimic.error_already_linked"] = "Cette entité reflète déjà cette source.",
+	["mp.tool.mimic.error_not_mimic"]   = "Cette entité n'est pas un lecteur miroir.",
+	["mp.tool.mimic.error_has_content"] = "Impossible de refléter un lecteur qui diffuse son propre contenu. Arrêtez ou videz d'abord ses médias.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Limite de navigateurs atteinte",

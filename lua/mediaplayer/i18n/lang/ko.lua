@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("ko", {
 	["mp.ui.added_by"]                  = "추가한 사람",
 	["mp.ui.unknown"]                   = "알 수 없음",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "이미 건너뛰기에 투표하셨습니다.",
+	["mp.voteskip.vote_cast"]           = "투표 건너뛰기: %d/%d 표 (%d 표 더 필요)",
+	["mp.voteskip.passed"]              = "투표 건너뛰기 통과! 건너뛰는 중...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "반복",
 	["mp.ui.shuffle"]                   = "셔플",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("ko", {
 	["mp.settings.subtitles"]           = "자막",
 	["mp.settings.subtitles_off"]       = "끄기",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "지원되지 않는 미디어 유형",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "공간 미디어 플레이어",
 	["mp.tool.spatial.label"]           = "공간 미디어",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("ko", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "이 공간 미디어 소스를 제어할 권한이 없습니다.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "미믹 미디어 플레이어",
+	["mp.tool.mimic.desc"]              = "다른 미디어 플레이어의 비디오 출력을 두 번째 화면에 미러링합니다.",
+	["mp.tool.mimic.usage"]             = "좌클릭: 소스 복사. 우클릭: 대상에 붙여넣기. 재장전 (R): 미믹 제거.",
+	["mp.tool.mimic.help_copy"]         = "미디어 플레이어를 좌클릭하여 비디오 소스로 복사합니다.",
+	["mp.tool.mimic.help_paste"]        = "다른 미디어 플레이어를 우클릭하여 붙여넣기 — 소스를 미러링합니다. 여러 화면에 붙여넣을 수 있습니다.",
+	["mp.tool.mimic.help_remove"]       = "미믹 플레이어에서 재장전 (R)을 눌러 제거하고 원본을 복원합니다.",
+	["mp.tool.mimic.source_copied"]     = "소스가 복사되었습니다! 다른 미디어 플레이어를 우클릭하여 붙여넣으세요.",
+	["mp.tool.mimic.pasted"]            = "미믹 적용! 이 화면은 이제 소스를 미러링합니다.",
+	["mp.tool.mimic.removed"]           = "미믹이 제거되었습니다. 엔티티가 복원되었습니다.",
+	["mp.tool.mimic.undo"]              = "미믹 미디어 플레이어",
+	["mp.tool.mimic.error_not_mp"]      = "이 엔티티에는 미디어 플레이어가 없습니다.",
+	["mp.tool.mimic.error_spatial"]     = "공간 미디어 플레이어는 미믹할 수 없습니다.",
+	["mp.tool.mimic.error_same"]        = "소스와 대상은 같은 엔티티일 수 없습니다.",
+	["mp.tool.mimic.error_no_source"]   = "아직 소스가 복사되지 않았습니다. 먼저 미디어 플레이어를 좌클릭하세요.",
+	["mp.tool.mimic.error_source_gone"] = "복사한 소스가 더 이상 존재하지 않습니다. 새 소스를 좌클릭하세요.",
+	["mp.tool.mimic.error_mimic_source"] = "미믹 플레이어에서는 복사할 수 없습니다. 원본 소스에서 복사하세요.",
+	["mp.tool.mimic.error_already_linked"] = "이 엔티티는 이미 해당 소스를 미러링하고 있습니다.",
+	["mp.tool.mimic.error_not_mimic"]   = "이 엔티티는 미믹 플레이어가 아닙니다.",
+	["mp.tool.mimic.error_has_content"] = "자체 콘텐츠를 제공 중인 미디어 플레이어는 미믹할 수 없습니다. 먼저 미디어를 중지하거나 지우세요.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "브라우저 한도 도달",

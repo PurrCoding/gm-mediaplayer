@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("pl", {
 	["mp.ui.added_by"]                  = "DODANE PRZEZ",
 	["mp.ui.unknown"]                   = "Nieznany",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Już zagłosowałeś za pominięciem.",
+	["mp.voteskip.vote_cast"]           = "Głosowanie: %d/%d głosów (potrzeba jeszcze %d)",
+	["mp.voteskip.passed"]              = "Głosowanie przyjęte! Pomijanie...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Powtórz",
 	["mp.ui.shuffle"]                   = "Losowo",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("pl", {
 	["mp.settings.subtitles"]           = "Napisy",
 	["mp.settings.subtitles_off"]       = "Wyłączone",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Nieobsługiwany typ mediów",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Przestrzenny odtwarzacz mediów",
 	["mp.tool.spatial.label"]           = "Media przestrzenne",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("pl", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Nie masz uprawnień do sterowania tym źródłem mediów przestrzennych.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Lustrzany odtwarzacz mediów",
+	["mp.tool.mimic.desc"]              = "Odbij wyjście wideo innego odtwarzacza mediów na drugi ekran.",
+	["mp.tool.mimic.usage"]             = "Lewy klik: kopiuj źródło. Prawy klik: wklej na cel(e). Przeładuj (R): usuń lustro.",
+	["mp.tool.mimic.help_copy"]         = "Kliknij lewym na odtwarzacz mediów, aby skopiować go jako źródło wideo.",
+	["mp.tool.mimic.help_paste"]        = "Kliknij prawym na inne odtwarzacze, aby wkleić — będą odbijać źródło. Możesz wkleić na wiele ekranów.",
+	["mp.tool.mimic.help_remove"]       = "Naciśnij Przeładuj (R) na lustrzanym odtwarzaczu, aby go usunąć i przywrócić oryginał.",
+	["mp.tool.mimic.source_copied"]     = "Źródło skopiowane! Kliknij prawym na inne odtwarzacze, aby wkleić.",
+	["mp.tool.mimic.pasted"]            = "Lustro zastosowane! Ten ekran teraz odbija źródło.",
+	["mp.tool.mimic.removed"]           = "Lustro usunięte. Encja przywrócona.",
+	["mp.tool.mimic.undo"]              = "Lustrzany odtwarzacz mediów",
+	["mp.tool.mimic.error_not_mp"]      = "Ta encja nie posiada odtwarzacza mediów.",
+	["mp.tool.mimic.error_spatial"]     = "Nie można odbić przestrzennego odtwarzacza mediów.",
+	["mp.tool.mimic.error_same"]        = "Źródło i cel nie mogą być tą samą encją.",
+	["mp.tool.mimic.error_no_source"]   = "Nie skopiowano jeszcze źródła. Najpierw kliknij lewym na odtwarzacz mediów.",
+	["mp.tool.mimic.error_source_gone"] = "Skopiowane źródło już nie istnieje. Kliknij lewym na nowe źródło.",
+	["mp.tool.mimic.error_mimic_source"] = "Nie można kopiować z lustrzanego odtwarzacza. Skopiuj z oryginalnego źródła.",
+	["mp.tool.mimic.error_already_linked"] = "Ta encja już odbija to źródło.",
+	["mp.tool.mimic.error_not_mimic"]   = "Ta encja nie jest lustrzanym odtwarzaczem.",
+	["mp.tool.mimic.error_has_content"] = "Nie można odbić odtwarzacza, który odtwarza własną zawartość. Najpierw zatrzymaj lub wyczyść jego media.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Osiągnięto limit przeglądarek",

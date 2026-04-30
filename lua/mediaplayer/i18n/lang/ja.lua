@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("ja", {
 	["mp.ui.added_by"]                  = "追加者",
 	["mp.ui.unknown"]                   = "不明",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "すでにスキップに投票済みです。",
+	["mp.voteskip.vote_cast"]           = "投票スキップ: %d/%d 票（あと %d 票必要）",
+	["mp.voteskip.passed"]              = "投票スキップ成立！スキップしています...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "リピート",
 	["mp.ui.shuffle"]                   = "シャッフル",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("ja", {
 	["mp.settings.subtitles"]           = "字幕",
 	["mp.settings.subtitles_off"]       = "オフ",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "サポートされていないメディアタイプ",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "空間メディアプレイヤー",
 	["mp.tool.spatial.label"]           = "空間メディア",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("ja", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "この空間メディアソースを制御する権限がありません。",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "ミミックメディアプレイヤー",
+	["mp.tool.mimic.desc"]              = "別のメディアプレイヤーの映像出力を2番目のスクリーンにミラーリングします。",
+	["mp.tool.mimic.usage"]             = "左クリック：ソースをコピー。右クリック：ターゲットに貼り付け。リロード (R)：ミミックを削除。",
+	["mp.tool.mimic.help_copy"]         = "メディアプレイヤーを左クリックして映像ソースとしてコピーします。",
+	["mp.tool.mimic.help_paste"]        = "他のメディアプレイヤーを右クリックして貼り付け — ソースをミラーリングします。複数のスクリーンに貼り付けできます。",
+	["mp.tool.mimic.help_remove"]       = "ミミックプレイヤーでリロード (R) を押すと削除してオリジナルに戻します。",
+	["mp.tool.mimic.source_copied"]     = "ソースをコピーしました！他のメディアプレイヤーを右クリックして貼り付けてください。",
+	["mp.tool.mimic.pasted"]            = "ミミック適用！このスクリーンはソースをミラーリングしています。",
+	["mp.tool.mimic.removed"]           = "ミミックを削除しました。エンティティを復元しました。",
+	["mp.tool.mimic.undo"]              = "ミミックメディアプレイヤー",
+	["mp.tool.mimic.error_not_mp"]      = "このエンティティにはメディアプレイヤーがありません。",
+	["mp.tool.mimic.error_spatial"]     = "空間メディアプレイヤーはミミックできません。",
+	["mp.tool.mimic.error_same"]        = "ソースとターゲットは同じエンティティにできません。",
+	["mp.tool.mimic.error_no_source"]   = "まだソースがコピーされていません。先にメディアプレイヤーを左クリックしてください。",
+	["mp.tool.mimic.error_source_gone"] = "コピーしたソースはもう存在しません。新しいソースを左クリックしてください。",
+	["mp.tool.mimic.error_mimic_source"] = "ミミックプレイヤーからはコピーできません。オリジナルのソースからコピーしてください。",
+	["mp.tool.mimic.error_already_linked"] = "このエンティティは既にそのソースをミラーリングしています。",
+	["mp.tool.mimic.error_not_mimic"]   = "このエンティティはミミックプレイヤーではありません。",
+	["mp.tool.mimic.error_has_content"] = "独自のコンテンツを配信中のメディアプレイヤーはミミックできません。先にメディアを停止またはクリアしてください。",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "ブラウザの上限に達しました",

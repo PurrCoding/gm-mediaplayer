@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("pt-br", {
 	["mp.ui.added_by"]                  = "ADICIONADO POR",
 	["mp.ui.unknown"]                   = "Desconhecido",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Você já votou para pular.",
+	["mp.voteskip.vote_cast"]           = "Voteskip: %d/%d votos (%d mais necessários)",
+	["mp.voteskip.passed"]              = "Voteskip aprovado! Pulando...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Repetir",
 	["mp.ui.shuffle"]                   = "Aleatório",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("pt-br", {
 	["mp.settings.subtitles"]           = "Legendas",
 	["mp.settings.subtitles_off"]       = "Desativado",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Tipo de mídia não suportado",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Reprodutor de mídia espacial",
 	["mp.tool.spatial.label"]           = "Mídia espacial",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("pt-br", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Você não tem permissão para controlar esta fonte de mídia espacial.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Reprodutor de mídia espelho",
+	["mp.tool.mimic.desc"]              = "Espelhe a saída de vídeo de outro reprodutor de mídia em uma segunda tela.",
+	["mp.tool.mimic.usage"]             = "Clique esquerdo: copiar fonte. Clique direito: colar no(s) alvo(s). Recarregar (R): remover espelho.",
+	["mp.tool.mimic.help_copy"]         = "Clique com o botão esquerdo em um reprodutor de mídia para copiá-lo como fonte de vídeo.",
+	["mp.tool.mimic.help_paste"]        = "Clique com o botão direito em outros reprodutores para colar — eles espelharão a fonte. Você pode colar em várias telas.",
+	["mp.tool.mimic.help_remove"]       = "Pressione Recarregar (R) em um reprodutor espelho para removê-lo e restaurar o original.",
+	["mp.tool.mimic.source_copied"]     = "Fonte copiada! Clique com o botão direito em outros reprodutores para colar.",
+	["mp.tool.mimic.pasted"]            = "Espelho aplicado! Esta tela agora espelha a fonte.",
+	["mp.tool.mimic.removed"]           = "Espelho removido. Entidade restaurada.",
+	["mp.tool.mimic.undo"]              = "Reprodutor de mídia espelho",
+	["mp.tool.mimic.error_not_mp"]      = "Esta entidade não possui um reprodutor de mídia.",
+	["mp.tool.mimic.error_spatial"]     = "Não é possível espelhar um reprodutor de mídia espacial.",
+	["mp.tool.mimic.error_same"]        = "Fonte e alvo não podem ser a mesma entidade.",
+	["mp.tool.mimic.error_no_source"]   = "Nenhuma fonte copiada ainda. Clique com o botão esquerdo em um reprodutor de mídia primeiro.",
+	["mp.tool.mimic.error_source_gone"] = "A fonte copiada não existe mais. Clique com o botão esquerdo em uma nova fonte.",
+	["mp.tool.mimic.error_mimic_source"] = "Não é possível copiar de um reprodutor espelho. Copie da fonte original.",
+	["mp.tool.mimic.error_already_linked"] = "Esta entidade já está espelhando essa fonte.",
+	["mp.tool.mimic.error_not_mimic"]   = "Esta entidade não é um reprodutor espelho.",
+	["mp.tool.mimic.error_has_content"] = "Não é possível espelhar um reprodutor que está servindo seu próprio conteúdo. Pare ou limpe suas mídias primeiro.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Limite de navegadores atingido",

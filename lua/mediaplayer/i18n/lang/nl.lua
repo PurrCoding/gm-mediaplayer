@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("nl", {
 	["mp.ui.added_by"]                  = "TOEGEVOEGD DOOR",
 	["mp.ui.unknown"]                   = "Onbekend",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Je hebt al gestemd om over te slaan.",
+	["mp.voteskip.vote_cast"]           = "Stemming: %d/%d stemmen (nog %d nodig)",
+	["mp.voteskip.passed"]              = "Stemming aangenomen! Overslaan...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Herhalen",
 	["mp.ui.shuffle"]                   = "Willekeurig",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("nl", {
 	["mp.settings.subtitles"]           = "Ondertiteling",
 	["mp.settings.subtitles_off"]       = "Uit",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Niet-ondersteund mediatype",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Ruimtelijke mediaspeler",
 	["mp.tool.spatial.label"]           = "Ruimtelijke media",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("nl", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Je hebt geen toestemming om deze ruimtelijke mediabron te bedienen.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Spiegel-mediaspeler",
+	["mp.tool.mimic.desc"]              = "Spiegel de video-uitvoer van een andere mediaspeler naar een tweede scherm.",
+	["mp.tool.mimic.usage"]             = "Linksklik: bron kopiëren. Rechtsklik: plakken op doel(en). Herladen (R): spiegel verwijderen.",
+	["mp.tool.mimic.help_copy"]         = "Klik links op een mediaspeler om deze als videobron te kopiëren.",
+	["mp.tool.mimic.help_paste"]        = "Klik rechts op andere mediaspelers om te plakken — ze spiegelen de bron. Je kunt op meerdere schermen plakken.",
+	["mp.tool.mimic.help_remove"]       = "Druk op Herladen (R) op een spiegelspeler om deze te verwijderen en het origineel te herstellen.",
+	["mp.tool.mimic.source_copied"]     = "Bron gekopieerd! Klik rechts op andere mediaspelers om te plakken.",
+	["mp.tool.mimic.pasted"]            = "Spiegel toegepast! Dit scherm spiegelt nu de bron.",
+	["mp.tool.mimic.removed"]           = "Spiegel verwijderd. Entiteit hersteld.",
+	["mp.tool.mimic.undo"]              = "Spiegel-mediaspeler",
+	["mp.tool.mimic.error_not_mp"]      = "Deze entiteit heeft geen mediaspeler.",
+	["mp.tool.mimic.error_spatial"]     = "Kan geen ruimtelijke mediaspeler spiegelen.",
+	["mp.tool.mimic.error_same"]        = "Bron en doel kunnen niet dezelfde entiteit zijn.",
+	["mp.tool.mimic.error_no_source"]   = "Nog geen bron gekopieerd. Klik eerst links op een mediaspeler.",
+	["mp.tool.mimic.error_source_gone"] = "De gekopieerde bron bestaat niet meer. Klik links op een nieuwe bron.",
+	["mp.tool.mimic.error_mimic_source"] = "Kan niet kopiëren van een spiegelspeler. Kopieer van de originele bron.",
+	["mp.tool.mimic.error_already_linked"] = "Deze entiteit spiegelt die bron al.",
+	["mp.tool.mimic.error_not_mimic"]   = "Deze entiteit is geen spiegelspeler.",
+	["mp.tool.mimic.error_has_content"] = "Kan geen mediaspeler spiegelen die eigen content afspeelt. Stop of wis eerst de media.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Browserlimiet bereikt",

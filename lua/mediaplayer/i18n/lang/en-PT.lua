@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("en-pt", {
 	["mp.ui.added_by"]                  = "HAULED IN BY",
 	["mp.ui.unknown"]                   = "Unknown Scallywag",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Ye already cast yer vote to skip, matey.",
+	["mp.voteskip.vote_cast"]           = "Voteskip: %d/%d votes (%d more needed, arr)",
+	["mp.voteskip.passed"]              = "Voteskip passed! Skippin' ahead, yo ho!",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Play Again, Matey",
 	["mp.ui.shuffle"]                   = "Scramble th' Deck",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("en-pt", {
 	["mp.settings.subtitles"]           = "Subtitles",
 	["mp.settings.subtitles_off"]       = "Off",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Unsupported media type, arr!",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Spatial Media Player",
 	["mp.tool.spatial.label"]           = "Spatial Media",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("en-pt", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Ye don't have permission to control this spatial media source, landlubber!",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Mimic Media Player",
+	["mp.tool.mimic.desc"]              = "Mirror another media player's video output onto a second screen, savvy?",
+	["mp.tool.mimic.usage"]             = "Left click: copy source. Right click: paste onto target(s). Reload (R): scuttle the mimic.",
+	["mp.tool.mimic.help_copy"]         = "Left click a media player to copy it as the video source, arr.",
+	["mp.tool.mimic.help_paste"]        = "Right click other media players to paste — they'll mirror the source. Ye can paste onto multiple screens.",
+	["mp.tool.mimic.help_remove"]       = "Press Reload (R) on a mimic player to scuttle it and restore the original.",
+	["mp.tool.mimic.source_copied"]     = "Source copied! Right click other media players to paste, matey.",
+	["mp.tool.mimic.pasted"]            = "Mimic applied! This screen now mirrors the source, yo ho!",
+	["mp.tool.mimic.removed"]           = "Mimic scuttled. Entity restored to normal, arr.",
+	["mp.tool.mimic.undo"]              = "Mimic Media Player",
+	["mp.tool.mimic.error_not_mp"]      = "This entity don't have a media player, ye bilge rat.",
+	["mp.tool.mimic.error_spatial"]     = "Can't mimic a spatial media player, matey.",
+	["mp.tool.mimic.error_same"]        = "Source and target can't be the same entity, ye fool!",
+	["mp.tool.mimic.error_no_source"]   = "No source copied yet. Left click a media player first, savvy?",
+	["mp.tool.mimic.error_source_gone"] = "The copied source be gone to Davy Jones' locker. Left click a new source.",
+	["mp.tool.mimic.error_mimic_source"] = "Can't copy from a mimic player. Copy from the original source, arr.",
+	["mp.tool.mimic.error_already_linked"] = "This entity already be mimickin' that source, matey.",
+	["mp.tool.mimic.error_not_mimic"]   = "This entity be no mimic player, landlubber.",
+	["mp.tool.mimic.error_has_content"] = "Can't mimic a media player that be servin' its own content. Stop or clear its media first, arr!",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Browser Limit Reached, Arr!",

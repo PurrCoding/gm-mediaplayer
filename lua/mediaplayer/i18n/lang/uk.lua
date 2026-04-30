@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("uk", {
 	["mp.ui.added_by"]                  = "ДОДАВ",
 	["mp.ui.unknown"]                   = "Невідомо",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Ви вже проголосували за пропуск.",
+	["mp.voteskip.vote_cast"]           = "Голосування: %d/%d голосів (потрібно ще %d)",
+	["mp.voteskip.passed"]              = "Голосування прийнято! Пропускаємо...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Повтор",
 	["mp.ui.shuffle"]                   = "Перемішати",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("uk", {
 	["mp.settings.subtitles"]           = "Субтитри",
 	["mp.settings.subtitles_off"]       = "Вимк.",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Непідтримуваний тип медіа",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Просторовий медіаплеєр",
 	["mp.tool.spatial.label"]           = "Просторове медіа",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("uk", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "У вас немає дозволу керувати цим просторовим джерелом медіа.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Дзеркальний медіаплеєр",
+	["mp.tool.mimic.desc"]              = "Відобразіть відеовихід іншого медіаплеєра на другому екрані.",
+	["mp.tool.mimic.usage"]             = "ЛКМ: скопіювати джерело. ПКМ: вставити на ціль(і). Перезарядка (R): видалити дзеркало.",
+	["mp.tool.mimic.help_copy"]         = "Натисніть ЛКМ на медіаплеєр, щоб скопіювати його як джерело відео.",
+	["mp.tool.mimic.help_paste"]        = "Натисніть ПКМ на інші медіаплеєри, щоб вставити — вони відображатимуть джерело. Можна вставити на кілька екранів.",
+	["mp.tool.mimic.help_remove"]       = "Натисніть Перезарядку (R) на дзеркальному плеєрі, щоб видалити його та відновити оригінал.",
+	["mp.tool.mimic.source_copied"]     = "Джерело скопійовано! Натисніть ПКМ на інші медіаплеєри, щоб вставити.",
+	["mp.tool.mimic.pasted"]            = "Дзеркало застосовано! Цей екран тепер відображає джерело.",
+	["mp.tool.mimic.removed"]           = "Дзеркало видалено. Об'єкт відновлено.",
+	["mp.tool.mimic.undo"]              = "Дзеркальний медіаплеєр",
+	["mp.tool.mimic.error_not_mp"]      = "Ця сутність не має медіаплеєра.",
+	["mp.tool.mimic.error_spatial"]     = "Неможливо відобразити просторовий медіаплеєр.",
+	["mp.tool.mimic.error_same"]        = "Джерело та ціль не можуть бути однією сутністю.",
+	["mp.tool.mimic.error_no_source"]   = "Джерело ще не скопійовано. Спочатку натисніть ЛКМ на медіаплеєр.",
+	["mp.tool.mimic.error_source_gone"] = "Скопійоване джерело більше не існує. Натисніть ЛКМ на нове джерело.",
+	["mp.tool.mimic.error_mimic_source"] = "Неможливо копіювати з дзеркального плеєра. Копіюйте з оригінального джерела.",
+	["mp.tool.mimic.error_already_linked"] = "Ця сутність вже відображає це джерело.",
+	["mp.tool.mimic.error_not_mimic"]   = "Ця сутність не є дзеркальним плеєром.",
+	["mp.tool.mimic.error_has_content"] = "Неможливо відобразити медіаплеєр, який відтворює власний контент. Спочатку зупиніть або очистіть його медіа.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Досягнуто ліміт браузерів",

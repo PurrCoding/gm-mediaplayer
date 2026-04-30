@@ -104,7 +104,7 @@ function MEDIAPLAYER:Draw( bDrawingDepth, bDrawingSkybox )
 			End3D2D()
 		else
 			Start3D2D( pos, ang, RenderScale )
-				draw.SimpleText( "Unsupported media type", "DermaDefault", rw / 2, rh / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( MediaPlayer.L("mp.ui.unsupported_media"), "DermaDefault", rw / 2, rh / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 			End3D2D()
 		end
 

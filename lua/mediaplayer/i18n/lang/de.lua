@@ -14,6 +14,11 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 	["mp.ui.added_by"]                  = "HINZUGEFÜGT VON",
 	["mp.ui.unknown"]                   = "Unbekannt",
 
+	-- Voteskip
+	["mp.voteskip.already_voted"]       = "Du hast bereits abgestimmt, um zu überspringen.",
+	["mp.voteskip.vote_cast"]           = "Voteskip: %d/%d Stimmen (%d weitere benötigt)",
+	["mp.voteskip.passed"]              = "Voteskip angenommen! Wird übersprungen...",
+
 	-- Playback control tooltips
 	["mp.ui.repeat"]                    = "Wiederholen",
 	["mp.ui.shuffle"]                   = "Zufallswiedergabe",
@@ -76,6 +81,9 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 	["mp.settings.subtitles"]           = "Untertitel",
 	["mp.settings.subtitles_off"]       = "Aus",
 
+	-- Rendering fallbacks
+	["mp.ui.unsupported_media"]         = "Nicht unterstützter Medientyp",
+
 	-- Spatial tool
 	["mp.tool.spatial.name"]            = "Räumlicher Mediaplayer",
 	["mp.tool.spatial.label"]           = "Räumliche Medien",
@@ -89,6 +97,27 @@ MediaPlayer.i18n.RegisterLanguage("de", {
 
 	-- Spatial player
 	["mp.spatial.no_permission"]        = "Du hast keine Berechtigung, diese räumliche Medienquelle zu steuern.",
+
+	-- Mimic tool
+	["mp.tool.mimic.name"]              = "Mimic-Mediaplayer",
+	["mp.tool.mimic.desc"]              = "Spiegele die Videoausgabe eines anderen Mediaplayers auf einen zweiten Bildschirm.",
+	["mp.tool.mimic.usage"]             = "Linksklick: Quelle kopieren. Rechtsklick: auf Ziel(e) einfügen. Nachladen (R): Mimic entfernen.",
+	["mp.tool.mimic.help_copy"]         = "Klicke mit links auf einen Mediaplayer, um ihn als Videoquelle zu kopieren.",
+	["mp.tool.mimic.help_paste"]        = "Klicke mit rechts auf andere Mediaplayer, um einzufügen — sie spiegeln die Quelle. Du kannst auf mehrere Bildschirme einfügen.",
+	["mp.tool.mimic.help_remove"]       = "Drücke Nachladen (R) auf einem Mimic-Player, um ihn zu entfernen und das Original wiederherzustellen.",
+	["mp.tool.mimic.source_copied"]     = "Quelle kopiert! Klicke mit rechts auf andere Mediaplayer, um einzufügen.",
+	["mp.tool.mimic.pasted"]            = "Mimic angewendet! Dieser Bildschirm spiegelt nun die Quelle.",
+	["mp.tool.mimic.removed"]           = "Mimic entfernt. Entität wiederhergestellt.",
+	["mp.tool.mimic.undo"]              = "Mimic-Mediaplayer",
+	["mp.tool.mimic.error_not_mp"]      = "Diese Entität hat keinen Mediaplayer.",
+	["mp.tool.mimic.error_spatial"]     = "Ein räumlicher Mediaplayer kann nicht gespiegelt werden.",
+	["mp.tool.mimic.error_same"]        = "Quelle und Ziel können nicht dieselbe Entität sein.",
+	["mp.tool.mimic.error_no_source"]   = "Noch keine Quelle kopiert. Klicke zuerst mit links auf einen Mediaplayer.",
+	["mp.tool.mimic.error_source_gone"] = "Die kopierte Quelle existiert nicht mehr. Klicke mit links auf eine neue Quelle.",
+	["mp.tool.mimic.error_mimic_source"] = "Von einem Mimic-Player kann nicht kopiert werden. Kopiere stattdessen von der Originalquelle.",
+	["mp.tool.mimic.error_already_linked"] = "Diese Entität spiegelt diese Quelle bereits.",
+	["mp.tool.mimic.error_not_mimic"]   = "Diese Entität ist kein Mimic-Player.",
+	["mp.tool.mimic.error_has_content"] = "Ein Mediaplayer, der eigene Inhalte wiedergibt, kann nicht gespiegelt werden. Stoppe oder lösche zuerst seine Medien.",
 
 	-- Browser pool
 	["mp.error.browser_limit_title"]    = "Browser-Limit erreicht",

@@ -262,13 +262,13 @@ function PANEL:BuildContent()
 	end
 
 	-- Subtitles (placeholder)
-	CreateDisabledDropdown(scroll, L("mp.settings.subtitles"), {
-		L("mp.settings.subtitles_off"),
-		"English",
-		"German",
-		"Japanese",
-		"Klingon",
-	})
+	-- CreateDisabledDropdown(scroll, L("mp.settings.subtitles"), {
+	-- 	L("mp.settings.subtitles_off"),
+	-- 	"English",
+	-- 	"German",
+	-- 	"Japanese",
+	-- 	"Klingon",
+	-- })
 end
 
 function PANEL:Paint(w, h)

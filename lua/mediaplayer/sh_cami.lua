@@ -35,11 +35,13 @@ local privileges = {
 }
 
 -- Register all privileges if CAMI is available
-if CAMI then
-	for _, priv in ipairs(privileges) do
-		CAMI.RegisterPrivilege(priv)
+hook.Add("Initialize", "InitMediaPlayerPrivileges", function()
+	if CAMI then
+		for _, priv in ipairs(privileges) do
+			CAMI.RegisterPrivilege(priv)
+		end
 	end
-end
+end)
 
 ---
 -- Check if a player has a specific CAMI privilege.
@@ -53,11 +55,30 @@ function MediaPlayer.PlayerHasPrivilege(ply, privilege)
 	if not IsValid(ply) then return false end
 	if not CAMI then return ply:IsAdmin() end
 
+	-- CAMI.PlayerHasAccess is synchronous in modern implementations
+	-- If it's truly async, we need to handle it differently
 	local hasAccess = false
-	CAMI.PlayerHasAccess(ply, privilege, function(b)
-		hasAccess = b
-	end)
-	return hasAccess
+
+	if CAMI.PlayerHasAccess then
+		local success, result = pcall(function()
+			return CAMI.PlayerHasAccess(ply, privilege, function(b)
+				hasAccess = b
+			end)
+		end)
+
+		-- If CAMI returned a value directly, use it
+		if success and result ~= nil then
+			return result
+		end
+
+		-- If callback was used, hasAccess should be set
+		if hasAccess then
+			return true
+		end
+	end
+
+	-- Fallback to admin check if CAMI fails or returns false
+	return ply:IsAdmin()
 end
 
 ---

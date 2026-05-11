@@ -35,11 +35,13 @@ local privileges = {
 }
 
 -- Register all privileges if CAMI is available
-if CAMI then
-	for _, priv in ipairs(privileges) do
-		CAMI.RegisterPrivilege(priv)
+hook.Add("Initialize", "InitMediaPlayerPrivileges", function()
+	if CAMI then
+		for _, priv in ipairs(privileges) do
+			CAMI.RegisterPrivilege(priv)
+		end
 	end
-end
+end)
 
 ---
 -- Check if a player has a specific CAMI privilege.

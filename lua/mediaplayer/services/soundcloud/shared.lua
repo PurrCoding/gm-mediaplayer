@@ -6,8 +6,6 @@ SERVICE.Name 	= "SoundCloud"
 SERVICE.Id 		= "sc"
 SERVICE.Base 	= "browser"
 
-SERVICE.PrefetchMetadata = true
-
 local Ignored = {
 	["sets"] = true,
 }

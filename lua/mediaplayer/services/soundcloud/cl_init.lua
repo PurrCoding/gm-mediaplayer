@@ -82,13 +82,6 @@ local EMBED_HTML = [[
 									window.MediaPlayer = player
 
 								}
-							} else {
-								var metadata = {
-									duration: Math.round(totalDuration / 1000),
-									title: json.title
-								}
-
-								console.log("METADATA:" + JSON.stringify(metadata))
 							}
 						});
 					});
@@ -146,25 +139,4 @@ end
 
 function SERVICE:IsMouseInputEnabled()
 	return IsValid( self.Browser )
-end
-
-do	-- Metadata Prefetch
-	function SERVICE:PreRequest( callback )
-		local trackid = self:GetSoundCloudTrackId()
-
-		local html = EMBED_HTML
-		html = html:Replace("{@audioPath}", trackid)
-		html = html:Replace("{@shouldPlay}", "false")
-
-		self:DHTMLPrefetch(callback, { html = html })
-	end
-
-	function SERVICE:OnPrefetchError( errmsg, callback )
-		callback(("SoundCloud Error: %s"):format(errmsg))
-	end
-
-	function SERVICE:NetWriteRequest()
-		net.WriteString( self._metaTitle or "Unknown" )
-		net.WriteUInt( self._metaDuration or 0, 16 )
-	end
 end

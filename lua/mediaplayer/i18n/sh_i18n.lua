@@ -43,7 +43,8 @@ end
 function MediaPlayer.i18n.GetLanguage()
 	if CLIENT then
 		local cvar = GetConVar("gmod_language")
-		return cvar and cvar:GetString() or MediaPlayer.i18n._fallback
+		local lang = cvar and cvar:GetString() or MediaPlayer.i18n._fallback
+		return string.lower(lang) -- Normalize to lowercase to match registered language codes
 	end
 
 	return MediaPlayer.i18n._fallback

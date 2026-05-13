@@ -147,6 +147,12 @@ function MEDIAPLAYER:RemoveListener( ply )
 
 	hook.Run( "MediaPlayerRemoveListener", self, ply )
 
+	-- Update voteskip status if there are active votes
+	if self._Voteskip and self._Voteskip:GetNumVotes() > 0 then
+		self._Voteskip:Invalidate()
+		self._Voteskip:BroadcastStatus()
+	end
+
 end
 
 function MEDIAPLAYER:HasListener( ply )

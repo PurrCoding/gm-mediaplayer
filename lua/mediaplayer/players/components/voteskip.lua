@@ -141,4 +141,20 @@ function VoteskipManager:Invalidate()
 	return changed
 end
 
+---
+-- Broadcast updated voteskip status to all listeners.
+-- This should be called when the listener count changes to update
+-- the required vote count displayed to players.
+--
+function VoteskipManager:BroadcastStatus()
+	local numListeners = #self._mp._Listeners
+	local numVotes = self:GetNumVotes()
+	local reqVotes = self:GetNumRequiredVotes(numListeners)
+	local remaining = reqVotes - numVotes
+
+	self._mp:NotifyListeners(
+		MediaPlayer.L("mp.voteskip.vote_cast", numVotes, reqVotes, remaining)
+	)
+end
+
 MediaPlayer.VoteskipManager = VoteskipManager

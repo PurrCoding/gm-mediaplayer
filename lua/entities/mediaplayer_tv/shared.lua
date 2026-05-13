@@ -60,7 +60,7 @@ else -- CLIENT
 	local TextPadding = 40
 
 	function ENT:Draw(flags)
-		self:DrawModel()
+		self:DrawModel(flags)
 
 		local isDepthPass = ( bit_band( flags, STUDIO_SSAODEPTHTEXTURE ) ~= 0 or bit_band( flags, STUDIO_SHADOWDEPTHTEXTURE ) ~= 0 )
 		if ( isDepthPass ) then return end

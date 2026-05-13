@@ -45,19 +45,25 @@ else -- CLIENT
 	local surface_DrawTexturedRect = surface.DrawTexturedRect
 	local surface_SetFont = surface.SetFont
 	local surface_GetTextSize = surface.GetTextSize
+	local bit_band = bit.band
 	local math_max = math.max
 	local Start3D2D = cam.Start3D2D
 	local End3D2D = cam.End3D2D
 
 	local TEXT_ALIGN_CENTER = TEXT_ALIGN_CENTER
+	local STUDIO_SSAODEPTHTEXTURE = STUDIO_SSAODEPTHTEXTURE
+	local STUDIO_SHADOWDEPTHTEXTURE = STUDIO_SHADOWDEPTHTEXTURE
 	local color_white = color_white
 
 	local StaticMaterial = Material( "mediaplayer/static" )
 	local TextScale = 700
 	local TextPadding = 40
 
-	function ENT:Draw()
+	function ENT:Draw(flags)
 		self:DrawModel()
+
+		local isDepthPass = ( bit_band( flags, STUDIO_SSAODEPTHTEXTURE ) ~= 0 or bit_band( flags, STUDIO_SHADOWDEPTHTEXTURE ) ~= 0 )
+		if ( isDepthPass ) then return end
 
 		local mp = self:GetMediaPlayer()
 

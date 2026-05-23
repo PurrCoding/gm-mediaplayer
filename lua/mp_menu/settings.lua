@@ -227,7 +227,8 @@ function PANEL:BuildContent()
 
 	-- Audio section
 	CreateSectionLabel(scroll, "mp.settings.audio")
-	CreateCheckbox(scroll, "mp.settings.3d_audio", "mediaplayer_3daudio")
+
+	local audio3DCheckbox = CreateCheckbox(scroll, "mp.settings.3d_audio", "mediaplayer_3daudio")
 	CreateCheckbox(scroll, "mp.settings.mute_unfocused", "mediaplayer_mute_unfocused")
 
 	local proxMin = CreateSlider(scroll, "mp.settings.proximity_min", "mediaplayer_proximity_min", 0, 5000, 0)
@@ -260,6 +261,22 @@ function PANEL:BuildContent()
 	radiusToggle.OnChange = function(_, checked)
 		SetProximityRadius(checked)
 	end
+
+	-- Disable proximity controls when 3D audio is disabled
+	local function UpdateProximityControlsEnabled()
+		local enabled = MediaPlayer.Cvars.Audio3D:GetBool()
+		proxMin:SetEnabled(enabled)
+		proxMax:SetEnabled(enabled)
+		radiusToggle:SetEnabled(enabled)
+	end
+
+	-- Add callback to 3D audio checkbox
+	audio3DCheckbox.OnChange = function(_, checked)
+		UpdateProximityControlsEnabled()
+	end
+
+	-- Set initial state
+	UpdateProximityControlsEnabled()
 
 	-- Subtitles (placeholder)
 	-- CreateDisabledDropdown(scroll, L("mp.settings.subtitles"), {

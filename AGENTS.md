@@ -55,9 +55,10 @@ All contributors, AI agents, automation systems, and developers are expected to 
 - Keep scopes clean and maintainable.
 - Avoid bloated function scopes with massive local declarations.
 - Example:
-
+```lua
 local strReplace = string.Replace
 local tblInsert = table.insert
+```
 
 - Avoid unnecessary global lookups inside loops or frequently executed functions.
 - Avoid expensive operations inside Think hooks.

@@ -330,19 +330,33 @@ else -- CLIENT
 
 	function TOOL:Think()
 		if not self._hooksActive then
-			hook.Add( "PreDrawHalos", "MP.MimicTool.Halo", MimicToolHalo )
-			hook.Add( "PostDrawTranslucentRenderables", "MP.MimicTool.Labels", MimicToolLabels )
-			self._hooksActive = true
+			self:RegisterHooks()
 		end
 	end
 
 	function TOOL:Deploy()
+		self:RegisterHooks()
+	end
+
+	function TOOL:Holster()
+		self:UnregisterHooks()
+	end
+
+	---
+	-- Internal: Register rendering hooks safely without duplicates.
+	--
+	function TOOL:RegisterHooks()
+		if self._hooksActive then return end
+
 		hook.Add( "PreDrawHalos", "MP.MimicTool.Halo", MimicToolHalo )
 		hook.Add( "PostDrawTranslucentRenderables", "MP.MimicTool.Labels", MimicToolLabels )
 		self._hooksActive = true
 	end
 
-	function TOOL:Holster()
+	---
+	-- Internal: Unregister rendering hooks and clean up.
+	--
+	function TOOL:UnregisterHooks()
 		hook.Remove( "PreDrawHalos", "MP.MimicTool.Halo" )
 		hook.Remove( "PostDrawTranslucentRenderables", "MP.MimicTool.Labels" )
 		self._hooksActive = false

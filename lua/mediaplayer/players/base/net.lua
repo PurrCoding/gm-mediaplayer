@@ -26,6 +26,12 @@ function mpnet.ReadMedia()
 	local ownerName = net.ReadString()
 	local ownerSteamId = net.ReadString()
 
+	-- Validate URL before creating media object
+	if not url or url == "" or #url > 2048 then
+		ErrorNoHalt("MediaPlayer: Invalid URL received from network\n")
+		return nil
+	end
+
 	-- Create media object
 	local media = MediaPlayer.GetMediaForUrl( url, true )
 
@@ -34,12 +40,18 @@ function mpnet.ReadMedia()
 		return nil
 	end
 
-	-- Set uniqud ID to match the server
+	-- Validate media object has required methods
+	if not media.UniqueID or not media.Url then
+		ErrorNoHalt("MediaPlayer: Invalid media object created for URL: " .. url .. "\n")
+		return nil
+	end
+
+	-- Set unique ID to match the server
 	media._id = uid
 
 	media:SetMetadata( metadata, true )
-	media._OwnerName = ownerName
-	media._OwnerSteamID = ownerSteamId
+	media._OwnerName = ownerName or "Unknown"
+	media._OwnerSteamID = ownerSteamId or ""
 
 	return media
 end

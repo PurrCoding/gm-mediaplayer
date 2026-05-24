@@ -78,22 +78,41 @@ net.Receive( "MEDIAPLAYER.RequestMedia", RequestWrapper(function(mp, ply)
 		print("MEDIAPLAYER.RequestMedia:", url, mp:GetId(), ply)
 	end
 
+	-- Validate URL length and format
+	if not url or url == "" or #url > 2048 then
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.invalid_url") )
+		return
+	end
+
+	-- Sanitize URL to prevent injection attempts
+	local sanitizedUrl = string.Trim(url)
+	if sanitizedUrl ~= url then
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.invalid_url") )
+		return
+	end
+
 	local allowWebpage = MediaPlayer.Cvars.AllowWebpages:GetBool()
 
 	-- Validate the URL
-	if not MediaPlayer.ValidUrl( url ) and not allowWebpage then
+	if not MediaPlayer.ValidUrl( sanitizedUrl ) and not allowWebpage then
 		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.invalid_url") )
 		return
 	end
 
 	-- Build the media object for the URL
-	local media = MediaPlayer.GetMediaForUrl( url, allowWebpage )
+	local media = MediaPlayer.GetMediaForUrl( sanitizedUrl, allowWebpage )
 	if not media then
 		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.media_url_failed") )
 		return
 	end
-	media:NetReadRequest()
 
+	-- Validate media object before processing
+	if not media.Url or not media:Url() then
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.media_url_failed") )
+		return
+	end
+
+	media:NetReadRequest()
 	mp:RequestMedia( media, ply )
 
 end) )

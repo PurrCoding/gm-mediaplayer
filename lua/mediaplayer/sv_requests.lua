@@ -145,6 +145,27 @@ net.Receive( "MEDIAPLAYER.RequestSeek", RequestWrapper(function(mp, ply)
 		print("MEDIAPLAYER.RequestSeek:", mp:GetId(), seekTime, ply)
 	end
 
+	-- Validate seek time range to prevent extreme values
+	-- Clamp to reasonable range: -1 hour to +24 hours in seconds
+	if seekTime < -3600 or seekTime > 86400 then
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.invalid_seek") )
+		return
+	end
+
+	-- Validate media is playing before allowing seek
+	local media = mp:GetMedia()
+	if not IsValid(media) then
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.no_media") )
+		return
+	end
+
+	-- Validate seek time is within media duration
+	local duration = media:Duration()
+	if duration > 0 and seekTime > duration then
+		mp:NotifyPlayer( ply, MediaPlayer.L("mp.error.invalid_seek") )
+		return
+	end
+
 	mp:RequestSeek( ply, seekTime )
 
 end) )

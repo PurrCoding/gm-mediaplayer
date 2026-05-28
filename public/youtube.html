@@ -38,255 +38,137 @@
 	<div id="player-container"></div>
 
 	<script>
-		// ============================================================================
-		// CONFIGURATION
-		// ============================================================================
-		const CONFIG = {
-			API_URL: "https://www.youtube.com/iframe_api",
-			PLAYER_HOST: "https://www.youtube-nocookie.com",
-			DEFAULT_VIDEO_ID: "dQw4w9WgXcQ",
-			PLAYER_VARS: {
-				controls: 0,
-				rel: 0,
-				loop: 0,
-				disablekb: 1,
-				enablejsapi: 1,
-				muted: 1,
-				cc_load_policy: 0,
-				iv_load_policy: 3,
-				autoplay: 1,
-				playsinline: 1,
-				modestbranding: 1,
-				showinfo: 0
+		// Get parameter from hash first, then fall back to query parameters
+		function getParameter(name) {
+			// Try hash parameters first
+			const hash = window.location.hash.substring(1); // Remove '#'
+			if (hash) {
+				const hashParams = new URLSearchParams(hash);
+				const hashValue = hashParams.get(name);
+				if (hashValue) return hashValue;
 			}
+
+			// Fall back to query parameters for backwards compatibility
+			const urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.get(name)) return urlParams.get(name);
+
+			return null;
+		}
+
+		const tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/iframe_api";
+		tag.onerror = function() {
+			console.log("ERROR:Failed to load YouTube IFrame API");
+		};
+		document.head.appendChild(tag);
+
+		let player = null;
+
+		const defaultPlayerVars = {
+			controls: 0,       // Hide native controls
+			rel: 0,            // Disable related videos
+			loop: 0,           // No loop
+			disablekb: 1,      // Disable keyboard shortcuts
+			enablejsapi: 1,    // Enable JS API for custom controls
+			muted: 1,		   // Set to play muted
+			cc_load_policy: 0, // Do not display subtitles automatically
+			iv_load_policy: 3, // Do not display video annotations
+			autoplay: 1		   // Set to make it autostart
 		};
 
-		// ============================================================================
-		// UTILITY FUNCTIONS
-		// ============================================================================
-		const Utils = {
-			getParameter(name) {
-				const hash = window.location.hash.substring(1);
-				if (hash) {
-					const hashParams = new URLSearchParams(hash);
-					const hashValue = hashParams.get(name);
-					if (hashValue) return hashValue;
-				}
-
-				const urlParams = new URLSearchParams(window.location.search);
-				return urlParams.get(name) || null;
-			},
-
-			logError(message) {
-				console.log(`ERROR:${message}`);
-			},
-
-			logReady() {
-				console.log("READY:");
-			}
-		};
-
-		// ============================================================================
-		// YOUTUBE API LOADER
-		// ============================================================================
-		class YouTubeAPILoader {
-			static load() {
-				return new Promise((resolve, reject) => {
-					if (window.YT && window.YT.Player) {
-						resolve(window.YT);
-						return;
-					}
-
-					const script = document.createElement('script');
-					script.src = CONFIG.API_URL;
-					script.onload = () => resolve(window.YT);
-					script.onerror = () => reject(new Error("Failed to load YouTube IFrame API"));
-					document.head.appendChild(script);
-				});
-			}
-		}
-
-		// ============================================================================
-		// PLAYER WRAPPER
-		// ============================================================================
-		class PlayerWrapper {
-			constructor(player) {
-				this._player = player;
-				this._ready = false;
-				this._paused = true;
-			}
-
-			setReady(ready) {
-				this._ready = ready;
-			}
-
-			setPaused(paused) {
-				this._paused = paused;
-			}
-
-			play() {
-				if (this._ready) this._player.playVideo();
-			}
-
-			pause() {
-				if (this._ready) this._player.pauseVideo();
-			}
-
-			get currentTime() {
-				return this._ready ? this._player.getCurrentTime() : 0;
-			}
-
-			set currentTime(time) {
-				if (this._ready) this._player.seekTo(time, true);
-			}
-
-			get volume() {
-				return this._ready ? this._player.getVolume() / 100 : 1;
-			}
-
-			set volume(v) {
-				if (this._ready) {
-					if (this._player.isMuted()) {
-						this._player.unMute();
-					}
-					this._player.setVolume(v * 100);
-				}
-			}
-
-			get paused() {
-				return this._paused;
-			}
-		}
-
-		// ============================================================================
-		// YOUTUBE PLAYER MANAGER
-		// ============================================================================
-		class YouTubePlayerManager {
-			constructor(containerId) {
-				this.containerId = containerId;
-				this.player = null;
-				this.wrapper = null;
-			}
-
-			async createPlayer(videoId, startTime = 0) {
-				this.destroy();
-
-				return new Promise((resolve, reject) => {
-					this.player = new YT.Player(this.containerId, {
-						height: '100%',
-						width: '100%',
-						videoId: videoId,
-						playerVars: {
-							...CONFIG.PLAYER_VARS,
-							start: Math.floor(startTime)
-						},
-						host: CONFIG.PLAYER_HOST,
-						events: {
-							onReady: () => this._onReady(startTime),
-							onStateChange: (event) => this._onStateChange(event),
-							onError: (event) => this._onError(event, reject)
-						}
-					});
-				});
-			}
-
-			_onReady(startTime) {
-				this.wrapper = new PlayerWrapper(this.player);
-				this.wrapper.setReady(true);
-
-				// Unload the captions module
-				this.player.unloadModule('captions');
-
-				// Start silent — Lua will push the correct volume
-				this.player.setVolume(0);
-
-				// Additional seek if needed (for more precise timing)
-				if (startTime > 0) {
-					this.player.seekTo(startTime, true);
-				}
-
-				// Expose wrapper globally for Lua
-				window.MediaPlayer = this.wrapper;
-
-				// Signal Lua that the player is ready for volume
-				Utils.logReady();
-			}
-
-			_onStateChange(event) {
-				if (this.wrapper) {
-					this.wrapper.setPaused(event.data !== YT.PlayerState.PLAYING);
-				}
-			}
-
-			_onError(event, reject) {
-				const ERROR_CODES = {
-					2: "Invalid parameter value (e.g. wrong video ID format).",
-					5: "HTML5 player error – the requested content cannot be played in this player.",
-					100: "Video not found. It may have been removed, set to private, or the ID is invalid.",
-					101: "The owner of the video has prohibited embedding on this site.",
-					150: "Video is age-restricted or unplayable for unknown reasons."
-				};
-
-				const errorMessage = ERROR_CODES[event.data] || `Unknown error: ${event.data}`;
-				Utils.logError(errorMessage);
-				reject(new Error(errorMessage));
-			}
-
-			destroy() {
-				if (this.player && typeof this.player.destroy === 'function') {
-					this.player.destroy();
-					this.player = null;
-					document.getElementById(this.containerId).innerHTML = '';
-				}
-				this.wrapper = null;
-			}
-		}
-
-		// ============================================================================
-		// APPLICATION INITIALIZATION
-		// ============================================================================
-		class Application {
-			constructor() {
-				this.playerManager = new YouTubePlayerManager('player-container');
-			}
-
-			async initialize() {
-				try {
-					await YouTubeAPILoader.load();
-
-					const videoId = Utils.getParameter('v') || CONFIG.DEFAULT_VIDEO_ID;
-					const startTime = parseFloat(Utils.getParameter('t')) || 0;
-
-					await this.playerManager.createPlayer(videoId, startTime);
-				} catch (error) {
-					Utils.logError(error.message);
-				}
-			}
-
-			static handleEdgeCase() {
-				if (window.YT && window.YT.Player) {
-					const app = new Application();
-					if (document.readyState === 'complete') {
-						app.initialize();
-					} else {
-						window.addEventListener('load', () => app.initialize());
-					}
-				}
-			}
-		}
-
-		// ============================================================================
-		// GLOBAL API CALLBACK
-		// ============================================================================
 		function onYouTubeIframeAPIReady() {
-			const app = new Application();
-			app.initialize();
+			const vid = getParameter('v') || 'dQw4w9WgXcQ';
+			const startTime = parseFloat(getParameter('t')) || 0;
+
+			createPlayer(vid, startTime);
 		}
 
-		// ============================================================================
-		// HANDLE EDGE CASE: API ALREADY LOADED
-		// ============================================================================
-		Application.handleEdgeCase();
+		function createPlayer(videoId, startTime) {
+			if (player && typeof player.destroy === 'function') {
+				player.destroy();
+				player = null;
+				document.getElementById('player-container').innerHTML = '';
+			}
+
+			player = new YT.Player('player-container', {
+				height: '100%',
+				width: '100%',
+				videoId: videoId,
+				playerVars: {
+					...defaultPlayerVars,
+					start: Math.floor(startTime)  // YouTube API supports start parameter
+				},
+				host: 'https://www.youtube-nocookie.com',
+				events: {
+					onReady: () => {
+						wrapper._ready = true;
+
+						// Unload the captions module
+						player.unloadModule('captions');
+
+						// Start silent — Lua will push the correct volume
+						player.setVolume(0);
+
+						// Additional seek if needed (for more precise timing)
+						if (startTime > 0) {
+							player.seekTo(startTime, true);
+						}
+
+						window.MediaPlayer = wrapper;
+
+						// Signal Lua that the player is ready for volume
+						console.log("READY:");
+					},
+					onStateChange: (e) => wrapper._paused = e.data !== YT.PlayerState.PLAYING
+				}
+			});
+
+			const wrapper = {
+				_ready: false,
+				_paused: true,
+				play() {
+					if (this._ready) player.playVideo();
+				},
+				pause() {
+					if (this._ready) player.pauseVideo();
+				},
+
+				get currentTime() {
+					return this._ready ? player.getCurrentTime() : 0;
+				},
+				set currentTime(time) {
+					if (this._ready) player.seekTo(time, true);
+				},
+
+				get volume() {
+					return this._ready ? player.getVolume() / 100 : 1;
+				},
+				set volume(v) {
+					if (this._ready) {
+						if (player.isMuted()) {
+							player.unMute();
+						}
+
+						player.setVolume(v * 100);
+					}
+				},
+
+				get paused() {
+					return this._paused;
+				}
+			};
+		}
+
+		/**
+		 * Handle edge case if API already loaded
+		 */
+		if (window.YT && window.YT.Player && !player) {
+			if (document.readyState === 'complete') {
+				onYouTubeIframeAPIReady();
+			} else {
+				window.addEventListener('load', onYouTubeIframeAPIReady);
+			}
+		}
 
 	</script>
 </body>

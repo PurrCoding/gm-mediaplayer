@@ -37,132 +37,296 @@
 	<div id="player-container"></div>
 
 	<script>
-		// Get parameter from hash first, then fall back to query parameters
-		function getParameter(name) {
-			// Try hash parameters first
-			const hash = window.location.hash.substring(1); // Remove '#'
-			if (hash) {
-				const hashParams = new URLSearchParams(hash);
-				const hashValue = hashParams.get(name);
-				if (hashValue) return hashValue;
+		// ============================================================================
+		// CONFIGURATION
+		// ============================================================================
+		const CONFIG = {
+			API_URL: "https://www.youtube.com/iframe_api",
+			PLAYER_HOST: "https://www.youtube-nocookie.com",
+			DEFAULT_VIDEO_ID: "dQw4w9WgXcQ",
+			POLLING_INTERVAL_MS: 100,
+			MAX_POLLING_ATTEMPTS: 20,
+			METADATA_EXTRACTION_DELAY_MS: 100,
+			PLAYER_VARS: {
+				controls: 0,
+				rel: 0,
+				loop: 0,
+				disablekb: 1,
+				enablejsapi: 1,
+				muted: 1,
+				cc_load_policy: 0,
+				iv_load_policy: 3,
+				autoplay: 1,
+				playsinline: 1,
+				modestbranding: 1,
+				showinfo: 0
+			},
+			ERROR_CODES: {
+				2: "Invalid parameter value (e.g. wrong video ID format).",
+				5: "HTML5 player error – the requested content cannot be played in this player.",
+				100: "Video not found. It may have been removed, set to private, or the ID is invalid.",
+				101: "The owner of the video has prohibited embedding on this site.",
+				150: "Video is age-restricted or unplayable for unknown reasons."
 			}
-
-			// Fall back to query parameters for backwards compatibility
-			const urlParams = new URLSearchParams(window.location.search);
-			if (urlParams.get(name)) return urlParams.get(name);
-
-			return null;
-		}
-
-		function getUrlParameter(name) {
-			const urlParams = new URLSearchParams(window.location.search);
-			if (urlParams.get(name)) return urlParams.get(name);
-
-			return null;
-		}
-
-		const tag = document.createElement('script');
-		tag.src = "https://www.youtube.com/iframe_api";
-		tag.onerror = function() {
-			console.log("ERROR:Failed to load YouTube IFrame API");
-		};
-		document.head.appendChild(tag);
-
-		let player = null;
-
-		const defaultPlayerVars = {
-			controls: 0,       // Hide native controls
-			rel: 0,            // Disable related videos
-			loop: 0,           // No loop
-			disablekb: 1,      // Disable keyboard shortcuts
-			enablejsapi: 1,    // Enable JS API for custom controls
-			muted: 1,		   // Set to play muted
-			cc_load_policy: 0, // Do not display subtitles automatically
-			iv_load_policy: 3, // Do not display video annotations
-			autoplay: 1		   // Set to make it autostart
 		};
 
-		function onYouTubeIframeAPIReady() {
-			const vid = getParameter('v') || 'dQw4w9WgXcQ';
+		// ============================================================================
+		// UTILITY FUNCTIONS
+		// ============================================================================
+		const Utils = {
+			getParameter(name) {
+				const hash = window.location.hash.substring(1);
+				if (hash) {
+					const hashParams = new URLSearchParams(hash);
+					const hashValue = hashParams.get(name);
+					if (hashValue) return hashValue;
+				}
 
-			createPlayer(vid);
+				const urlParams = new URLSearchParams(window.location.search);
+				return urlParams.get(name) || null;
+			},
+
+			getUrlParameter(name) {
+				const urlParams = new URLSearchParams(window.location.search);
+				return urlParams.get(name) || null;
+			},
+
+			sleep(ms) {
+				return new Promise(resolve => setTimeout(resolve, ms));
+			},
+
+			logError(message) {
+				console.log(`ERROR:${message}`);
+			},
+
+			logMetadata(metadata) {
+				console.log(`METADATA:${JSON.stringify(metadata)}`);
+			}
+		};
+
+		// ============================================================================
+		// YOUTUBE API LOADER
+		// ============================================================================
+		class YouTubeAPILoader {
+			static load() {
+				return new Promise((resolve, reject) => {
+					if (window.YT && window.YT.Player) {
+						resolve(window.YT);
+						return;
+					}
+
+					const script = document.createElement('script');
+					script.src = CONFIG.API_URL;
+					script.onload = () => resolve(window.YT);
+					script.onerror = () => reject(new Error("Failed to load YouTube IFrame API"));
+					document.head.appendChild(script);
+				});
+			}
 		}
 
-		function createPlayer(videoId) {
-			if (player && typeof player.destroy === 'function') {
-				player.destroy();
-				player = null;
-				document.getElementById('player-container').innerHTML = '';
+		// ============================================================================
+		// METADATA EXTRACTOR
+		// ============================================================================
+		class MetadataExtractor {
+			constructor(player) {
+				this.player = player;
+				this.extracted = false;
 			}
 
-			player = new YT.Player('player-container', {
-				height: '100%',
-				width: '100%',
-				videoId: videoId,
-				playerVars: defaultPlayerVars,
-				host: 'https://www.youtube-nocookie.com',
-				events: {
-					onReady: () => {
-						player.playVideo();
-						player.setVolume(0);
+			async extract() {
+				if (this.extracted || !this.player) return null;
+				this.extracted = true;
 
-						// Wait 1.5 seconds for video to load and play
-						setTimeout(() => {
-							const videoData = player.getVideoData();
-							const playerState = player.getPlayerState();
-							const duration = player.getDuration();
+				const videoData = this.player.getVideoData();
+				const playerState = this.player.getPlayerState();
+				const duration = this.player.getDuration();
 
-							// Check if player is in playable state
-							const isPlayable = playerState === YT.PlayerState.PLAYING ||
-											playerState === YT.PlayerState.BUFFERING ||
-											playerState === YT.PlayerState.CUED;
+				const isPlayable = playerState === YT.PlayerState.PLAYING ||
+								playerState === YT.PlayerState.BUFFERING ||
+								playerState === YT.PlayerState.CUED;
 
-							// Determine video type based on actual playback data
-							const isLive = isPlayable && videoData.isLive;
-							const isNormalVideo = isPlayable && duration > 0 && !videoData.isLive;
+				const isLive = isPlayable && videoData.isLive;
+				const isNormalVideo = isPlayable && duration > 0 && !videoData.isLive;
 
-							// Pause the video after metadata extraction
-							player.pauseVideo();
+				this.player.pauseVideo();
 
-							const metadata = {
-								title: videoData.title,
-								isLive: isLive,
-								duration: Math.round(duration),
-								debug: {
-									playerState: playerState,
-									videoType: isLive ? "live" : (isNormalVideo ? "normal" : "unknown"),
-									videoData: videoData
-								}
-							};
+				const metadata = {
+					title: videoData.title,
+					isLive: isLive,
+					duration: Math.round(duration),
+					debug: {
+						playerState: playerState,
+						videoType: isLive ? "live" : (isNormalVideo ? "normal" : "unknown"),
+						videoData: videoData
+					}
+				};
 
-							console.log("METADATA:" + JSON.stringify(metadata));
-						}, 1500); // Wait 1.5 seconds
-					},
-					onError: (event) => {
-						const YT_ERROR_CODES = {
-							2: "Invalid parameter value (e.g. wrong video ID format).",
-							5: "HTML5 player error – the requested content cannot be played in this player.",
-							100: "Video not found. It may have been removed, set to private, or the ID is invalid.",
-							101: "The owner of the video has prohibited embedding on this site.",
-							150: "Video is age-restricted or unplayable for unknown reasons." // Same as 101
-						};
+				Utils.logMetadata(metadata);
+				return metadata;
+			}
 
-						console.log("ERROR:" + YT_ERROR_CODES[event.data]);
+			async extractWithPolling() {
+				for (let i = 0; i < CONFIG.MAX_POLLING_ATTEMPTS; i++) {
+					if (this.extracted) return await this.extract();
+
+					await Utils.sleep(CONFIG.POLLING_INTERVAL_MS);
+
+					const videoData = this.player.getVideoData();
+					if (videoData.title && this.player.getDuration() > 0) {
+						return await this.extract();
 					}
 				}
-			});
-		}
 
-		/**
-		 * Handle edge case if API already loaded
-		 */
-		if (window.YT && window.YT.Player && !player) {
-			if (document.readyState === 'complete') {
-				onYouTubeIframeAPIReady();
-			} else {
-				window.addEventListener('load', onYouTubeIframeAPIReady);
+				return await this.extract();
+			}
+
+			hasRequiredData() {
+				const videoData = this.player.getVideoData();
+				return !!(videoData.title && this.player.getDuration() > 0);
 			}
 		}
+
+		// ============================================================================
+		// YOUTUBE PLAYER MANAGER
+		// ============================================================================
+		class YouTubePlayerManager {
+			constructor(containerId) {
+				this.containerId = containerId;
+				this.player = null;
+				this.extractor = null;
+			}
+
+			async createPlayer(videoId) {
+				this.destroy();
+
+				return new Promise((resolve, reject) => {
+					this.player = new YT.Player(this.containerId, {
+						height: '100%',
+						width: '100%',
+						videoId: videoId,
+						playerVars: CONFIG.PLAYER_VARS,
+						host: CONFIG.PLAYER_HOST,
+						events: {
+							onReady: () => {
+								this.player.playVideo();
+								this.player.setVolume(0);
+								resolve(this.player);
+							},
+							onError: (event) => {
+								const errorMessage = CONFIG.ERROR_CODES[event.data] || `Unknown error: ${event.data}`;
+								reject(new Error(errorMessage));
+							}
+						}
+					});
+				});
+			}
+
+			async waitForPlayingState() {
+				return new Promise((resolve) => {
+					if (this.extractor && this.extractor.extracted) {
+						resolve();
+						return;
+					}
+
+				 const stateChangeHandler = (event) => {
+						if (event.data === YT.PlayerState.PLAYING) {
+							this.player.removeEventListener('onStateChange', stateChangeHandler);
+							resolve();
+						}
+					};
+
+					this.player.addEventListener('onStateChange', stateChangeHandler);
+				});
+			}
+
+			destroy() {
+				if (this.player && typeof this.player.destroy === 'function') {
+					this.player.destroy();
+					this.player = null;
+					document.getElementById(this.containerId).innerHTML = '';
+				}
+				this.extractor = null;
+			}
+
+			setExtractor(extractor) {
+				this.extractor = extractor;
+			}
+		}
+
+		// ============================================================================
+		// METADATA SERVICE
+		// ============================================================================
+		class MetadataService {
+			constructor() {
+				this.playerManager = new YouTubePlayerManager('player-container');
+			}
+
+			async getMetadata(videoId) {
+				try {
+					await this.playerManager.createPlayer(videoId);
+					const extractor = new MetadataExtractor(this.playerManager.player);
+					this.playerManager.setExtractor(extractor);
+
+					// Race between event-driven and polling approaches
+					const eventDrivenPromise = this._eventDrivenExtraction(extractor);
+					const pollingPromise = extractor.extractWithPolling();
+
+					await Promise.race([eventDrivenPromise, pollingPromise]);
+
+				} catch (error) {
+					Utils.logError(error.message);
+				}
+			}
+
+			async _eventDrivenExtraction(extractor) {
+				await this.playerManager.waitForPlayingState();
+				await Utils.sleep(CONFIG.METADATA_EXTRACTION_DELAY_MS);
+				return await extractor.extract();
+			}
+		}
+
+		// ============================================================================
+		// APPLICATION INITIALIZATION
+		// ============================================================================
+		class Application {
+			constructor() {
+				this.metadataService = new MetadataService();
+			}
+
+			async initialize() {
+				try {
+					await YouTubeAPILoader.load();
+					const videoId = Utils.getParameter('v') || CONFIG.DEFAULT_VIDEO_ID;
+					await this.metadataService.getMetadata(videoId);
+				} catch (error) {
+					Utils.logError(error.message);
+				}
+			}
+
+			static handleEdgeCase() {
+				if (window.YT && window.YT.Player) {
+					const app = new Application();
+					if (document.readyState === 'complete') {
+						app.initialize();
+					} else {
+						window.addEventListener('load', () => app.initialize());
+					}
+				}
+			}
+		}
+
+		// ============================================================================
+		// GLOBAL API CALLBACK
+		// ============================================================================
+		function onYouTubeIframeAPIReady() {
+			const app = new Application();
+			app.initialize();
+		}
+
+		// ============================================================================
+		// HANDLE EDGE CASE: API ALREADY LOADED
+		// ============================================================================
+		Application.handleEdgeCase();
 
 	</script>
 </body>

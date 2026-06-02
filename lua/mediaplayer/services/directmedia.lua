@@ -60,23 +60,48 @@ if CLIENT then
 
 	local VideoEmbedHTML = [[
 		<video id="player" autoplay loop style="width: 100%%; height: 100%%;"></video>
+
+		<!-- Audio-only indicator -->
 		<div id="audio-indicator" style="position: absolute; top: 50%%; left: 50%%; transform: translate(-50%%, -50%%); display: none; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: Arial, sans-serif; font-size: 24px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
 			<div style="font-size: 64px; margin-bottom: 20px;">♪</div>
 			<div>Audio Only Stream</div>
 			<div style="font-size: 14px; margin-top: 10px; opacity: 0.7;">(No 3D audio support)</div>
 		</div>
+
+		<!-- Error message display -->
+		<div id="error-display" style="position: absolute; top: 50%%; left: 50%%; transform: translate(-50%%, -50%%); display: none; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: Arial, sans-serif; font-size: 18px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); max-width: 80%%;">
+			<div style="font-size: 48px; margin-bottom: 15px;">⚠</div>
+			<div id="error-text">Error loading media</div>
+		</div>
+
 		<script>
 			(function() {
 				var video = document.getElementById('player');
 				var audioIndicator = document.getElementById('audio-indicator');
+				var errorDisplay = document.getElementById('error-display');
+				var errorText = document.getElementById('error-text');
 				var videoSrc = '%s';
 				var isHLS = videoSrc.includes('.m3u8');
 				var isDASH = videoSrc.includes('.mpd');
+
+				function showError(message) {
+					errorText.textContent = message;
+					errorDisplay.style.display = 'flex';
+					video.style.display = 'none';
+					audioIndicator.style.display = 'none';
+				}
+
+				function hideError() {
+					errorDisplay.style.display = 'none';
+				}
 
 				function loadScript(src, callback) {
 					var script = document.createElement('script');
 					script.src = src;
 					script.onload = callback;
+					script.onerror = function() {
+						showError('Failed to load required library');
+					};
 					document.head.appendChild(script);
 				}
 
@@ -99,6 +124,8 @@ if CLIENT then
 				}
 
 				function initPlayer() {
+					hideError();
+
 					if (isHLS && typeof Hls !== 'undefined' && Hls.isSupported()) {
 						var hls = new Hls({
 							debug: false,
@@ -120,13 +147,17 @@ if CLIENT then
 								switch (data.type) {
 									case Hls.ErrorTypes.NETWORK_ERROR:
 										console.log('[DirectMedia] HLS Network error: ' + data.details);
+										showError('Network error - Failed to load stream');
 										break;
 									case Hls.ErrorTypes.MEDIA_ERROR:
 										console.log('[DirectMedia] HLS Media error: ' + data.details);
-										hls.recoverMediaError();
+										if (!hls.recoverMediaError()) {
+											showError('Media error - Codec not supported. You may need GModPatchTool');
+										}
 										break;
 									default:
 										console.log('[DirectMedia] HLS Fatal error: ' + data.details);
+										showError('Fatal error: ' + data.details);
 										hls.destroy();
 										break;
 								}
@@ -144,6 +175,7 @@ if CLIENT then
 						});
 						player.on(dashjs.MediaPlayer.events.ERROR, function(event) {
 							console.log('[DirectMedia] DASH error: ' + event.error);
+							showError('DASH error: ' + event.error);
 						});
 					} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 						video.src = videoSrc;
@@ -171,10 +203,18 @@ if CLIENT then
 
 				if (isHLS) {
 					loadScript('https://cdn.jsdelivr.net/npm/hls.js@latest', function() {
+						if (typeof Hls === 'undefined') {
+							showError('HLS not supported in this browser');
+							return;
+						}
 						initPlayer();
 					});
 				} else if (isDASH) {
 					loadScript('https://cdn.dashjs.org/latest/dash.all.min.js', function() {
+						if (typeof dashjs === 'undefined') {
+							showError('DASH not supported in this browser');
+							return;
+						}
 						initPlayer();
 					});
 				} else {
@@ -183,26 +223,27 @@ if CLIENT then
 
 				video.addEventListener('error', function(e) {
 					var error = video.error;
-					var errorMsg = '[DirectMedia] Video error: ';
+					var errorMsg = '';
 					if (error) {
 						switch(error.code) {
 							case error.MEDIA_ERR_ABORTED:
-								errorMsg += 'Playback aborted';
+								errorMsg = 'Playback aborted';
 								break;
 							case error.MEDIA_ERR_NETWORK:
-								errorMsg += 'Network error';
+								errorMsg = 'Network error - Failed to load media';
 								break;
 							case error.MEDIA_ERR_DECODE:
-								errorMsg += 'Codec not supported - You may need GModPatchTool for codec support';
+								errorMsg = 'Codec not supported - You may need GModPatchTool';
 								break;
 							case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-								errorMsg += 'Format not supported - You may need GModPatchTool for codec support';
+								errorMsg = 'Format not supported - You may need GModPatchTool';
 								break;
 							default:
-								errorMsg += 'Unknown error (code: ' + error.code + ')';
+								errorMsg = 'Unknown error (code: ' + error.code + ')';
 						}
 					}
-					console.error(errorMsg);
+					console.error('[DirectMedia] Video error: ' + errorMsg);
+					showError(errorMsg);
 				});
 			})();
 		</script>

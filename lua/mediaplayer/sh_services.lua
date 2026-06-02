@@ -135,8 +135,7 @@ do
 
 		-- HTML Resources
 		"resource", -- base
-		"image",
-		"html5_video",
+		"directmedia",
 		"webpage",
 
 		-- IGModAudioChannel

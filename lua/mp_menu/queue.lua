@@ -15,7 +15,7 @@ end
 
 function PANEL:OnQueueChanged( queue )
 
-	self.List:Clear()
+	self.List:Clear( false )
 
 	for _, media in pairs(queue) do
 		local item = vgui.Create( "MP.MediaItem" )

@@ -22,7 +22,7 @@ local JS_CallbackHack = [[(function(){
 	}
 })();]]
 
-local FilterCVar = CreateClientConVar( "js_console_filter", 0, true, false )
+local FilterCVar = CreateClientConVar( "js_console_filter", "0", true, false )
 
 local FILTER_ALL = 0
 local FILTER_NONE = 1

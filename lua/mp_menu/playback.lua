@@ -234,11 +234,11 @@ function SEEKBAR:Init()
 	self.Knob.Paint = self.PaintKnob
 
 	self.Knob.OnMousePressed = function( panel, mousecode )
-			self:OnStartEditing( self )
+			self:OnStartEditing()
 			DButton.OnMousePressed( panel, mousecode )
 		end
 	self.Knob.OnMouseReleased = function( panel, mousecode )
-			self:OnStopEditing( self )
+			self:OnStopEditing()
 			DButton.OnMouseReleased( panel, mousecode )
 		end
 

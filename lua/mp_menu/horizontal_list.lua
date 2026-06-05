@@ -3,7 +3,7 @@ local PANEL = {}
 function PANEL:Init()
 	DPanelList.Init( self )
 
-	self:EnableVerticalScrollbar( false )
+	self:EnableVerticalScrollbar()
 	self:EnableHorizontal( true )
 	self:SetAutoSize( true )
 end

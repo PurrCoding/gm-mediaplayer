@@ -141,7 +141,7 @@ local function RenderMediaPlayerDupe( Dupe )
 	local Up			= EyeAng:Up() * BorderSize
 	local Right			= EyeAng:Right() * BorderSize
 
-	render.SetColorModulation( 1, 1, 1, 1 )
+	render.SetColorModulation( 1, 1, 1 )
 	render.MaterialOverride( mat_debugwhite )
 
 	-- Render each entity in a circle
@@ -169,7 +169,7 @@ local function RenderMediaPlayerDupe( Dupe )
 
 	-- Because ee just messed up the depth
 	render.ClearDepth()
-	render.SetColorModulation( 0, 0, 0, 1 )
+	render.SetColorModulation( 0, 0, 0 )
 
 	-- Try to keep the border size consistent with zoom size
 	local BorderSize	= CamDist * 0.002
@@ -220,12 +220,12 @@ local function RenderMediaPlayerDupe( Dupe )
 	-- Render each model
 	for k, v in pairs( Dupe.Entities ) do
 
-		render.SetColorModulation( 1, 1, 1, 1 )
+		render.SetColorModulation( 1, 1, 1 )
 
 		if ( istable( v.EntityMods ) ) then
 
 			if ( istable( v.EntityMods.colour ) ) then
-				render.SetColorModulation( v.EntityMods.colour.Color.r / 255, v.EntityMods.colour.Color.g / 255, v.EntityMods.colour.Color.b / 255, v.EntityMods.colour.Color.a / 255 )
+				render.SetColorModulation( v.EntityMods.colour.Color.r / 255, v.EntityMods.colour.Color.g / 255, v.EntityMods.colour.Color.b / 255 )
 			end
 
 			if ( istable( v.EntityMods.material ) ) then
@@ -269,7 +269,7 @@ local function RenderMediaPlayerDupe( Dupe )
 
 	-- Enable lighting again (or it will affect outside of this loop!)
 	render.SuppressEngineLighting( false )
-	render.SetColorModulation( 1, 1, 1, 1 )
+	render.SetColorModulation( 1, 1, 1 )
 
 	--
 	-- Finished with the entities - remove them all

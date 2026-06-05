@@ -15,7 +15,8 @@
       "undefined-field",
       "assign-type-mismatch",
       "param-type-mismatch",
-      "cast-type-mismatch"
+      "cast-type-mismatch",
+      "gmod-net-read-write-order-mismatch"
     ]
   },
   "workspace": {

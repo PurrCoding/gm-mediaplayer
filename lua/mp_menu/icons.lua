@@ -1,4 +1,5 @@
 local spritesheet = spritesheet
+local ceil = math.ceil
 
 --[[--------------------------------------------
 	Icons spritesheet

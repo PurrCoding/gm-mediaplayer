@@ -57,7 +57,7 @@ function EventEmitter:getListenersAsObject(evt)
 		response[evt] = listeners
 	end
 
-	return response or listeners, wrapped
+	return response or listeners
 end
 
 function EventEmitter:addListener(evt, listener)

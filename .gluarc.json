@@ -16,7 +16,8 @@
       "assign-type-mismatch",
       "param-type-mismatch",
       "cast-type-mismatch",
-      "gmod-net-read-write-order-mismatch"
+      "gmod-net-read-write-order-mismatch",
+      "missing-fields"
     ]
   },
   "workspace": {

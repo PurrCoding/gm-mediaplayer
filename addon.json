@@ -6,6 +6,7 @@
 		".git/*",
 		".github/*",
 		"public/*",
+		".gluarc.json",
 		"*.bat",
 		"*.md",
 		"*.sw.vtx",

@@ -1,5 +1,5 @@
 SERVICE.Name  = "Direct Media"
-SERVICE.Id    = "dm"
+SERVICE.Id    = "dm5"
 SERVICE.Base  = "res"
 
 SERVICE.PrefetchMetadata = true

@@ -59,7 +59,7 @@ if CLIENT then
 	]]
 
 	local VideoEmbedHTML = [[
-		<video id="player" autoplay loop style="width: 100%%; height: 100%%;"></video>
+		<video id="player" autoplay style="width: 100%%; height: 100%%;"></video>
 
 		<!-- Audio-only indicator -->
 		<div id="audio-indicator" style="position: absolute; top: 50%%; left: 50%%; transform: translate(-50%%, -50%%); display: none; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: Arial, sans-serif; font-size: 24px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">

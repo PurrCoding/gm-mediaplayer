@@ -160,7 +160,7 @@ if CLIENT then
 				return
 			end
 
-			if msg:StartWith("DEBUG:") then
+			if msg:StartWith("DEBUG:") and MediaPlayer.DEBUG then
 				print(string.sub(msg, 7))
 				return
 			end

@@ -11,7 +11,6 @@ local YtVideoIdPattern = "[%a%d-_]+"
 local UrlSchemes = {
 	"youtube%.com/watch%?v=" .. YtVideoIdPattern,
 	"youtube%.com/shorts/" .. YtVideoIdPattern,
-	"youtu%.be/watch%?v=" .. YtVideoIdPattern,
 	"youtu%.be/" .. YtVideoIdPattern,
 }
 
@@ -62,8 +61,7 @@ function SERVICE:GetYouTubeVideoId()
 
 		-- https://youtu.be/(videoId)
 		elseif string.match(url.host, "youtu.be") and
-			url.path and string.match(url.path, "^/([%a%d-_]+)$") and
-			( (not url.query) or next(url.query) == nil ) then -- short url, no v= param
+			url.path and string.match(url.path, "^/([%a%d-_]+)$") then
 
 			videoId = string.match(url.path, "^/([%a%d-_]+)$")
 		end

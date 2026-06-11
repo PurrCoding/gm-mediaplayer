@@ -37,6 +37,20 @@
 	<div id="player-container"></div>
 
 	<script>
+		// Human-readable names for YT player state codes
+		const STATE_NAMES = {
+			"-1": "UNSTARTED",
+			"0":  "ENDED",
+			"1":  "PLAYING",
+			"2":  "PAUSED",
+			"3":  "BUFFERING",
+			"5":  "CUED"
+		};
+
+		function dbg(...args) {
+			console.log("[YT-META]", ...args);
+		}
+
 		// Get parameter from hash first, then fall back to query parameters
 		function getParameter(name) {
 			// Try hash parameters first
@@ -61,9 +75,12 @@
 			return null;
 		}
 
+		dbg("Loading IFrame API script...");
+
 		const tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
 		tag.onerror = function() {
+			dbg("ERROR: IFrame API script failed to load.");
 			console.log("ERROR:Failed to load YouTube IFrame API");
 		};
 		document.head.appendChild(tag);
@@ -90,18 +107,31 @@
 		 * Read metadata from the player and emit it exactly once.
 		 * Called either by onStateChange (fast path) or the safety-net timeout.
 		 */
-		function extractAndSend() {
-			if (metadataExtracted) return;
+		function extractAndSend(trigger) {
+			if (metadataExtracted) {
+				dbg("extractAndSend() called again by '" + trigger + "' but already fired — ignoring.");
+				return;
+			}
 			metadataExtracted = true;
+
+			dbg("Extracting metadata (trigger: " + trigger + ")");
 
 			if (safetyTimeout) {
 				clearTimeout(safetyTimeout);
 				safetyTimeout = null;
+				dbg("Safety timeout cleared.");
 			}
 
 			const videoData   = player.getVideoData();
 			const playerState = player.getPlayerState();
 			const duration    = player.getDuration();
+
+			dbg("Raw player data:",
+				"state=" + (STATE_NAMES[String(playerState)] || playerState),
+				"| title='" + videoData.title + "'",
+				"| duration=" + duration + "s",
+				"| isLive=" + videoData.isLive
+			);
 
 			// Check if player is in a playable state
 			const isPlayable = playerState === YT.PlayerState.PLAYING ||
@@ -111,6 +141,19 @@
 			// Determine video type based on actual playback data
 			const isLive        = isPlayable && videoData.isLive;
 			const isNormalVideo = isPlayable && duration > 0 && !videoData.isLive;
+
+			dbg("Resolved type:",
+				"isPlayable=" + isPlayable,
+				"| isLive=" + isLive,
+				"| isNormalVideo=" + isNormalVideo
+			);
+
+			if (!videoData.title) {
+				dbg("WARNING: title is empty or undefined — server-side HTML fallback will trigger.");
+			}
+			if (!duration || isNaN(duration)) {
+				dbg("WARNING: duration is " + duration + " — may cause issues server-side.");
+			}
 
 			// Pause the video after metadata extraction
 			player.pauseVideo();
@@ -126,19 +169,26 @@
 				}
 			};
 
+			dbg("Emitting METADATA:", JSON.stringify(metadata));
 			console.log("METADATA:" + JSON.stringify(metadata));
 		}
 
 		function onYouTubeIframeAPIReady() {
+			dbg("IFrame API ready.");
+
 			const rawVid = getParameter('v');
 			const vid = (rawVid && /^[a-zA-Z0-9_-]{11}$/.test(rawVid))
 				? rawVid
 				: 'dQw4w9WgXcQ';
 
+			dbg("Video ID resolved: '" + vid + "'" + (rawVid !== vid ? " (raw was '" + rawVid + "', fell back to default)" : ""));
+
 			createPlayer(vid);
 		}
 
 		function createPlayer(videoId) {
+			dbg("createPlayer() called for videoId='" + videoId + "'");
+
 			// Reset per-call state so re-use of the page works correctly
 			metadataExtracted = false;
 			if (safetyTimeout) {
@@ -147,6 +197,7 @@
 			}
 
 			if (player && typeof player.destroy === 'function') {
+				dbg("Destroying existing player instance.");
 				player.destroy();
 				player = null;
 				document.getElementById('player-container').innerHTML = '';
@@ -160,6 +211,7 @@
 				host: 'https://www.youtube-nocookie.com',
 				events: {
 					onReady: () => {
+						dbg("onReady fired. Starting playback and arming 8s safety timeout.");
 						player.playVideo();
 						player.setVolume(0);
 
@@ -167,10 +219,16 @@
 						// reaches BUFFERING/PLAYING within 8 seconds.
 						// Chosen to stay safely under the 10s DHTMLPrefetch
 						// timeout on the Lua side.
-						safetyTimeout = setTimeout(extractAndSend, 8000);
+						safetyTimeout = setTimeout(() => {
+							dbg("Safety timeout fired after 8s — onStateChange never reached BUFFERING/PLAYING in time.");
+							extractAndSend("safety-timeout");
+						}, 8000);
 					},
 					onStateChange: (event) => {
-						const state = event.data;
+						const state     = event.data;
+						const stateName = STATE_NAMES[String(state)] || String(state);
+
+						dbg("onStateChange: " + stateName + " (" + state + ")");
 
 						// BUFFERING fires as soon as YouTube starts loading the
 						// stream — at that point getVideoData().title and
@@ -179,21 +237,24 @@
 						// BUFFERING is skipped (e.g. cached/instant start).
 						if (state === YT.PlayerState.BUFFERING ||
 							state === YT.PlayerState.PLAYING) {
+							dbg("Playable state reached (" + stateName + "). Scheduling extractAndSend in 100ms.");
 							// 100ms settle delay ensures getVideoData() is
 							// fully populated before we read it.
-							setTimeout(extractAndSend, 100);
+							setTimeout(() => extractAndSend("onStateChange-" + stateName), 100);
 						}
 					},
 					onError: (event) => {
 						const YT_ERROR_CODES = {
-							2: "Invalid parameter value (e.g. wrong video ID format).",
-							5: "HTML5 player error – the requested content cannot be played in this player.",
+							2:   "Invalid parameter value (e.g. wrong video ID format).",
+							5:   "HTML5 player error – the requested content cannot be played in this player.",
 							100: "Video not found. It may have been removed, set to private, or the ID is invalid.",
 							101: "The owner of the video has prohibited embedding on this site.",
 							150: "This content can't be requested. Logging in won't solve this — no workaround exists. Don't sign in to YouTube." // Same as 101
 						};
 
-						console.log("ERROR:" + YT_ERROR_CODES[event.data]);
+						const msg = YT_ERROR_CODES[event.data] || ("Unknown error code: " + event.data);
+						dbg("onError: code=" + event.data + " — " + msg);
+						console.log("ERROR:" + msg);
 					}
 				}
 			});
@@ -203,6 +264,7 @@
 		 * Handle edge case if API already loaded
 		 */
 		if (window.YT && window.YT.Player && !player) {
+			dbg("IFrame API was already loaded — calling onYouTubeIframeAPIReady() directly.");
 			if (document.readyState === 'complete') {
 				onYouTubeIframeAPIReady();
 			} else {

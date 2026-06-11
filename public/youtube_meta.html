@@ -51,15 +51,20 @@
 			"5":  "CUED"
 		};
 
+		// Per-session tracking — reset each time createPlayer() is called
+		let sessionId      = 0;
+		let sessionVideoId = "";
+		let sessionStart   = PAGE_START;
+
 		/**
-		 * Emit a debug line that the Lua ConsoleMessage handler will forward
-		 * to the GMod console. The [YT-META] prefix is intentional — Lua strips
-		 * "DEBUG:" and prints the rest verbatim.
-		 * @param {string} msg
+		 * Emit a debug line forwarded to the GMod console by the DEBUG: handler
+		 * in browser.lua (only printed when mediaplayer_debug is 1).
+		 * The [YT-META] prefix is intentional — Lua strips "DEBUG:" and prints
+		 * the rest verbatim.
 		 */
 		function dbg(msg) {
-			const elapsed = (performance.now() - PAGE_START).toFixed(1);
-			console.log("DEBUG:[YT-META] [+" + elapsed + "ms] " + msg);
+			const elapsed = (performance.now() - sessionStart).toFixed(1);
+			console.log("DEBUG:[YT-META] [#" + sessionId + ":" + sessionVideoId + " +" + elapsed + "ms] " + msg);
 		}
 
 		function stateName(code) {
@@ -94,9 +99,8 @@
 
 		// ─── IFrame API bootstrap ─────────────────────────────────────────────────
 
-		dbg("Page loaded. URL: " + window.location.href);
 		dbg("Hash: '" + window.location.hash + "' | Search: '" + window.location.search + "'");
-		dbg("Injecting IFrame API script from https://www.youtube.com/iframe_api ...");
+		dbg("Injecting IFrame API script from https://www.youtube.com/iframe_api");
 
 		const tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
@@ -104,12 +108,10 @@
 			dbg("IFrame API script loaded successfully.");
 		};
 		tag.onerror = function() {
-			dbg("ERROR: IFrame API script failed to load — network issue or YouTube blocked.");
+			dbg("ERROR: IFrame API script failed to load (network error or blocked).");
 			console.log("ERROR:Failed to load YouTube IFrame API");
 		};
 		document.head.appendChild(tag);
-
-		// ─── Player state ─────────────────────────────────────────────────────────
 
 		let player = null;
 
@@ -133,99 +135,98 @@
 
 		/**
 		 * Read metadata from the player and emit it exactly once.
-		 * Called either by onStateChange (fast path) or the 8s safety-net timeout.
-		 * @param {string} trigger  Human-readable label for what triggered this call.
+		 * Called either by onStateChange (fast path) or the safety-net timeout.
+		 * @param {string} trigger - human-readable label for what triggered this call
 		 */
 		function extractAndSend(trigger) {
 			if (metadataExtracted) {
-				dbg("extractAndSend() called again by '" + trigger + "' — already fired, ignoring.");
+				dbg("extractAndSend() called again by [" + trigger + "] but already fired — ignoring.");
 				return;
 			}
 			metadataExtracted = true;
 
-			dbg("--- extractAndSend() triggered by: " + trigger + " ---");
-
 			if (safetyTimeout) {
 				clearTimeout(safetyTimeout);
 				safetyTimeout = null;
-				dbg("Safety timeout cancelled.");
+				dbg("Safety timeout cancelled (extractAndSend reached via [" + trigger + "]).");
 			}
 
-			// ── Raw player readings ──
+			dbg("extractAndSend() triggered by: " + trigger);
+
 			const videoData   = player.getVideoData();
 			const playerState = player.getPlayerState();
 			const duration    = player.getDuration();
-			const volume      = player.getVolume();
-			const isMuted     = player.isMuted();
-			const playbackRate = player.getPlaybackRate();
-			const availableQuality = player.getAvailableQualityLevels
-				? player.getAvailableQualityLevels()
-				: [];
 
-			dbg("Player state   : " + stateName(playerState));
-			dbg("Volume / Muted : " + volume + " / " + isMuted);
-			dbg("Playback rate  : " + playbackRate + "x");
-			dbg("Duration       : " + duration + "s (raw, before Math.round)");
-			dbg("Quality levels : " + (availableQuality.length ? availableQuality.join(", ") : "(none yet)"));
+			dbg("Raw player data: state=" + stateName(playerState) +
+				" | duration=" + duration + "s" +
+				" | volume=" + player.getVolume() +
+				" | muted=" + player.isMuted() +
+				" | playbackRate=" + player.getPlaybackRate());
 
-			// ── Full videoData dump ──
-			dbg("videoData dump : " + JSON.stringify(videoData));
-			dbg("  title        : '" + videoData.title + "'" +
-				((!videoData.title || videoData.title === "") ? " ⚠ EMPTY — server HTML fallback will trigger" : ""));
-			dbg("  video_id     : '" + videoData.video_id + "'");
-			dbg("  author       : '" + videoData.author + "'");
-			dbg("  isLive       : " + videoData.isLive);
-			dbg("  errorCode    : " + (videoData.errorCode || "none"));
+			dbg("Raw videoData: " + JSON.stringify(videoData));
 
-			// ── Duration sanity checks ──
-			if (isNaN(duration)) {
-				dbg("  duration     : NaN ⚠ — will become null in JSON, server may crash on math.Round(nil)");
-			} else if (duration === 0) {
-				dbg("  duration     : 0 ⚠ — video may not have buffered yet, or this is a live stream");
+			// Per-field validation with explicit warnings
+			if (!videoData.title || videoData.title === "") {
+				dbg("WARNING: videoData.title is empty or undefined — server will trigger HTML scraping fallback.");
 			} else {
-				dbg("  duration     : " + duration + "s ✓");
+				dbg("Title: '" + videoData.title + "'");
 			}
 
-			// ── Playability resolution ──
+			if (isNaN(duration) || duration === null) {
+				dbg("WARNING: duration is NaN/null — will be sent as 0. Server-side math.Round(nil) crash prevented by fallback guard.");
+			} else if (duration === 0 && !videoData.isLive) {
+				dbg("WARNING: duration is 0 and video is not live — may indicate the player hasn't fully loaded yet.");
+			} else {
+				dbg("Duration: " + duration + "s (rounded: " + Math.round(duration) + "s)");
+			}
+
+			// Check if player is in a playable state
 			const isPlayable = playerState === YT.PlayerState.PLAYING ||
 							   playerState === YT.PlayerState.BUFFERING ||
 							   playerState === YT.PlayerState.CUED;
-			const isLive        = isPlayable && !!videoData.isLive;
-			const isNormalVideo = isPlayable && duration > 0 && !videoData.isLive;
-
-			dbg("isPlayable     : " + isPlayable);
-			dbg("isLive         : " + isLive);
-			dbg("isNormalVideo  : " + isNormalVideo);
 
 			if (!isPlayable) {
-				dbg("⚠ Player is NOT in a playable state — metadata may be incomplete.");
+				dbg("WARNING: player is not in a playable state (" + stateName(playerState) + ") — metadata may be incomplete.");
+			}
+
+			// Determine video type based on actual playback data
+			const isLive        = isPlayable && videoData.isLive;
+			const isNormalVideo = isPlayable && duration > 0 && !videoData.isLive;
+			const videoType     = isLive ? "live" : (isNormalVideo ? "normal" : "unknown");
+
+			dbg("Resolved: isPlayable=" + isPlayable + " | isLive=" + isLive + " | videoType=" + videoType);
+
+			// Available quality levels (useful for diagnosing restricted videos)
+			try {
+				const qualities = player.getAvailableQualityLevels();
+				dbg("Available quality levels: [" + (qualities.length ? qualities.join(", ") : "none — video may be restricted") + "]");
+			} catch(e) {
+				dbg("Could not read quality levels: " + e.message);
 			}
 
 			// Pause the video after metadata extraction
+			dbg("Calling pauseVideo().");
 			player.pauseVideo();
-			dbg("pauseVideo() called.");
 
-			// ── Build and emit metadata ──
 			const metadata = {
 				title:    videoData.title,
 				isLive:   isLive,
-				duration: Math.round(duration),
+				duration: Math.round(duration) || 0,
 				debug: {
 					playerState: playerState,
-					videoType:   isLive ? "live" : (isNormalVideo ? "normal" : "unknown"),
+					videoType:   videoType,
 					videoData:   videoData
 				}
 			};
 
 			dbg("Emitting METADATA: " + JSON.stringify(metadata));
-			dbg("--- extractAndSend() done ---");
 			console.log("METADATA:" + JSON.stringify(metadata));
 		}
 
-		// ─── API ready / player creation ──────────────────────────────────────────
+		// ─── Player lifecycle ─────────────────────────────────────────────────────
 
 		function onYouTubeIframeAPIReady() {
-			dbg("onYouTubeIframeAPIReady() fired — IFrame API is fully initialised.");
+			dbg("IFrame API ready (onYouTubeIframeAPIReady fired).");
 
 			const rawVid = getParameter('v');
 			dbg("Raw 'v' parameter from URL: '" + rawVid + "'");
@@ -235,33 +236,40 @@
 				: 'dQw4w9WgXcQ';
 
 			if (vid !== rawVid) {
-				dbg("⚠ Video ID '" + rawVid + "' failed validation — falling back to default ID '" + vid + "'");
-			} else {
-				dbg("Video ID validated: '" + vid + "'");
+				dbg("WARNING: raw video ID '" + rawVid + "' failed validation — fell back to default ID.");
 			}
 
+			dbg("Resolved video ID: '" + vid + "'");
 			createPlayer(vid);
 		}
 
 		function createPlayer(videoId) {
-			dbg("createPlayer() called for videoId='" + videoId + "'");
+			// New session — increment counter, reset elapsed timer, print separator
+			sessionId++;
+			sessionVideoId = videoId;
+			sessionStart   = performance.now();
+
+			console.log("DEBUG:[YT-META] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+			console.log("DEBUG:[YT-META] Session #" + sessionId + " — videoId: '" + videoId + "'");
+			console.log("DEBUG:[YT-META] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+			dbg("createPlayer() called.");
 
 			// Reset per-call state so re-use of the page works correctly
 			metadataExtracted = false;
 			if (safetyTimeout) {
 				clearTimeout(safetyTimeout);
 				safetyTimeout = null;
-				dbg("Cleared leftover safety timeout from previous createPlayer() call.");
 			}
 
 			if (player && typeof player.destroy === 'function') {
-				dbg("Destroying existing player instance before creating a new one.");
+				dbg("Destroying existing player instance before creating new one.");
 				player.destroy();
 				player = null;
 				document.getElementById('player-container').innerHTML = '';
 			}
 
-			dbg("Creating YT.Player with host=https://www.youtube-nocookie.com, playerVars=" + JSON.stringify(defaultPlayerVars));
+			dbg("Creating YT.Player — host=https://www.youtube-nocookie.com | playerVars=" + JSON.stringify(defaultPlayerVars));
 
 			player = new YT.Player('player-container', {
 				height: '100%',
@@ -281,9 +289,9 @@
 						// timeout on the Lua side.
 						dbg("Arming 8s safety-net timeout (Lua DHTMLPrefetch limit is 10s).");
 						safetyTimeout = setTimeout(() => {
-							dbg("⚠ Safety timeout fired — onStateChange never reached BUFFERING/PLAYING in 8s.");
+							dbg("WARNING: Safety timeout fired — onStateChange never reached BUFFERING/PLAYING in 8s.");
 							dbg("  Current player state: " + stateName(player.getPlayerState()));
-							dbg("  This usually means slow network, YouTube throttling, or a bot-challenge response.");
+							dbg("  Likely causes: slow network, YouTube throttling, or a bot-challenge response.");
 							extractAndSend("safety-timeout-8s");
 						}, 8000);
 					},
@@ -299,12 +307,12 @@
 						// BUFFERING is skipped (e.g. cached/instant start).
 						if (state === YT.PlayerState.BUFFERING ||
 							state === YT.PlayerState.PLAYING) {
-							dbg("Playable state reached (" + stateName(state) + "). Scheduling extractAndSend in 100ms to let getVideoData() settle.");
+							dbg("Playable state reached. Scheduling extractAndSend in 100ms to let getVideoData() settle.");
 							setTimeout(() => extractAndSend("onStateChange-" + stateName(state)), 100);
 						} else if (state === YT.PlayerState.UNSTARTED) {
 							dbg("  Player is UNSTARTED — waiting for buffering to begin.");
 						} else if (state === YT.PlayerState.ENDED) {
-							dbg("  ⚠ Player reached ENDED state before metadata was extracted.");
+							dbg("  WARNING: Player reached ENDED state before metadata was extracted.");
 						} else if (state === YT.PlayerState.PAUSED) {
 							dbg("  Player paused (expected after extractAndSend calls pauseVideo).");
 						}
@@ -332,8 +340,9 @@
 		// ─── Edge case: API already loaded before this script ran ─────────────────
 
 		if (window.YT && window.YT.Player && !player) {
-			dbg("window.YT already exists — IFrame API was loaded before this script. Calling onYouTubeIframeAPIReady() directly.");
+			dbg("window.YT already exists — IFrame API was loaded before this script ran.");
 			if (document.readyState === 'complete') {
+				dbg("Document already complete — calling onYouTubeIframeAPIReady() directly.");
 				onYouTubeIframeAPIReady();
 			} else {
 				dbg("Document not yet complete — deferring to 'load' event.");

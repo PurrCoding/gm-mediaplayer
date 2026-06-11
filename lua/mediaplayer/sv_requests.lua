@@ -211,3 +211,62 @@ net.Receive( "MEDIAPLAYER.RequestLock", RequestWrapper(function(mp, ply)
 	mp:RequestLock( ply )
 
 end) )
+
+---
+-- Server console command to truncate the metadata cache table.
+-- Usage: mediaplayer_clearcache
+--
+---
+-- Server/superadmin command to truncate the metadata cache table.
+-- Allowed callers:
+--   - Server console (no player entity)
+--   - Singleplayer host (game.SinglePlayer())
+--   - Superadmins (CAMI privilege "MediaPlayer_ClearCache", fallback: ply:IsSuperAdmin())
+--
+concommand.Add("mediaplayer_clearcache", function(ply, cmd, args)
+	local isServerConsole = not IsValid(ply)
+	local isSingleplayer  = game.SinglePlayer()
+
+	local isAuthorized = isServerConsole or isSingleplayer
+
+	if not isAuthorized then
+		-- CAMI check with superadmin fallback
+		if CAMI and CAMI.PlayerHasAccess then
+			local hasAccess = false
+			local success, result = pcall(function()
+				return CAMI.PlayerHasAccess(ply, "MediaPlayer_ClearCache", function(b)
+					hasAccess = b
+				end)
+			end)
+			if success and result ~= nil then
+				isAuthorized = result
+			else
+				isAuthorized = hasAccess
+			end
+		else
+			isAuthorized = ply:IsSuperAdmin()
+		end
+	end
+
+	if not isAuthorized then
+		local msg = "[MediaPlayer] You do not have permission to run mediaplayer_clearcache.\n"
+		if IsValid(ply) then
+			ply:PrintMessage(HUD_PRINTCONSOLE, msg)
+		else
+			Msg(msg)
+		end
+		return
+	end
+
+	local success = MediaPlayer.Metadata:Truncate()
+
+	local msg = success
+		and "[MediaPlayer] Metadata cache cleared successfully.\n"
+		or  "[MediaPlayer] Failed to clear metadata cache. Check the console for SQL errors.\n"
+
+	if IsValid(ply) then
+		ply:PrintMessage(HUD_PRINTCONSOLE, msg)
+	else
+		Msg(msg)
+	end
+end, nil, "Truncates the mediaplayer_metadata SQL table, clearing all cached media metadata. Superadmin only.")

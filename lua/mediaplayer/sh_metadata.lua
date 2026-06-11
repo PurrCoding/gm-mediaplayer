@@ -171,3 +171,29 @@ if not sql.TableExists(TableName) then
 	Msg("MediaPlayer.Metadata: Creating `" .. TableName .. "` table...\n")
 	sql.Query(TableStruct)
 end
+
+if SERVER then
+	---
+	-- Truncates (clears) all rows from the metadata cache table.
+	-- Useful for forcing a full re-fetch of all media metadata.
+	--
+	-- @return boolean  True on success, false on failure.
+	--
+	function MediaPlayer.Metadata:Truncate()
+		local query = ("DELETE FROM `%s`"):format(TableName)
+
+		if MediaPlayer.DEBUG then
+			print("MediaPlayer.Metadata.Truncate")
+			print(query)
+		end
+
+		local result = sql.Query(query)
+
+		if result == false then
+			ErrorNoHalt("MediaPlayer.Metadata.Truncate: SQL error: " .. tostring(sql.LastError()) .. "\n")
+			return false
+		end
+
+		return true
+	end
+end

@@ -3,6 +3,11 @@
 
 local privileges = {
 	{
+		Name = "MediaPlayer_ClearCache",
+		MinAccess = "superadmin",
+		Description = "Truncate the mediaplayer_metadata SQL table, clearing all cached media metadata."
+	},
+	{
 		Name = "MediaPlayer_Admin",
 		MinAccess = "admin",
 		Description = "Full admin control over any media player (skip, seek, pause, remove, repeat, shuffle, lock, bypass whitelist)"

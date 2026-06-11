@@ -160,6 +160,11 @@ if CLIENT then
 				return
 			end
 
+			if msg:StartWith("DEBUG:") then
+				print(string.sub(msg, 7))
+				return
+			end
+
 			-- Handle CHROME_ERROR: and HEARTBEAT: via centralized helper
 			if MediaPlayer.ChromeError then
 				MediaPlayer.ChromeError.HandleConsoleMessage(msg, requestHostname, onChromeError)

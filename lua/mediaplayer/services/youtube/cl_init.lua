@@ -97,6 +97,13 @@ end
 
 do	-- Metadata Prefetch
 	function SERVICE:PreRequest( callback )
+		if self.ForceHTMLScraping then
+			-- Skip the iframe prefetch entirely. _metaTitle stays nil,
+			-- which signals the server to use FetchHTMLMetadata instead.
+			callback()
+			return
+		end
+
 		local videoId = self:GetYouTubeVideoId()
 		local baseUrl = MediaPlayer.GetConfigValue( "youtube.url_meta" )
 		local url = baseUrl .. "#v=" .. videoId
@@ -105,9 +112,13 @@ do	-- Metadata Prefetch
 	end
 
 	function SERVICE:OnPrefetchMetadata( metadata, callback )
-		self._metaTitle = metadata.title
+		-- Normalise empty string to nil. In Lua, "" is falsy, so
+		-- `"" or "Unknown"` would silently produce "Unknown" in NetWriteRequest.
+		-- Setting nil here causes the server-side HTML fallback to trigger instead.
+		local title = metadata.title
+		self._metaTitle    = (title and title ~= "") and title or nil
 		self._metaDuration = metadata.duration
-		self._metaisLive = metadata.isLive
+		self._metaisLive   = metadata.isLive
 		callback()
 	end
 

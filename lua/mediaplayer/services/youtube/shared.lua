@@ -5,6 +5,7 @@ SERVICE.Id 		= "yt"
 SERVICE.Base 	= "browser"
 
 SERVICE.PrefetchMetadata = true
+SERVICE.ForceHTMLScraping = false  -- Set to true to bypass iframe and use server-side HTML scraping
 
 local YtVideoIdPattern = "[%a%d-_]+"
 local UrlSchemes = {

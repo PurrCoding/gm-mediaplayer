@@ -15,7 +15,8 @@
 	<link rel="preload" href="https://www.youtube.com/iframe_api" as="script">
 
 	<style>
-		html, body {
+		html,
+		body {
 			margin: 0;
 			padding: 0;
 			width: 100%;
@@ -57,7 +58,7 @@
 
 		const tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
-		tag.onerror = function() {
+		tag.onerror = function () {
 			console.log("ERROR:Failed to load YouTube IFrame API");
 		};
 		document.head.appendChild(tag);
@@ -123,7 +124,12 @@
 						// Signal Lua that the player is ready for volume
 						console.log("READY:");
 					},
-					onStateChange: (e) => wrapper._paused = e.data !== YT.PlayerState.PLAYING
+					onStateChange: (e) => {
+						wrapper._paused = e.data !== YT.PlayerState.PLAYING;
+						if (e.data === YT.PlayerState.PLAYING) {
+							player.unloadModule('captions');
+						}
+					}
 				}
 			});
 

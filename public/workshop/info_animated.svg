@@ -1,0 +1,13 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2"><animate attributeName="stdDeviation" values="2;5;2" dur="2.5s" repeatCount="indefinite"/></feGaussianBlur><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<g filter="url(#glow)">
+<animateTransform attributeName="transform" type="translate" values="256 256;256 256;256 256" dur="2.5s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" additive="sum" type="scale" values="1;1.04;1" dur="2.5s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" additive="sum" type="translate" values="-256 -256;-256 -256;-256 -256" dur="2.5s" repeatCount="indefinite"/>
+<polygon points="156,20 356,20 492,156 492,356 356,492 156,492 20,356 20,156" fill="#d60000" stroke="white" stroke-width="12"><animate attributeName="fill" values="#d60000;#ff2a2a;#d60000" dur="2.5s" repeatCount="indefinite"/></polygon>
+<text x="50%" y="38%" text-anchor="middle" font-family="Arial" font-size="110" font-weight="bold" fill="white">STOP</text>
+<line x1="80" y1="230" x2="432" y2="230" stroke="white" stroke-width="6"/>
+<text x="50%" y="300" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="white">PLEASE READ</text>
+<text x="50%" y="350" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="white">BEFORE YOU</text>
+<text x="50%" y="400" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="white">COMMENT</text>
+</g></svg>

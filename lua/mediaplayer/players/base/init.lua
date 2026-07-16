@@ -345,6 +345,8 @@ function MEDIAPLAYER:RequestMedia( media, ply )
 
 		self:BroadcastUpdate()
 
+		MediaPlayer.History:LogRequest( media )
+
 		hook.Run( "PostMediaPlayerMediaRequest", self, media, ply )
 
 	end)

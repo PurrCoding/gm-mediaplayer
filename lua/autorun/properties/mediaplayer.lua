@@ -147,7 +147,7 @@ AddMediaPlayerProperty("mp-enable", {
 	MenuIcon = "icon16/lightbulb.png",
 
 	Filter = function(self, ent, ply)
-		return IsValid(ent) and not IsValid(ent:GetMediaPlayer())
+		return IsValid(ent) and ent.IsMediaPlayerEntity and not IsValid(ent:GetMediaPlayer())
 	end,
 
 	Action = function(self, ent)
@@ -161,7 +161,7 @@ AddMediaPlayerProperty("mp-disable", {
 	MenuIcon = "icon16/lightbulb_off.png",
 
 	Filter = function(self, ent, ply)
-		return IsValid(ent) and IsValid(ent:GetMediaPlayer())
+		return IsValid(ent) and ent.IsMediaPlayerEntity and IsValid(ent:GetMediaPlayer())
 	end,
 
 	Action = function(self, ent)

@@ -4,8 +4,14 @@ SERVICE.Name 	= "YouTube"
 SERVICE.Id 		= "yt"
 SERVICE.Base 	= "browser"
 
-SERVICE.PrefetchMetadata = true
-SERVICE.ForceHTMLScraping = false  -- Set to true to bypass iframe and use server-side HTML scraping
+-- Metadata is fetched entirely server-side from the JSON API in init.lua,
+-- so no client-side prefetch is required.
+SERVICE.PrefetchMetadata = false
+
+-- Custom endpoint created by PurrCoding. Please do not overly abuse it,
+-- and do not use it in third-party addons. No warranty for reliability is
+-- guaranteed, even though this is backed by edge scripts.
+SERVICE.MetadataAPI = "https://gm-api.physcannon.top/index.ts?id=%s"
 
 local YtVideoIdPattern = "[%a%d-_]+"
 local UrlSchemes = {

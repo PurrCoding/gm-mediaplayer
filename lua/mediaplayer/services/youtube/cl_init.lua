@@ -94,3 +94,39 @@ end
 function SERVICE:IsMouseInputEnabled()
 	return IsValid( self.Browser )
 end
+
+do	-- Metadata Prefetch
+
+	function SERVICE:PreRequest( callback )
+		if self.ForceHTMLScraping then
+			-- Skip the iframe prefetch entirely. _metaTitle stays nil,
+			-- which signals the server to use FetchHTMLMetadata instead.
+			callback()
+			return
+		end
+
+		local videoId = self:GetYouTubeVideoId()
+		local baseUrl = MediaPlayer.GetConfigValue( "youtube.url_meta" )
+		local url = baseUrl .. "#v=" .. videoId
+
+		self:DHTMLPrefetch(callback, { url = url })
+	end
+
+	function SERVICE:OnPrefetchMetadata( metadata, callback )
+		-- Normalise empty string to nil. In Lua, "" is falsy, so
+		-- `"" or "Unknown"` would silently produce "Unknown" in NetWriteRequest.
+		-- Setting nil here causes the server-side fallback chain to trigger instead.
+		local title = metadata.title
+		self._metaTitle    = (title and title ~= "") and title or nil
+		self._metaDuration = metadata.duration
+		self._metaisLive   = metadata.isLive
+		callback()
+	end
+
+	function SERVICE:NetWriteRequest()
+		net.WriteString( self._metaTitle or "Unknown" )
+		net.WriteUInt( self._metaDuration or 0, 16 )
+		net.WriteBool( self._metaisLive or false )
+	end
+
+end

@@ -4,9 +4,12 @@ SERVICE.Name 	= "YouTube"
 SERVICE.Id 		= "yt"
 SERVICE.Base 	= "browser"
 
--- Metadata is fetched entirely server-side from the JSON API in init.lua,
--- so no client-side prefetch is required.
-SERVICE.PrefetchMetadata = false
+-- The iframe prefetch runs client-side and its result is used as the final
+-- fallback in the GetMetadata chain (API -> HTML scrape -> prefetch).
+SERVICE.PrefetchMetadata = true
+
+-- Set to true to bypass the JSON API and use server-side HTML scraping.
+SERVICE.ForceHTMLScraping = false
 
 -- Custom endpoint created by PurrCoding. Please do not overly abuse it,
 -- and do not use it in third-party addons. No warranty for reliability is

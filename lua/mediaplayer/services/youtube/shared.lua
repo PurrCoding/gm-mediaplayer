@@ -4,11 +4,23 @@ SERVICE.Name 	= "YouTube"
 SERVICE.Id 		= "yt"
 SERVICE.Base 	= "browser"
 
--- The iframe prefetch runs client-side and its result is used as the final
--- fallback in the GetMetadata chain (API -> HTML scrape -> prefetch).
-SERVICE.PrefetchMetadata = true
+-- [GATE] Client-side iframe metadata crawling.
+--
+-- When false (default): the JSON API is the primary metadata source and the
+-- server-side HTML scrape is the only active fallback. The client-side iframe
+-- crawl does NOT run.
+--
+-- When true: the client-side iframe crawl is used to resolve metadata and the
+-- JSON API is disabled entirely. HTML scraping remains as a fallback.
+SERVICE.EnableIframeScraping = false
 
--- Set to true to bypass the JSON API and use server-side HTML scraping.
+-- The iframe prefetch runs client-side. It is driven by EnableIframeScraping
+-- so there is a single source of truth for whether the browser-side crawl runs
+-- (used by PreRequest / NetWriteRequest / NetReadRequest).
+SERVICE.PrefetchMetadata = SERVICE.EnableIframeScraping
+
+-- Debug flag: set to true to bypass the JSON API and use server-side HTML
+-- scraping directly. Independent of EnableIframeScraping.
 SERVICE.ForceHTMLScraping = false
 
 -- Custom endpoint created by PurrCoding. Please do not overly abuse it,

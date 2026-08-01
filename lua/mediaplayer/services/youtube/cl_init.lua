@@ -98,9 +98,11 @@ end
 do	-- Metadata Prefetch
 
 	function SERVICE:PreRequest( callback )
-		if self.ForceHTMLScraping then
-			-- Skip the iframe prefetch entirely. _metaTitle stays nil,
-			-- which signals the server to use FetchHTMLMetadata instead.
+		-- The client-side iframe crawl only runs when iframe scraping is
+		-- explicitly enabled. When disabled (default) or when HTML scraping is
+		-- forced, skip the prefetch entirely. _metaTitle stays nil, which
+		-- signals the server to use the JSON API / HTML scrape chain instead.
+		if not self.EnableIframeScraping or self.ForceHTMLScraping then
 			callback()
 			return
 		end

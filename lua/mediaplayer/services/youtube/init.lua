@@ -277,7 +277,6 @@ function SERVICE:GetMetadata( callback )
 		return
 	end
 
-	-- Default mode.
 	-- Step 1: primary JSON API
 	self:FetchAPIMetadata(function( metadata, apiReason )
 		if metadata then
@@ -288,7 +287,19 @@ function SERVICE:GetMetadata( callback )
 		MsgN( "[MediaPlayer] " .. tostring(apiReason) .. " — falling back to HTML scraping." )
 
 		-- Step 2: server-side HTML scrape (only active fallback)
-		self:FetchHTMLMetadata( callback )
+		self:FetchHTMLMetadata(function( metadata2, htmlReason )
+			if metadata2 then
+				callback( metadata2 )
+				return
+			end
+
+			-- Both sources failed. Surface the JSON API reason to the client
+			-- (e.g. "Video is unplayable (reason: unplayable)"), since it is
+			-- the primary source and carries the meaningful error. Log the
+			-- HTML failure server-side for diagnostics.
+			MsgN( "[MediaPlayer] HTML scrape also failed: " .. tostring(htmlReason) )
+			callback( false, apiReason or htmlReason )
+		end)
 	end)
 end
 

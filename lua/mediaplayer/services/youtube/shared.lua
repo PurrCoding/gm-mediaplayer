@@ -4,29 +4,14 @@ SERVICE.Name 	= "YouTube"
 SERVICE.Id 		= "yt"
 SERVICE.Base 	= "browser"
 
--- [GATE] Client-side iframe metadata crawling.
---
--- When false (default): the JSON API is the primary metadata source and the
--- server-side HTML scrape is the only active fallback. The client-side iframe
--- crawl does NOT run.
---
--- When true: the client-side iframe crawl is used to resolve metadata and the
--- JSON API is disabled entirely. HTML scraping remains as a fallback.
-SERVICE.EnableIframeScraping = false
+-- Metadata is resolved entirely by the client-side iframe extractor
+-- (public/youtube_meta.html), driven by the browser-side prefetch in
+-- cl_init.lua (PreRequest / NetWriteRequest / NetReadRequest).
+SERVICE.PrefetchMetadata = true
 
--- The iframe prefetch runs client-side. It is driven by EnableIframeScraping
--- so there is a single source of truth for whether the browser-side crawl runs
--- (used by PreRequest / NetWriteRequest / NetReadRequest).
-SERVICE.PrefetchMetadata = SERVICE.EnableIframeScraping
-
--- Debug flag: set to true to bypass the JSON API and use server-side HTML
--- scraping directly. Independent of EnableIframeScraping.
+-- Debug flag: set to true to bypass the iframe prefetch and use server-side
+-- HTML scraping directly.
 SERVICE.ForceHTMLScraping = false
-
--- Custom endpoint created by PurrCoding. Please do not overly abuse it,
--- and do not use it in third-party addons. No warranty for reliability is
--- guaranteed, even though this is backed by edge scripts.
-SERVICE.MetadataAPI = "https://gm-api.physcannon.top/index.ts?id=%s"
 
 local YtVideoIdPattern = "[%a%d-_]+"
 local UrlSchemes = {

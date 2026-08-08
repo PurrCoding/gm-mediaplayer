@@ -86,81 +86,8 @@ function SERVICE:ParseYTMetaDataFromHTML( html )
 end
 
 ---
--- [PRIMARY] Fetch video metadata from the server-side JSON API.
---
--- On success, the API returns JSON of the form:
---   {"success":true,"id":"...","title":"...",
---    "duration":1014,"live":false, ...}
---
--- On failure, the API returns an error object of the form:
---   {"success":false,"error":"Video is unplayable","reason":"unplayable"}
---
--- On success, callback( metadata ) is called.
--- On failure, callback( false, reason ) is called.
---
-function SERVICE:FetchAPIMetadata( callback )
-	local videoId = self:GetYouTubeVideoId()
-
-	if not videoId then
-		callback( false, "YouTube API: could not resolve video id" )
-		return
-	end
-
-	local url = string.format( self.MetadataAPI, videoId )
-
-	self:Fetch( url,
-		function( body, length, headers, code )
-			local decoded = util.JSONToTable( body )
-
-			if not istable(decoded) or decoded.success ~= true or not isstring(decoded.title) then
-				local reason
-
-				if istable(decoded) then
-					-- Prefer the structured error/reason fields returned by the
-					-- API when the video is unavailable (e.g. unplayable, private).
-					if decoded.error or decoded.reason then
-						print(decoded.error, decoded.reason)
-						reason = tostring( decoded.error or "unknown error" )
-						if decoded.reason then
-							reason = reason .. " (reason: " .. tostring(decoded.reason) .. ")"
-						end
-					else
-						-- Generic fallback: report which required fields were bad.
-						reason = "success = " .. tostring(decoded.success) ..
-							", title = " .. type(decoded.title)
-					end
-				else
-					reason = "invalid JSON response (HTTP " .. tostring(code) .. ")"
-				end
-
-				callback( false, "YouTube API fetch failed: " .. reason )
-				return
-			end
-
-			local metadata = {}
-			metadata.title = decoded.title
-
-			if decoded.live then
-				-- Ongoing live stream: mark duration as 0
-				metadata.duration = 0
-			else
-				metadata.duration = math.max( 1, math.Round( tonumber(decoded.duration) or 0 ) )
-			end
-
-			self:SetMetadata( metadata, true )
-			MediaPlayer.Metadata:Save( self )
-
-			callback( self._metadata )
-		end,
-		function( reason )
-			callback( false, "YouTube API fetch failed: " .. tostring(reason) )
-		end
-	)
-end
-
----
--- [FALLBACK 1] Fetch metadata by scraping the YouTube watch page server-side.
--- Used when the JSON API is unavailable or returns unusable data.
+-- [FALLBACK] Fetch metadata by scraping the YouTube watch page server-side.
+-- Used when the client-side iframe prefetch returns no usable data.
 --
 function SERVICE:FetchHTMLMetadata( callback )
 	local videoId  = self:GetYouTubeVideoId()
@@ -201,8 +128,8 @@ function SERVICE:FetchHTMLMetadata( callback )
 end
 
 ---
--- [OPTIONAL] Use metadata gathered client-side by the iframe prefetch
--- (received via NetReadRequest). Only used when EnableIframeScraping is true.
+-- [PRIMARY] Use metadata gathered client-side by the iframe prefetch
+-- (received via NetReadRequest).
 --
 function SERVICE:UsePrefetchedMetadata( callback )
 	if not self._metaTitle then
@@ -229,12 +156,8 @@ end
 ---
 -- Metadata resolution.
 --
--- Default (EnableIframeScraping = false):
---   cache -> JSON API (primary) -> HTML scrape (only active fallback)
---
--- Iframe scraping enabled (EnableIframeScraping = true):
---   JSON API is disabled entirely.
---   cache -> iframe prefetch -> HTML scrape (fallback)
+-- Default:
+--   cache -> iframe prefetch (primary) -> HTML scrape (fallback)
 --
 -- Debug (ForceHTMLScraping = true):
 --   cache -> HTML scrape
@@ -248,7 +171,7 @@ function SERVICE:GetMetadata( callback )
 		return
 	end
 
-	-- Debug override: bypass everything and go straight to HTML scraping.
+	-- Debug override: bypass the prefetch and go straight to HTML scraping.
 	if self.ForceHTMLScraping then
 		self:FetchHTMLMetadata(function( metadata, htmlReason )
 			if metadata then
@@ -262,43 +185,23 @@ function SERVICE:GetMetadata( callback )
 		return
 	end
 
-	-- Iframe scraping mode: JSON API disabled. Use client-side prefetch, with
-	-- HTML scraping as the fallback.
-	if self.EnableIframeScraping then
-		self:UsePrefetchedMetadata(function( metadata, prefetchReason )
-			if metadata then
-				callback( metadata )
-				return
-			end
-
-			MsgN( "[MediaPlayer] " .. tostring(prefetchReason) .. " — falling back to HTML scraping." )
-			self:FetchHTMLMetadata( callback )
-		end)
-		return
-	end
-
-	-- Step 1: primary JSON API
-	self:FetchAPIMetadata(function( metadata, apiReason )
+	-- Primary: client-side iframe prefetch, with HTML scraping as the fallback.
+	self:UsePrefetchedMetadata(function( metadata, prefetchReason )
 		if metadata then
 			callback( metadata )
 			return
 		end
 
-		MsgN( "[MediaPlayer] " .. tostring(apiReason) .. " — falling back to HTML scraping." )
+		MsgN( "[MediaPlayer] " .. tostring(prefetchReason) .. " — falling back to HTML scraping." )
 
-		-- Step 2: server-side HTML scrape (only active fallback)
 		self:FetchHTMLMetadata(function( metadata2, htmlReason )
 			if metadata2 then
 				callback( metadata2 )
 				return
 			end
 
-			-- Both sources failed. Surface the JSON API reason to the client
-			-- (e.g. "Video is unplayable (reason: unplayable)"), since it is
-			-- the primary source and carries the meaningful error. Log the
-			-- HTML failure server-side for diagnostics.
 			MsgN( "[MediaPlayer] HTML scrape also failed: " .. tostring(htmlReason) )
-			callback( false, apiReason or htmlReason )
+			callback( false, prefetchReason or htmlReason )
 		end)
 	end)
 end

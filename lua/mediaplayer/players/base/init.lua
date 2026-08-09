@@ -618,10 +618,15 @@ function MEDIAPLAYER:NotifyListeners( msg )
 end
 
 function MEDIAPLAYER:NotifyPlayer( ply, msg )
-	if not hook.Run( "MediaPlayerNotifyPlayer", self, ply, msg ) then
+	
+	if MediaPlayer.DEBUG then
+		print( "MEDIAPLAYER.NotifyPlayer", self, ply, msg )
+	end
+
+	if false ~= hook.Run( "MediaPlayerNotifyPlayer", self, ply, msg ) then
 		msg = msg:sub( 1, 249 ) -- avoid ChatPrint limit
 
-		if IsValid(ply) then -- Check whether the player is still valid
+		if IsValid(ply) then 
 			ply:ChatPrint( msg )
 		end
 	end

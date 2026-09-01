@@ -15,7 +15,6 @@ A Garry's Mod addon for synchronized media streaming in multiplayer. Play videos
   - Dailymotion
   - Internet Archive
   - Google Drive
-  - TikTok
   - Odysee
   - Direct audio files (`.mp3`, `.ogg`, etc.)
   - HTML5 video
@@ -96,7 +95,7 @@ Originally created by [Samuel Maddock](https://github.com/samuelmaddock).
 
 ### Contributors
 
-- [Shadowsun™](https://github.com/CattoGamer) — Maintainer; YouTube overhaul, new services (SoundCloud, TikTok, Google Drive, Odysee), i18n, proximity audio, and ongoing maintenance.
+- [Shadowsun™](https://github.com/CattoGamer) — Maintainer; YouTube overhaul, new services (SoundCloud, Google Drive, Odysee), i18n, proximity audio, and ongoing maintenance.
 - [SheepyLord](https://github.com/SheepyLord) — Spatial media player, Bilibili service integration.
 - [Astralcircle](https://github.com/Astralcircle) — Spawn menu icons, category icon, and repository structure refactor.
 - [veitikka](https://github.com/veitikka) — YouTube metadata improvements, removing YouTube API dependency.

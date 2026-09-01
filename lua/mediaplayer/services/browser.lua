@@ -189,7 +189,7 @@ if CLIENT then
 				panel:QueueJavascript(MediaPlayer.ChromeError.MONITOR_JS)
 			end
 
-			-- Inject custom JS if provided (e.g. TikTok, Google Drive metadata extraction)
+			-- Inject custom JS if provided (e.g. Google Drive metadata extraction)
 			if opts.js and IsValid(panel) then
 				panel:QueueJavascript(opts.js)
 			end

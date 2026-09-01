@@ -130,7 +130,6 @@ do
 		"dailymotion",
 		"archive",
 		"gdrive",
-		"tiktok",
 		"odysee",
 
 		-- HTML Resources

@@ -3,7 +3,7 @@
 [![Garry's Mod](https://img.shields.io/badge/Garry's%20Mod-Addon-blue?style=flat-square)](https://gmod.facepunch.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE.md)
 [![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-171a21?style=flat-square&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3001397905)
-[![Docs](https://img.shields.io/badge/Docs-docs%2Fwiki-informational?style=flat-square)](docs/wiki/Home.md)
+[![Docs](https://img.shields.io/badge/Docs-docs%2Fwiki-informational?style=flat-square)]([Wiki](https://github.com/PurrCoding/gm-mediaplayer/wiki))
 
 **Synchronized media streaming** for Garry's Mod — play videos, music, and other media on in-game screens, with real-time sync across all players.
 
@@ -16,7 +16,7 @@ Community-maintained continuation of the original Media Player by [Samuel Maddoc
 | | |
 |---|---|
 | **Workshop** | [Media Player Redux](https://steamcommunity.com/sharedfiles/filedetails/?id=3001397905) |
-| **Documentation** | [docs/wiki](docs/wiki/Home.md) |
+| **Documentation** | [docs/wiki](https://github.com/PurrCoding/gm-mediaplayer/wiki) |
 | **Issues** | [Bug reports & feature requests](https://github.com/PurrCoding/gm-mediaplayer/issues) |
 | **CEF Codec Fix** | [Recommended for many formats](https://github.com/solsticegamestudios/GModCEFCodecFix) |
 
@@ -78,7 +78,7 @@ git clone https://github.com/PurrCoding/gm-mediaplayer.git
 
 Restart Garry's Mod or change the map after installing.
 
-Full details: **[Installation](docs/wiki/installation.md)**.
+Full details: **[Installation](https://github.com/PurrCoding/gm-mediaplayer/wiki/installation)**.
 
 ---
 
@@ -117,7 +117,7 @@ For prop-attached audio only, use the **Spatial Media Player** tool under **Medi
 | `mediaplayer_proximity_min` | `100` | Min distance for proximity volume |
 | `mediaplayer_proximity_max` | `1000` | Max distance for proximity volume |
 
-More detail: **[Configuration](docs/wiki/configuration.md)**.
+More detail: **[Configuration](https://github.com/PurrCoding/gm-mediaplayer/wiki/configuration)**.
 
 ---
 
@@ -137,17 +137,17 @@ All under the **Media Player** category in the spawn menu. Screen size and orien
 
 | Guide | Description |
 |-------|-------------|
-| [Home](docs/wiki/Home.md) | Documentation index |
-| [Installation](docs/wiki/installation.md) | Setup and verification |
-| [Configuration](docs/wiki/configuration.md) | ConVars and options |
-| [Usage](docs/wiki/usage.md) | Entities, queue, request UI |
-| [Spatial Media](docs/wiki/spatial-media.md) | Tool and anchors |
-| [Permissions](docs/wiki/permissions.md) | CAMI privileges |
-| [Video services](docs/wiki/video-services.md) | Built-in providers |
-| [Custom video service](docs/wiki/custom-video-service.md) | Add a new provider |
-| [Architecture](docs/wiki/architecture.md) | Players, services, networking |
-| [Development](docs/wiki/development.md) | Layout and contribution notes |
-| [Translations](docs/wiki/translations.md) | i18n |
+| [Home](https://github.com/PurrCoding/gm-mediaplayer/wiki) | Documentation index |
+| [Installation](https://github.com/PurrCoding/gm-mediaplayer/wiki/installation) | Setup and verification |
+| [Configuration](https://github.com/PurrCoding/gm-mediaplayer/wiki/configuration) | ConVars and options |
+| [Usage](https://github.com/PurrCoding/gm-mediaplayer/wiki/usage) | Entities, queue, request UI |
+| [Spatial Media](https://github.com/PurrCoding/gm-mediaplayer/wiki/spatial-media) | Tool and anchors |
+| [Permissions](https://github.com/PurrCoding/gm-mediaplayer/wiki/permissions) | CAMI privileges |
+| [Video services](https://github.com/PurrCoding/gm-mediaplayer/wiki/video-services) | Built-in providers |
+| [Custom video service](https://github.com/PurrCoding/gm-mediaplayer/wiki/custom-video-service) | Add a new provider |
+| [Architecture](https://github.com/PurrCoding/gm-mediaplayer/wiki/architecture) | Players, services, networking |
+| [Development](https://github.com/PurrCoding/gm-mediaplayer/wiki/development) | Layout and contribution notes |
+| [Translations](https://github.com/PurrCoding/gm-mediaplayer/wiki/translations) | i18n |
 
 ---
 

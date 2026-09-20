@@ -3,7 +3,6 @@
 [![Garry's Mod](https://img.shields.io/badge/Garry's%20Mod-Addon-blue?style=flat-square)](https://gmod.facepunch.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE.md)
 [![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-171a21?style=flat-square&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3001397905)
-[![Docs](https://img.shields.io/badge/Docs-docs%2Fwiki-informational?style=flat-square)]([Wiki](https://github.com/PurrCoding/gm-mediaplayer/wiki))
 
 **Synchronized media streaming** for Garry's Mod — play videos, music, and other media on in-game screens, with real-time sync across all players.
 

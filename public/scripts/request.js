@@ -203,3 +203,18 @@ window.requestUrl = requestUrl;
 window.selectService = selectService;
 window.openService = openService;
 window.hoverService = hoverService;
+
+document.addEventListener('DOMContentLoaded', () => {
+	const popupOverlay = document.querySelector('[data-action="close-codec"]');
+	if (popupOverlay) popupOverlay.addEventListener('click', closeCodecPopup);
+
+	document.querySelectorAll('[data-action="close-codec"]').forEach((element) => {
+		element.addEventListener('click', closeCodecPopup);
+	});
+
+	const instructionsButton = document.querySelector('[data-action="codec-instructions"]');
+	if (instructionsButton) instructionsButton.addEventListener('click', openCodecInstructions);
+
+	const requestButton = document.querySelector('[data-action="request-url"]');
+	if (requestButton) requestButton.addEventListener('click', requestUrl);
+});

@@ -1,3 +1,5 @@
+'use strict';
+
 var ua = navigator.userAgent || '';
   var legacyGmod = /GMod\/13/i.test(ua) && /Chrome\/86\./i.test(ua);
 
@@ -14,8 +16,6 @@ var ua = navigator.userAgent || '';
     ? 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css'
     : 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css';
   document.head.appendChild(fa);
-
-'use strict';
 
 const services = [
 	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false, group: 'Video' },

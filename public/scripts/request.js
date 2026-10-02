@@ -233,7 +233,7 @@ function renderServices() {
 	const grid = getElement('#services-grid');
 	grid.innerHTML = '';
 
-	services.forEach(service => {
+	services.filter(service => !(window.MP_LEGACY_GMOD === true && service.requiresCodec)).forEach(service => {
 		const disabled = service.requiresCodec && !hasCodecSupport;
 		const card = document.createElement('button');
 		card.type = 'button';

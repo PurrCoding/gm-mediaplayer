@@ -1,220 +1,223 @@
-// public/scripts/request.js
 'use strict';
 
-// Service definitions with codec requirements
 const services = [
-	{ name: 'YouTube', icon: 'youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false },
-	{ name: 'Bilibili', icon: 'bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true },
-	{ name: 'Twitch', icon: 'twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true },
-	{ name: 'SoundCloud', icon: 'soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false },
-	{ name: 'Dailymotion', icon: 'dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true },
-	{ name: 'Internet Archive', icon: 'archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true },
-	{ name: 'Odysee', icon: 'odysee', url: 'https://odysee.com/', action: 'select', requiresCodec: true },
+	{ name: 'YouTube', icon: 'youtube.png', url: 'https://youtube.com/', action: 'select', requiresCodec: false },
+	{ name: 'Bilibili', icon: 'bilibili.svg', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true },
+	{ name: 'Twitch', icon: 'twitch.svg', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true },
+	{ name: 'SoundCloud', icon: 'soundcloud.svg', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false },
+	{ name: 'Dailymotion', icon: 'dailymotion.png', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true },
+	{ name: 'Internet Archive', icon: 'archive.svg', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true },
+	{ name: 'Odysee', icon: 'odysee.svg', url: 'https://odysee.com/', action: 'select', requiresCodec: true }
 ];
 
-// Codec support detection
 let hasCodecSupport = false;
 
-function checkCodecSupport() {
-	return new Promise((resolve) => {
-		const video = document.createElement('video');
-		const support = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === "probably";
-		hasCodecSupport = support;
-		resolve({ hasCodecSupport: support });
-	});
+const $ = (selector) => document.querySelector(selector);
+
+function gmodAvailable(name) {
+	return typeof gmod !== 'undefined' && typeof gmod[name] === 'function';
 }
 
-// Initialize service grid
-async function initializeServices() {
-	const grid = document.getElementById('services-grid');
-	const codecCheck = await checkCodecSupport();
+function playUISound(click) {
+	if (gmodAvailable('clickSound')) {
+		gmod.clickSound(click);
+	}
+}
 
-	services.forEach(service => {
-		const card = document.createElement('div');
-		card.className = 'service-card';
-		card.dataset.href = service.url;
-		card.dataset.action = service.action;
-		card.dataset.serviceName = service.name;
+function checkCodecSupport() {
+	const video = document.createElement('video');
+	hasCodecSupport = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === 'probably';
+	return hasCodecSupport;
+}
 
-		const isDisabled = service.requiresCodec && !codecCheck.hasCodecSupport;
+function showToast(message, type = 'success') {
+	const toast = $('#toast');
+	$('#toast-text').textContent = message;
+	$('#toast-icon').textContent = type === 'error' ? '!' : '✓';
+	toast.classList.toggle('error', type === 'error');
+	toast.classList.remove('hidden');
+	window.clearTimeout(showToast.timer);
+	showToast.timer = window.setTimeout(() => toast.classList.add('hidden'), 2400);
+}
 
-		if (isDisabled) {
-			card.classList.add('service-disabled');
-			card.addEventListener('click', (e) => {
-				e.preventDefault();
-				showCodecPopup(service.name);
-			});
-		} else {
-			card.addEventListener('click', () => selectService(card));
-			card.addEventListener('mouseenter', hoverService);
+function openService(url) {
+	if (!gmodAvailable('openUrl')) {
+		showToast('Steam Overlay is unavailable.', 'error');
+		return;
+	}
+	gmod.openUrl(url);
+}
+
+function navigateToService(url) {
+	window.location.href = url;
+}
+
+function requestUrl() {
+	const input = $('#urlinput');
+	const url = input.value.trim();
+
+	if (!url) {
+		showToast(MP_I18N.t('request.url_empty'), 'error');
+		input.focus();
+		return;
+	}
+
+	try {
+		const parsed = new URL(url);
+		if (!['http:', 'https:'].includes(parsed.protocol)) {
+			throw new Error('Unsupported protocol');
+		}
+	} catch {
+		showToast(MP_I18N.t('request.url_invalid'), 'error');
+		input.focus();
+		return;
+	}
+
+	if (!gmodAvailable('requestUrl')) {
+		showToast(MP_I18N.t('request.bridge_unavailable'), 'error');
+		return;
+	}
+
+	const button = $('#submit-btn');
+	button.disabled = true;
+	playUISound(true);
+	gmod.requestUrl(url);
+	showToast(MP_I18N.t('request.status_sent'));
+	window.setTimeout(() => {
+		button.disabled = false;
+	}, 900);
+}
+
+function showCodecPopup(serviceName) {
+	$('#service-name-popup').textContent = serviceName;
+	$('#codec-popup').classList.remove('hidden');
+	document.body.style.overflow = 'hidden';
+}
+
+function closeCodecPopup() {
+	$('#codec-popup').classList.add('hidden');
+	document.body.style.overflow = '';
+}
+
+function openCodecInstructions() {
+	openService('https://www.solsticegamestudios.com/fixmedia/');
+	closeCodecPopup();
+}
+
+function selectService(service) {
+	playUISound(true);
+
+	if (service.action === 'open') {
+		openService(service.url);
+		return;
+	}
+
+	navigateToService(service.url);
+}
+
+function renderServices() {
+	const grid = $('#services-grid');
+	grid.textContent = '';
+
+	services.forEach((service) => {
+		const disabled = service.requiresCodec && !hasCodecSupport;
+		const card = document.createElement('button');
+		card.type = 'button';
+		card.className = 'service-card' + (disabled ? ' disabled' : '');
+		card.disabled = disabled;
+		card.setAttribute('aria-label', service.name);
+
+		const icon = document.createElement('span');
+		icon.className = 'service-icon';
+
+		const image = document.createElement('img');
+		image.src = './images/' + service.icon;
+		image.alt = '';
+		image.loading = 'lazy';
+		icon.appendChild(image);
+
+		const meta = document.createElement('span');
+		meta.className = 'service-meta';
+
+		const name = document.createElement('span');
+		name.className = 'service-name';
+		name.textContent = service.name;
+
+		const textWrap = document.createElement('span');
+		textWrap.append(name);
+
+		if (disabled) {
+			const details = document.createElement('span');
+			details.className = 'service-sub';
+			details.textContent = MP_I18N.t('request.codec_overlay');
+			textWrap.append(details);
 		}
 
-		card.innerHTML = `
-			<div class="service-card-inner">
-				<div class="service-icon logo-${service.icon}"></div>
-				<div class="service-name">${service.name}</div>
-				${isDisabled ? `<div class="disabled-overlay">${MP_I18N.t("request.codec_overlay")}</div>` : ''}
-			</div>
-		`;
+		meta.append(textWrap);
+
+		const action = document.createElement('span');
+		action.className = disabled ? 'badge' : 'service-arrow';
+		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '↗';
+		meta.append(action);
+
+		card.append(icon, meta);
+		card.addEventListener('mouseenter', () => playUISound(false));
+		card.addEventListener('click', () => {
+			if (disabled) {
+				showCodecPopup(service.name);
+				return;
+			}
+			selectService(service);
+		});
 
 		grid.appendChild(card);
 	});
 }
 
-function showCodecPopup(serviceName) {
-	const popup = document.getElementById('codec-popup');
-	const serviceNameElement = document.getElementById('service-name-popup');
+function initializeInput() {
+	const input = $('#urlinput');
+	const clearButton = $('#clear-btn');
 
-	serviceNameElement.textContent = serviceName;
-	popup.classList.remove('hidden');
-	document.body.style.overflow = 'hidden';
-}
+	input.addEventListener('input', () => {
+		clearButton.classList.toggle('hidden', input.value.length === 0);
+	});
 
-function closeCodecPopup() {
-	const popup = document.getElementById('codec-popup');
-	popup.classList.add('hidden');
-	document.body.style.overflow = '';
-}
-
-function openCodecInstructions() {
-	const url = 'https://www.solsticegamestudios.com/fixmedia/';
-
-	if (typeof gmod !== 'undefined' && gmod.openUrl) {
-		gmod.openUrl(url);
-	} else {
-		window.open(url, '_blank');
-	}
-	closeCodecPopup();
-}
-
-function selectService(elem) {
-	if (elem.classList.contains('service-disabled')) {
-		return;
-	}
-
-	playUISound(true);
-
-	const href = elem.dataset.href;
-	const action = elem.dataset.action;
-
-	if (action === 'open') {
-		openService(elem);
-	} else {
-		window.location.href = href;
-	}
-}
-
-function openService(elem) {
-	const href = elem.dataset.href;
-	if (typeof gmod !== 'undefined' && gmod.openUrl) {
-		gmod.openUrl(href);
-	} else {
-		window.open(href, '_blank');
-	}
-}
-
-function requestUrl() {
-	const elem = document.getElementById('urlinput');
-	const url = elem.value.trim();
-	const statusIndicator = document.getElementById('status-indicator');
-	const statusText = document.getElementById('status-text');
-	const submitBtn = document.getElementById('submit-btn');
-
-	if (url.length === 0) return;
-
-	statusIndicator.classList.remove('hidden');
-	statusText.textContent = MP_I18N.t('request.status_sent');
-	submitBtn.disabled = true;
-
-	setTimeout(() => {
-		statusIndicator.classList.add('hidden');
-		submitBtn.disabled = false;
-	}, 2000);
-
-	if (typeof gmod !== 'undefined' && gmod.requestUrl) {
-		gmod.requestUrl(url);
-	}
-}
-
-function onUrlKeyDown(event) {
-	const key = event.keyCode || event.which;
-	if (key === 13) {
-		requestUrl();
-	}
-}
-
-function playUISound(click) {
-	if (typeof gmod !== 'undefined') {
-		if (click) {
-			console.log("PLAY: garrysmod/ui_click.wav");
-		} else {
-			console.log("PLAY: garrysmod/ui_hover.wav")
+	input.addEventListener('keydown', (event) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			requestUrl();
 		}
-	}
-}
+	});
 
-function hoverService() {
-	playUISound(false);
-}
-
-function initializeUrlInput() {
-	const urlInput = document.getElementById('urlinput');
-	if (urlInput) {
-		urlInput.addEventListener('keydown', onUrlKeyDown);
-	}
-}
-
-function initializeAutoInput() {
-	const urlInput = document.getElementById('urlinput');
-	if (!urlInput) return;
-
-	// Focus input on keypress
-	document.addEventListener('keydown', (event) => {
-		if (document.activeElement === urlInput ||
-			event.ctrlKey || event.metaKey || event.altKey ||
-			event.key === 'Tab' || event.key === 'Escape') {
-			return;
-		}
-
-		urlInput.focus();
+	clearButton.addEventListener('click', () => {
+		input.value = '';
+		clearButton.classList.add('hidden');
+		input.focus();
 	});
 }
 
-function isValidURL(string) {
-	try {
-		new URL(string);
-		return true;
-	} catch {
-		return /^https?:\/\//.test(string) ||
-			   /^www\./.test(string) ||
-			   string.includes('.') && string.length > 5;
-	}
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-	MP_I18N.initFromHash();
-	initializeServices();
-	initializeUrlInput();
-	initializeAutoInput();
-});
-
-// Global function exports
-window.requestUrl = requestUrl;
-window.selectService = selectService;
-window.openService = openService;
-window.hoverService = hoverService;
-
-document.addEventListener('DOMContentLoaded', () => {
-	const popupOverlay = document.querySelector('[data-action="close-codec"]');
-	if (popupOverlay) popupOverlay.addEventListener('click', closeCodecPopup);
-
+function initializeModal() {
 	document.querySelectorAll('[data-action="close-codec"]').forEach((element) => {
 		element.addEventListener('click', closeCodecPopup);
 	});
 
 	const instructionsButton = document.querySelector('[data-action="codec-instructions"]');
-	if (instructionsButton) instructionsButton.addEventListener('click', openCodecInstructions);
+	if (instructionsButton) {
+		instructionsButton.addEventListener('click', openCodecInstructions);
+	}
+}
 
-	const requestButton = document.querySelector('[data-action="request-url"]');
-	if (requestButton) requestButton.addEventListener('click', requestUrl);
-});
+function initialize() {
+	MP_I18N.initFromHash();
+	checkCodecSupport();
+	renderServices();
+	initializeInput();
+	initializeModal();
+	$('#submit-btn').addEventListener('click', requestUrl);
+}
+
+document.addEventListener('DOMContentLoaded', initialize);
+
+window.requestUrl = requestUrl;
+window.selectService = selectService;
+window.openService = openService;

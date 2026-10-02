@@ -6,8 +6,8 @@
 	<meta name="color-scheme" content="dark">
 	<title>Media Player</title>
 	<link rel="preconnect" href="https://cdn.jsdelivr.net">
-	<link rel="stylesheet" href="./styles/request.css">
-	<script src="./scripts/compat.js"></script>
+	<link rel="stylesheet" href="./styles/request.css?v=20261002">
+	<script src="./scripts/compat.js?v=20261002"></script>
 </head>
 <body>
 	<main class="shell">
@@ -32,7 +32,7 @@
 				</button>
 			</div>
 
-			<button id="support-info-btn" class="support-link" type="button">
+			<button id="support-info-btn" class="support-link" type="button" onclick="window.showSupportPopup && window.showSupportPopup()">
 				<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
 				<span data-i18n="request.support_info">Supported formats & examples</span>
 				<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
@@ -78,15 +78,46 @@
 	</div>
 
 	<div id="support-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-title">
-		<button class="modal-backdrop" data-action="close-support" aria-label="Close supported formats"></button>
+		<button class="modal-backdrop" data-action="close-support" aria-label="Close supported formats" onclick="window.closeSupportPopup && window.closeSupportPopup()"></button>
 		<div class="modal-card support-card">
-			<button class="modal-close" data-action="close-support" aria-label="Close dialog">
+			<button class="modal-close" data-action="close-support" aria-label="Close dialog" onclick="window.closeSupportPopup && window.closeSupportPopup()">
 				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
 			</button>
 			<span class="section-kicker" data-i18n="request.support_kicker">REFERENCE</span>
 			<h2 id="support-title" data-i18n="request.support_title">Supported formats & URLs</h2>
 			<p class="support-intro" data-i18n="request.support_intro">These examples reflect the URL services currently implemented in Media Player.</p>
-			<div id="support-content" class="support-content"></div>
+			<div id="support-content" class="support-content">
+				<section class="support-group">
+					<div class="support-group-title"><span class="support-group-icon"><i class="fa-regular fa-image" aria-hidden="true"></i></span><div><h3 data-i18n="request.support_images">Images</h3><p data-i18n="request.support_images_note">Direct image URLs are supported by the resource media service.</p></div></div>
+					<div class="support-items">
+						<button type="button" class="support-item" data-copy="https://example.com/poster.jpg"><span class="support-label">.jpg / .jpeg</span><code>https://example.com/poster.jpg</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+						<button type="button" class="support-item" data-copy="https://example.com/image.png"><span class="support-label">.png</span><code>https://example.com/image.png</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+						<button type="button" class="support-item" data-copy="https://example.com/animation.gif"><span class="support-label">.gif</span><code>https://example.com/animation.gif</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+					</div>
+				</section>
+				<section class="support-group">
+					<div class="support-group-title"><span class="support-group-icon"><i class="fa-solid fa-video" aria-hidden="true"></i></span><div><h3 data-i18n="request.support_video">Video</h3><p data-i18n="request.support_video_note">WebM is handled by the regular media path. MP4, MOV and MKV use the codec-dependent path.</p></div></div>
+					<div class="support-items">
+						<button type="button" class="support-item" data-copy="https://example.com/video.webm"><span class="support-label">.webm</span><code>https://example.com/video.webm</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+						<button type="button" class="support-item" data-copy="https://example.com/video.mp4"><span class="support-label">.mp4</span><code>https://example.com/video.mp4</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+						<button type="button" class="support-item" data-copy="https://example.com/video.mov"><span class="support-label">.mov</span><code>https://example.com/video.mov</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+					</div>
+				</section>
+				<section class="support-group">
+					<div class="support-group-title"><span class="support-group-icon"><i class="fa-solid fa-music" aria-hidden="true"></i></span><div><h3 data-i18n="request.support_audio">Audio</h3><p data-i18n="request.support_audio_note">Direct audio files are supported by the audio media service.</p></div></div>
+					<div class="support-items">
+						<button type="button" class="support-item" data-copy="https://example.com/audio.mp3"><span class="support-label">.mp3</span><code>https://example.com/audio.mp3</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+						<button type="button" class="support-item" data-copy="https://example.com/audio.ogg"><span class="support-label">.ogg</span><code>https://example.com/audio.ogg</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+					</div>
+				</section>
+				<section class="support-group">
+					<div class="support-group-title"><span class="support-group-icon"><i class="fa-solid fa-globe" aria-hidden="true"></i></span><div><h3 data-i18n="request.support_services">Supported service URLs</h3><p data-i18n="request.support_services_note">These share/provider URLs map to the service implementations available in Media Player.</p></div></div>
+					<div class="support-items">
+						<button type="button" class="support-item" data-copy="https://www.youtube.com/watch?v=VIDEO_ID"><span class="support-label">YouTube</span><code>https://www.youtube.com/watch?v=VIDEO_ID</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+						<button type="button" class="support-item" data-copy="https://www.twitch.tv/CHANNEL"><span class="support-label">Twitch</span><code>https://www.twitch.tv/CHANNEL</code><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+					</div>
+				</section>
+			</div>
 		</div>
 	</div>
 
@@ -95,7 +126,7 @@
 		<span id="toast-text"></span>
 	</div>
 
-	<script src="./scripts/i18n.js"></script>
-	<script src="./scripts/request.js"></script>
+	<script src="./scripts/i18n.js?v=20261002"></script>
+	<script src="./scripts/request.js?v=20261002"></script>
 </body>
 </html>

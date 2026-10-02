@@ -14,6 +14,7 @@ let hasCodecSupport = false;
 
 const supportGroups = [
 	{
+		key: 'images',
 		title: 'Images',
 		icon: 'fa-regular fa-image',
 		note: 'Direct image URLs are supported by the resource media service.',
@@ -25,6 +26,7 @@ const supportGroups = [
 		]
 	},
 	{
+		key: 'video',
 		title: 'Video',
 		icon: 'fa-solid fa-video',
 		note: 'WebM is handled by the regular media path. MP4, MOV and MKV use the codec-dependent path.',
@@ -36,6 +38,7 @@ const supportGroups = [
 		]
 	},
 	{
+		key: 'audio',
 		title: 'Audio',
 		icon: 'fa-solid fa-music',
 		note: 'Direct audio files are supported by the audio media service.',
@@ -49,6 +52,7 @@ const supportGroups = [
 		]
 	},
 	{
+		key: 'streaming',
 		title: 'Streaming',
 		icon: 'fa-solid fa-tower-broadcast',
 		note: 'HLS and DASH manifest URLs can be requested directly.',
@@ -58,6 +62,7 @@ const supportGroups = [
 		]
 	},
 	{
+		key: 'services',
 		title: 'Supported service URLs',
 		icon: 'fa-solid fa-globe',
 		note: 'These share/provider URLs map to the service implementations available in Media Player.',
@@ -109,7 +114,7 @@ function renderSupportContent() {
 		<section class="support-group">
 			<div class="support-group-title">
 				<span class="support-group-icon"><i class="${group.icon}" aria-hidden="true"></i></span>
-				<div><h3>${group.title}</h3><p>${group.note}</p></div>
+				<div><h3>${MP_I18N.t('request.support_' + group.key)}</h3><p>${MP_I18N.t('request.support_' + group.key + '_note')}</p></div>
 			</div>
 			<div class="support-items">
 				${group.items.map(([label, example]) => `

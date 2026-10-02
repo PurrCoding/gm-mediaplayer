@@ -308,7 +308,19 @@ function renderServices() {
 	});
 }
 
-async function initialize() {
+async function bindSupportButton() {
+	const button = document.getElementById('support-info-btn');
+	if (button) {
+		button.addEventListener('click', () => {
+			if (typeof window.showSupportPopup === 'function') {
+				window.showSupportPopup();
+			}
+		});
+	}
+}
+
+function initialize() {
+	bindSupportButton();
 	bindRequestUI();
 	checkCodecSupport();
 	renderServices();

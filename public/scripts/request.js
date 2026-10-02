@@ -79,7 +79,7 @@ const supportGroups = [
 	}
 ];
 
-const $ = (selector) => document.querySelector(selector);
+function getElement(selector) { return document.querySelector(selector); }
 
 function gmodAvailable(name) {
 	return typeof gmod !== 'undefined' && typeof gmod[name] === 'function';
@@ -98,9 +98,9 @@ function checkCodecSupport() {
 }
 
 function showToast(message, type = 'success') {
-	const toast = $('#toast');
-	$('#toast-text').textContent = message;
-	$('#toast-icon').className = type === 'error'
+	const toast = getElement('#toast');
+	getElement('#toast-text').textContent = message;
+	getElement('#toast-icon').className = type === 'error'
 		? 'fa-solid fa-circle-exclamation'
 		: 'fa-solid fa-circle-check';
 	toast.classList.remove('hidden');
@@ -109,7 +109,7 @@ function showToast(message, type = 'success') {
 }
 
 function renderSupportContent() {
-	const root = $('#support-content');
+	const root = getElement('#support-content');
 	root.innerHTML = supportGroups.map(group => `
 		<section class="support-group">
 			<div class="support-group-title">
@@ -135,10 +135,10 @@ function renderSupportContent() {
 				await navigator.clipboard.writeText(value);
 				showToast(MP_I18N.t('request.copy_success'));
 			} catch {
-				$('#urlinput').value = value;
-				$('#clear-btn').classList.remove('hidden');
+				getElement('#urlinput').value = value;
+				getElement('#clear-btn').classList.remove('hidden');
 				closeSupportPopup();
-				$('#urlinput').focus();
+				getElement('#urlinput').focus();
 			}
 		});
 	});
@@ -146,12 +146,12 @@ function renderSupportContent() {
 
 function showSupportPopup() {
 	renderSupportContent();
-	$('#support-modal').classList.remove('hidden');
+	getElement('#support-modal').classList.remove('hidden');
 	document.body.style.overflow = 'hidden';
 }
 
 function closeSupportPopup() {
-	$('#support-modal').classList.add('hidden');
+	getElement('#support-modal').classList.add('hidden');
 	document.body.style.overflow = '';
 }
 
@@ -168,7 +168,7 @@ function isValidURL(value) {
 }
 
 function requestUrl() {
-	const input = $('#urlinput');
+	const input = getElement('#urlinput');
 	const url = input.value.trim();
 
 	if (!url) {
@@ -188,7 +188,7 @@ function requestUrl() {
 		return;
 	}
 
-	const button = $('#submit-btn');
+	const button = getElement('#submit-btn');
 	button.disabled = true;
 	playUISound(true);
 	gmod.requestUrl(url);
@@ -199,13 +199,13 @@ function requestUrl() {
 }
 
 function showCodecPopup(service) {
-	$('#service-name-popup').textContent = service.name;
-	$('#codec-popup').classList.remove('hidden');
+	getElement('#service-name-popup').textContent = service.name;
+	getElement('#codec-popup').classList.remove('hidden');
 	document.body.style.overflow = 'hidden';
 }
 
 function closeCodecPopup() {
-	$('#codec-popup').classList.add('hidden');
+	getElement('#codec-popup').classList.add('hidden');
 	document.body.style.overflow = '';
 }
 
@@ -230,7 +230,7 @@ function selectService(service) {
 }
 
 function renderServices() {
-	const grid = $('#services-grid');
+	const grid = getElement('#services-grid');
 	grid.innerHTML = '';
 
 	services.forEach(service => {
@@ -296,22 +296,22 @@ async function initialize() {
 	checkCodecSupport();
 	renderServices();
 
-	$('#submit-btn').addEventListener('click', requestUrl);
-	$('#urlinput').addEventListener('keydown', event => {
+	getElement('#submit-btn').addEventListener('click', requestUrl);
+	getElement('#urlinput').addEventListener('keydown', event => {
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			requestUrl();
 		}
 	});
-	$('#urlinput').addEventListener('input', event => {
-		$('#clear-btn').classList.toggle('hidden', !event.target.value);
+	getElement('#urlinput').addEventListener('input', event => {
+		getElement('#clear-btn').classList.toggle('hidden', !event.target.value);
 	});
-	$('#clear-btn').addEventListener('click', () => {
-		$('#urlinput').value = '';
-		$('#clear-btn').classList.add('hidden');
-		$('#urlinput').focus();
+	getElement('#clear-btn').addEventListener('click', () => {
+		getElement('#urlinput').value = '';
+		getElement('#clear-btn').classList.add('hidden');
+		getElement('#urlinput').focus();
 	});
-	$('#support-info-btn').addEventListener('click', showSupportPopup);
+	getElement('#support-info-btn').addEventListener('click', showSupportPopup);
 
 	document.querySelectorAll('[data-action="close-support"]').forEach(el => {
 		el.addEventListener('click', closeSupportPopup);
@@ -319,7 +319,7 @@ async function initialize() {
 	document.querySelectorAll('[data-action="close-codec"]').forEach(el => {
 		el.addEventListener('click', closeCodecPopup);
 	});
-	const instructions = $('[data-action="codec-instructions"]');
+	const instructions = getElement('[data-action="codec-instructions"]');
 	if (instructions) instructions.addEventListener('click', openCodecInstructions);
 
 	document.addEventListener('keydown', event => {
@@ -329,11 +329,11 @@ async function initialize() {
 			return;
 		}
 		if (
-			document.activeElement !== $('#urlinput') &&
+			document.activeElement !== getElement('#urlinput') &&
 			!event.ctrlKey && !event.metaKey && !event.altKey &&
 			event.key.length === 1
 		) {
-			$('#urlinput').focus();
+			getElement('#urlinput').focus();
 		}
 	});
 }

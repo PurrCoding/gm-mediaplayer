@@ -109,6 +109,7 @@ function showToast(message, type = 'success') {
 }
 
 function renderSupportContent() {
+	if (typeof MP_I18N === 'undefined') return;
 	const root = $('#support-content');
 	root.innerHTML = supportGroups.map(group => `
 		<section class="support-group">
@@ -349,6 +350,8 @@ async function initialize() {
 document.addEventListener('DOMContentLoaded', initialize);
 
 window.requestUrl = requestUrl;
+window.showSupportPopup = showSupportPopup;
+window.closeSupportPopup = closeSupportPopup;
 window.selectService = selectService;
 window.openService = openService;
 window.hoverService = playUISound;

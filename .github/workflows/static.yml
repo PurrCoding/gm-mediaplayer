@@ -74,7 +74,7 @@ jobs:
           echo "::group::Minifying CSS files"
           find public -name "*.css" -type f | while read file; do
             original_size=$(stat -c%s "$file")
-            cleancss -O2 --output "$file" "$file"
+            cleancss -O3 --output "$file" "$file"
             new_size=$(stat -c%s "$file")
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done
@@ -85,7 +85,7 @@ jobs:
           echo "::group::Minifying JavaScript files"
           find public -name "*.js" -type f | while read file; do
             original_size=$(stat -c%s "$file")
-            terser "$file" --ecma 2020 --compress passes=2 --mangle --output "$file"
+            terser "$file" --ecma 2020 --compress passes=3 --mangle --output "$file"
             new_size=$(stat -c%s "$file")
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done

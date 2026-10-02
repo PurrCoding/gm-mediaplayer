@@ -328,7 +328,7 @@ async function bindSupportButton() {
 	}
 }
 
-function initialize() {
+async function initialize() {
 	bindSupportButton();
 	bindRequestUI();
 	checkCodecSupport();

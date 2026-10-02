@@ -237,7 +237,7 @@ function renderServices() {
 		const disabled = service.requiresCodec && !hasCodecSupport;
 		const card = document.createElement('button');
 		card.type = 'button';
-		card.className = 'service-card' + (disabled ? ' disabled' : '');
+		card.className = 'service-card' + (disabled ? ' disabled' : '') + (service.requiresCodec ? ' codec-required' : '');
 		card.setAttribute('aria-disabled', disabled ? 'true' : 'false');
 		card.dataset.serviceName = service.name;
 

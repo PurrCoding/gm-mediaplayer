@@ -292,10 +292,16 @@ function renderServices() {
 }
 
 async function initialize() {
-	await MP_I18N.initFromHash();
+	bindRequestUI();
+	try {
+		await MP_I18N.initFromHash();
+	} catch (error) {
+		console.warn('Media Player translations unavailable:', error);
+	}
 	checkCodecSupport();
 	renderServices();
 
+	function bindRequestUI() {
 	$('#submit-btn').addEventListener('click', requestUrl);
 	$('#urlinput').addEventListener('keydown', event => {
 		if (event.key === 'Enter') {
@@ -336,6 +342,8 @@ async function initialize() {
 			$('#urlinput').focus();
 		}
 	});
+	}
+
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

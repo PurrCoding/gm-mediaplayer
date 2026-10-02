@@ -291,7 +291,7 @@ function renderServices() {
 	});
 }
 
-function initialize() {
+async function initialize() {
 	await MP_I18N.initFromHash();
 	checkCodecSupport();
 	renderServices();

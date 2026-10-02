@@ -1,13 +1,13 @@
 :root {
-  --bg: #242F3A;
-  --panel: #333;
-  --panel-2: #333;
+  --bg: #0D293E;
+  --panel: rgba(13, 41, 62, 0.6);
+  --panel-2: rgba(13, 41, 62, 0.6);
   --text: rgba(255,255,255,0.88);
   --muted: rgba(255,255,255,0.44);
   --line: rgba(255,255,255,0.11);
-  --accent: rgba(0,139,253,0.88);
-  --accent-2: rgba(255,255,255,0.33);
-  --danger: #694142;
+  --accent: #1C649D;
+  --accent-2: #FC6254;
+  --danger: #E84E40;
   --radius: 8pt;
   --shadow: 0px 10px 33px rgba(0,0,0,0.66);
 }
@@ -19,7 +19,7 @@ body {
   min-height: 100vh;
   color: var(--text);
   font: 15px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: -webkit-radial-gradient(center, ellipse cover, #242F3A 0%,#161616 100%);
+  background: -webkit-radial-gradient(center, ellipse cover, #0D293E 0%,#161616 100%);
 }
 button, input { font: inherit; }
 button { color: inherit; }
@@ -52,7 +52,7 @@ button { color: inherit; }
 }
 .request-btn {
   display: inline-flex; align-items: center; gap: 10px; padding: 13px 17px;
-  background: #f2f2f2; color: #1a1e26; font-weight: 750;
+  background: #E84E40; color: #fff; font-weight: 750;
 }
 .request-btn:hover, .btn-primary:hover { transform: translateY(-1px); }
 .request-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
@@ -79,7 +79,7 @@ button { color: inherit; }
   cursor: pointer; transition: transform .18s ease, border-color .18s ease, background .18s ease;
 }
 .service-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.11); background: rgba(255,255,255,0.11); }
-.service-card:focus-visible { outline: 2px solid rgba(0,139,253,0.88); outline-offset: 2px; }
+.service-card:focus-visible { outline: 2px solid rgba(28,100,157,0.9); outline-offset: 2px; }
 .service-card.disabled { opacity: .48; filter: saturate(.4); }
 .service-icon {
   width: 48px; height: 48px; display: grid; place-items: center; border-radius: 12px;
@@ -104,7 +104,7 @@ button { color: inherit; }
 .modal-backdrop { position: absolute; inset: 0; border: 0; background: rgba(3,5,8,.78); backdrop-filter: blur(10px); }
 .modal-card {
   position: relative; z-index: 1; width: min(470px, 100%); padding: 28px;
-  border: 1px solid var(--line); border-radius: 20px; background: #1a1e26; box-shadow: var(--shadow);
+  border: 1px solid var(--line); border-radius: 20px; background: #071521; box-shadow: var(--shadow);
 }
 .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; }
 .modal-icon {
@@ -120,7 +120,7 @@ button { color: inherit; }
 .support-group-title { display: flex; gap: 10px; align-items: flex-start; }
 .support-group-icon {
   display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px;
-  border-radius: 9px; background: rgba(255,255,255,0.11); color: #d77b74;
+  border-radius: 9px; background: rgba(255,255,255,0.11); color: #FC6254;
 }
 .support-group h3 { margin: 0; font-size: 14px; }
 .support-group-title p { margin: 2px 0 0; font-size: 10px; color: #697485; }

@@ -2,6 +2,14 @@
 
 // English (Default/Fallback)
 MP_I18N.registerLanguage('en', {
+	"request.kicker": "MEDIA PLAYER",
+	"request.hero_title": "What do you want to play?",
+	"request.hero_body": "Paste a media URL, or choose a service below.",
+	"request.services_kicker": "SERVICES",
+	"request.services_title": "Choose a provider",
+	"request.url_empty": "Paste a media URL first.",
+	"request.url_invalid": "Please enter a valid HTTP(S) URL.",
+	"request.bridge_unavailable": "Media Player request bridge is unavailable.",
 	"request.codec_required_title":  "GModPatchTool Required",
 	"request.codec_required_body":   "requires GModPatchTool to function properly.",
 	"request.codec_steps_title":     "To enable this service:",
@@ -21,6 +29,14 @@ MP_I18N.registerLanguage('en', {
 
 // German
 MP_I18N.registerLanguage('de', {
+	"request.kicker": "MEDIA PLAYER",
+	"request.hero_title": "Was möchtest du abspielen?",
+	"request.hero_body": "Füge eine Medien-URL ein oder wähle unten einen Dienst.",
+	"request.services_kicker": "DIENSTE",
+	"request.services_title": "Dienst auswählen",
+	"request.url_empty": "Füge zuerst eine Medien-URL ein.",
+	"request.url_invalid": "Bitte gib eine gültige HTTP(S)-URL ein.",
+	"request.bridge_unavailable": "Die Media-Player-Anfrageverbindung ist nicht verfügbar.",
 	"request.codec_required_title":  "GModPatchTool erforderlich",
 	"request.codec_required_body":   "benötigt GModPatchTool um richtig zu funktionieren.",
 	"request.codec_steps_title":     "Um diesen Dienst zu aktivieren:",

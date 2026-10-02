@@ -43,6 +43,10 @@ function PANEL:Init()
 		gui.OpenURL( url )
 	end )
 
+	self.Browser:AddFunction( "gmod", "clickSound", function (click)
+		surface.PlaySound( click and "garrysmod/ui_click.wav" or "garrysmod/ui_hover.wav" )
+	end )
+
 	self.Browser:AddFunction( "gmod", "getServices", function ()
 		local mp = self.m_MediaPlayer
 
@@ -63,7 +67,6 @@ function PANEL:Init()
 	self.Browser._Controls = self.Controls
 	self.Controls.BorderSize = 0
 
-	-- Listen for all mouse press events
 	hook.Add( "GUIMousePressed", self, self.OnGUIMousePressed )
 	hook.Add( "VGUIMousePressed", self.Browser, self.OnVGUIMousePressed)
 
@@ -75,7 +78,6 @@ end
 
 function PANEL:Paint( w, h )
 
-	-- Draw background for fully transparent webpages
 	surface.SetDrawColor( self.BackgroundColor )
 	surface.DrawRect( 0, 0, w, h )
 
@@ -105,7 +107,6 @@ function PANEL:CheckClose()
 
 	local x, y = self:CursorPos()
 
-	-- Remove panel if mouse is clicked outside of itself
 	if not (gui.IsGameUIVisible() or gui.IsConsoleVisible()) and
 		( x < 0 or x > self:GetWide() or y < 0 or y > self:GetTall() ) then
 		self:Close()
@@ -119,9 +120,6 @@ function PANEL:PerformLayout( w, h )
 
 end
 
----
--- Close the panel when the mouse has been pressed outside of the panel.
---
 function PANEL:OnGUIMousePressed( key )
 
 	if key == MOUSE_LEFT then
@@ -130,9 +128,6 @@ function PANEL:OnGUIMousePressed( key )
 
 end
 
----
--- Listen for mouse button presses within the browser panel.
---
 function PANEL:OnVGUIMousePressed( pnl, key )
 	if not IsValid(pnl) then return end
 	if not IsValid(self._Controls) then return end

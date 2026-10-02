@@ -317,6 +317,15 @@ async function bindSupportButton() {
 			}
 		});
 	}
+
+	const backdrop = document.querySelector('[data-action="close-support"]');
+	if (backdrop) {
+		backdrop.addEventListener('click', () => {
+			if (typeof window.closeSupportPopup === 'function') {
+				window.closeSupportPopup();
+			}
+		});
+	}
 }
 
 function initialize() {

@@ -1,6 +1,6 @@
 'use strict';
 
-const services = [
+var services = [
 	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false, group: 'Video' },
 	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false, group: 'Audio' },
 	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true, group: 'Video' },
@@ -10,9 +10,9 @@ const services = [
 	{ name: 'Odysee', icon: 'fa-solid fa-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' }
 ];
 
-let hasCodecSupport = false;
+var hasCodecSupport = false;
 
-const supportGroups = [
+var supportGroups = [
 	{
 		key: 'images',
 		title: 'Images',
@@ -79,7 +79,7 @@ const supportGroups = [
 	}
 ];
 
-const $ = (selector) => document.querySelector(selector);
+function el(selector) { return document.querySelector(selector); }
 
 function gmodAvailable(name) {
 	return typeof gmod !== 'undefined' && typeof gmod[name] === 'function';
@@ -92,33 +92,33 @@ function playUISound(click) {
 }
 
 function checkCodecSupport() {
-	const video = document.createElement('video');
+	var video = document.createElement('video');
 	hasCodecSupport = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === 'probably';
 	return hasCodecSupport;
 }
 
 function showToast(message, type = 'success') {
-	const toast = $('#toast');
-	$('#toast-text').textContent = message;
-	$('#toast-icon').className = type === 'error'
+	var toast = el('#toast');
+	el('#toast-text').textContent = message;
+	el('#toast-icon').className = type === 'error'
 		? 'fa-solid fa-circle-exclamation'
 		: 'fa-solid fa-circle-check';
 	toast.classList.remove('hidden');
 	window.clearTimeout(showToast.timer);
-	showToast.timer = window.setTimeout(() => toast.classList.add('hidden'), 2200);
+	showToast.timer = window.setTimeout(() function () { toast.classList.add('hidden'), 2200);
 }
 
 function renderSupportContent() {
 	if (typeof MP_I18N === 'undefined') return;
-	const root = $('#support-content');
-	root.innerHTML = supportGroups.map(group => `
+	var root = el('#support-content');
+	root.innerHTML = supportGroups.map(group function () { `
 		<section class="support-group">
 			<div class="support-group-title">
 				<span class="support-group-icon"><i class="${group.icon}" aria-hidden="true"></i></span>
 				<div><h3>${MP_I18N.t('request.support_' + group.key)}</h3><p>${MP_I18N.t('request.support_' + group.key + '_note')}</p></div>
 			</div>
 			<div class="support-items">
-				${group.items.map(([label, example]) => `
+				${group.items.map(([label, example]) function () { `
 					<button type="button" class="support-item" data-copy="${example}" title="Copy example">
 						<span class="support-label">${label}</span>
 						<code>${example}</code>
@@ -129,17 +129,17 @@ function renderSupportContent() {
 		</section>
 	`).join('');
 
-	root.querySelectorAll('[data-copy]').forEach(button => {
-		button.addEventListener('click', async () => {
-			const value = button.dataset.copy;
+	root.querySelectorAll('[data-copy]').forEach(button function () { {
+		button.addEventListener('click', async () function () { {
+			var value = button.dataset.copy;
 			try {
 				await (window.MP_COPY_TEXT ? window.MP_COPY_TEXT(value) : navigator.clipboard.writeText(value));
 				showToast(MP_I18N.t('request.copy_success'));
 			} catch {
-				$('#urlinput').value = value;
-				$('#clear-btn').classList.remove('hidden');
+				el('#urlinput').value = value;
+				el('#clear-btn').classList.remove('hidden');
 				closeSupportPopup();
-				$('#urlinput').focus();
+				el('#urlinput').focus();
 			}
 		});
 	});
@@ -147,12 +147,12 @@ function renderSupportContent() {
 
 function showSupportPopup() {
 	renderSupportContent();
-	$('#support-modal').classList.remove('hidden');
+	el('#support-modal').classList.remove('hidden');
 	document.body.style.overflow = 'hidden';
 }
 
 function closeSupportPopup() {
-	$('#support-modal').classList.add('hidden');
+	el('#support-modal').classList.add('hidden');
 	document.body.style.overflow = '';
 }
 
@@ -169,8 +169,8 @@ function isValidURL(value) {
 }
 
 function requestUrl() {
-	const input = $('#urlinput');
-	const url = input.value.trim();
+	var input = el('#urlinput');
+	var url = input.value.trim();
 
 	if (!url) {
 		showToast(MP_I18N.t('request.url_empty'), 'error');
@@ -189,24 +189,24 @@ function requestUrl() {
 		return;
 	}
 
-	const button = $('#submit-btn');
+	var button = el('#submit-btn');
 	button.disabled = true;
 	playUISound(true);
 	gmod.requestUrl(url);
 	showToast(MP_I18N.t('request.status_sent'));
-	window.setTimeout(() => {
+	window.setTimeout(() function () { {
 		button.disabled = false;
 	}, 900);
 }
 
 function showCodecPopup(service) {
-	$('#service-name-popup').textContent = service.name;
-	$('#codec-popup').classList.remove('hidden');
+	el('#service-name-popup').textContent = service.name;
+	el('#codec-popup').classList.remove('hidden');
 	document.body.style.overflow = 'hidden';
 }
 
 function closeCodecPopup() {
-	$('#codec-popup').classList.add('hidden');
+	el('#codec-popup').classList.add('hidden');
 	document.body.style.overflow = '';
 }
 
@@ -231,46 +231,46 @@ function selectService(service) {
 }
 
 function renderServices() {
-	const grid = $('#services-grid');
+	var grid = el('#services-grid');
 	grid.innerHTML = '';
 
-	services.forEach(service => {
-		const disabled = service.requiresCodec && !hasCodecSupport;
-		const card = document.createElement('button');
+	services.forEach(service function () { {
+		var disabled = service.requiresCodec && !hasCodecSupport;
+		var card = document.createElement('button');
 		card.type = 'button';
 		card.className = 'service-card' + (disabled ? ' disabled' : '');
 		card.setAttribute('aria-disabled', disabled ? 'true' : 'false');
 		card.dataset.serviceName = service.name;
 
-		const icon = document.createElement('span');
+		var icon = document.createElement('span');
 		icon.className = 'service-icon';
 
-		const iconElement = document.createElement('i');
+		var iconElement = document.createElement('i');
 		iconElement.className = service.icon;
 		iconElement.setAttribute('aria-hidden', 'true');
 		icon.appendChild(iconElement);
 
-		const meta = document.createElement('span');
+		var meta = document.createElement('span');
 		meta.className = 'service-meta';
 
-		const text = document.createElement('span');
-		const name = document.createElement('span');
+		var text = document.createElement('span');
+		var name = document.createElement('span');
 		name.className = 'service-name';
 		name.textContent = service.name;
 		text.appendChild(name);
 
 		if (disabled) {
-			const sub = document.createElement('span');
+			var sub = document.createElement('span');
 			sub.className = 'service-sub';
 			sub.textContent = MP_I18N.t('request.codec_overlay');
 			text.appendChild(sub);
 		}
 
-		const action = document.createElement('span');
+		var action = document.createElement('span');
 		action.className = disabled ? 'badge' : 'service-arrow';
 		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '';
 		if (!disabled) {
-			const arrow = document.createElement('i');
+			var arrow = document.createElement('i');
 			arrow.className = 'fa-solid fa-arrow-up-right-from-square';
 			arrow.setAttribute('aria-hidden', 'true');
 			action.appendChild(arrow);
@@ -279,8 +279,8 @@ function renderServices() {
 		meta.append(text, action);
 		card.append(icon, meta);
 
-		card.addEventListener('mouseenter', () => playUISound(false));
-		card.addEventListener('click', () => {
+		card.addEventListener('mouseenter', () function () { playUISound(false));
+		card.addEventListener('click', () function () { {
 			if (disabled) {
 				showCodecPopup(service);
 				return;
@@ -292,10 +292,10 @@ function renderServices() {
 	});
 }
 
-async function initialize() {
+function initialize() {
 	bindRequestUI();
 	try {
-		await MP_I18N.initFromHash();
+		MP_I18N.initFromHash();
 	} catch (error) {
 		console.warn('Media Player translations unavailable:', error);
 	}
@@ -303,44 +303,44 @@ async function initialize() {
 	renderServices();
 
 	function bindRequestUI() {
-	$('#submit-btn').addEventListener('click', requestUrl);
-	$('#urlinput').addEventListener('keydown', event => {
+	el('#submit-btn').addEventListener('click', requestUrl);
+	el('#urlinput').addEventListener('keydown', event function () { {
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			requestUrl();
 		}
 	});
-	$('#urlinput').addEventListener('input', event => {
-		$('#clear-btn').classList.toggle('hidden', !event.target.value);
+	el('#urlinput').addEventListener('input', event function () { {
+		el('#clear-btn').classList.toggle('hidden', !event.target.value);
 	});
-	$('#clear-btn').addEventListener('click', () => {
-		$('#urlinput').value = '';
-		$('#clear-btn').classList.add('hidden');
-		$('#urlinput').focus();
+	el('#clear-btn').addEventListener('click', () function () { {
+		el('#urlinput').value = '';
+		el('#clear-btn').classList.add('hidden');
+		el('#urlinput').focus();
 	});
-	$('#support-info-btn').addEventListener('click', showSupportPopup);
+	el('#support-info-btn').addEventListener('click', showSupportPopup);
 
-	document.querySelectorAll('[data-action="close-support"]').forEach(el => {
+	document.querySelectorAll('[data-action="close-support"]').forEach(el function () { {
 		el.addEventListener('click', closeSupportPopup);
 	});
-	document.querySelectorAll('[data-action="close-codec"]').forEach(el => {
+	document.querySelectorAll('[data-action="close-codec"]').forEach(el function () { {
 		el.addEventListener('click', closeCodecPopup);
 	});
-	const instructions = $('[data-action="codec-instructions"]');
+	var instructions = el('[data-action="codec-instructions"]');
 	if (instructions) instructions.addEventListener('click', openCodecInstructions);
 
-	document.addEventListener('keydown', event => {
+	document.addEventListener('keydown', event function () { {
 		if (event.key === 'Escape') {
 			closeCodecPopup();
 			closeSupportPopup();
 			return;
 		}
 		if (
-			document.activeElement !== $('#urlinput') &&
+			document.activeElement !== el('#urlinput') &&
 			!event.ctrlKey && !event.metaKey && !event.altKey &&
 			event.key.length === 1
 		) {
-			$('#urlinput').focus();
+			el('#urlinput').focus();
 		}
 	});
 	}

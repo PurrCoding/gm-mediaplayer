@@ -49,7 +49,21 @@ jobs:
           echo "::group::Minifying HTML files"
           find public -name "*.html" -type f | while read file; do
             original_size=$(stat -c%s "$file")
-            html-minifier-terser               --collapse-whitespace               --collapse-boolean-attributes               --remove-comments               --remove-optional-tags               --remove-redundant-attributes               --remove-script-type-attributes               --remove-tag-whitespace               --use-short-doctype               --sort-attributes               --sort-class-name               --minify-css true               --minify-js true               --output "$file"               "$file"
+            html-minifier-terser \
+              --collapse-whitespace \
+              --collapse-boolean-attributes \
+              --remove-comments \
+              --remove-optional-tags \
+              --remove-redundant-attributes \
+              --remove-script-type-attributes \
+              --remove-tag-whitespace \
+              --use-short-doctype \
+              --sort-attributes \
+              --sort-class-name \
+              --minify-css true \
+              --minify-js true \
+              --output "$file" \
+              "$file"
             new_size=$(stat -c%s "$file")
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done
@@ -76,20 +90,6 @@ jobs:
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done
           echo "::endgroup::"
-
-      - name: Generate build report
-        run: |
-          echo "## Build Report" >> $GITHUB_STEP_SUMMARY
-          echo "| File Type | Count | Total Size |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|-------|------------|" >> $GITHUB_STEP_SUMMARY
-          for ext in html css js; do
-            count=$(find public -name "*.$ext" | wc -l)
-            size=$(find public -name "*.$ext" -exec stat -c%s {} + 2>/dev/null | awk '{sum+=$1} END {print sum+0}')
-            echo "| ${ext^^} | $count | ${size} bytes |" >> $GITHUB_STEP_SUMMARY
-          done
-          total_files=$(find public -type f | wc -l)
-          total_size=$(find public -type f -exec stat -c%s {} + | awk '{sum+=$1} END {print sum+0}')
-          echo "| **Total** | **$total_files** | **${total_size} bytes** |" >> $GITHUB_STEP_SUMMARY
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

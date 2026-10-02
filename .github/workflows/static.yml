@@ -22,18 +22,18 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies
         run: |
@@ -49,21 +49,7 @@ jobs:
           echo "::group::Minifying HTML files"
           find public -name "*.html" -type f | while read file; do
             original_size=$(stat -c%s "$file")
-            html-minifier-terser \
-              --collapse-whitespace \
-              --collapse-boolean-attributes \
-              --remove-comments \
-              --remove-optional-tags \
-              --remove-redundant-attributes \
-              --remove-script-type-attributes \
-              --remove-tag-whitespace \
-              --use-short-doctype \
-              --sort-attributes \
-              --sort-class-name \
-              --minify-css true \
-              --minify-js true \
-              --output "$file" \
-              "$file"
+            html-minifier-terser               --collapse-whitespace               --collapse-boolean-attributes               --remove-comments               --remove-optional-tags               --remove-redundant-attributes               --remove-script-type-attributes               --remove-tag-whitespace               --use-short-doctype               --sort-attributes               --sort-class-name               --minify-css true               --minify-js true               --output "$file"               "$file"
             new_size=$(stat -c%s "$file")
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done
@@ -106,16 +92,16 @@ jobs:
           echo "| **Total** | **$total_files** | **${total_size} bytes** |" >> $GITHUB_STEP_SUMMARY
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: 'public/'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: Deployment success notification
         if: success()

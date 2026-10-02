@@ -292,10 +292,24 @@ function renderServices() {
 }
 
 async function initialize() {
-	await MP_I18N.initFromHash();
+	bindRequestUI();
 	checkCodecSupport();
 	renderServices();
 
+	try {
+		if (typeof MP_I18N !== 'undefined' && MP_I18N.initFromHash) {
+			await MP_I18N.initFromHash();
+		}
+	} catch (error) {
+		console.warn('Media Player translations unavailable:', error);
+	}
+
+	checkCodecSupport();
+	renderServices();
+	renderSupportContent();
+}
+
+function bindRequestUI() {
 	getElement('#submit-btn').addEventListener('click', requestUrl);
 	getElement('#urlinput').addEventListener('keydown', event => {
 		if (event.key === 'Enter') {
@@ -341,6 +355,11 @@ async function initialize() {
 document.addEventListener('DOMContentLoaded', initialize);
 
 window.requestUrl = requestUrl;
+window.showSupportPopup = showSupportPopup;
+window.closeSupportPopup = closeSupportPopup;
+window.showCodecPopup = showCodecPopup;
+window.closeCodecPopup = closeCodecPopup;
+window.openCodecInstructions = openCodecInstructions;
 window.selectService = selectService;
 window.openService = openService;
 window.hoverService = playUISound;

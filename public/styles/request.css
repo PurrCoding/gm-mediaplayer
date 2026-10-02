@@ -39,8 +39,9 @@ button { color: inherit; }
 }
 .input-wrap {
   flex: 1; display: flex; align-items: center; gap: 11px; min-width: 0;
-  padding: 0 12px; color: var(--muted);
+  padding: 0 12px; color: #666;
 }
+.input-wrap > i { color: #666; flex: 0 0 auto; }
 .input-wrap input {
   width: 100%; min-width: 0; padding: 13px 0; border: 0; outline: 0;
   color: #313131; background: transparent;

@@ -292,7 +292,7 @@ function renderServices() {
 }
 
 function initialize() {
-	MP_I18N.initFromHash();
+	await MP_I18N.initFromHash();
 	checkCodecSupport();
 	renderServices();
 

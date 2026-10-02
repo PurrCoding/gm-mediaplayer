@@ -96,11 +96,6 @@ jobs:
         with:
           path: 'public/'
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: 'public/'
-
   deploy:
     needs: build
     environment:

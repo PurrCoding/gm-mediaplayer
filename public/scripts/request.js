@@ -151,11 +151,15 @@ function closeSupportPopup() {
 }
 
 function openService(url) {
-	if (!gmodAvailable('openUrl')) {
-		showToast(MP_I18N.t('request.overlay_unavailable'), 'error');
+	if (gmodAvailable('openUrl')) {
+		gmod.openUrl(url);
 		return;
 	}
-	gmod.openUrl(url);
+	window.open(url, '_blank');
+}
+
+function isValidURL(value) {
+	try { new URL(value); return true; } catch { return /^https?:\/\//.test(value) || /^www\./.test(value) || (value.includes('.') && value.length > 5); }
 }
 
 function requestUrl() {
@@ -168,12 +172,7 @@ function requestUrl() {
 		return;
 	}
 
-	try {
-		const parsed = new URL(url);
-		if (!['http:', 'https:'].includes(parsed.protocol)) {
-			throw new Error('Unsupported protocol');
-		}
-	} catch {
+	if (!isValidURL(url)) {
 		showToast(MP_I18N.t('request.url_invalid'), 'error');
 		input.focus();
 		return;
@@ -339,3 +338,4 @@ document.addEventListener('DOMContentLoaded', initialize);
 window.requestUrl = requestUrl;
 window.selectService = selectService;
 window.openService = openService;
+window.hoverService = playUISound;

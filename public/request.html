@@ -1,92 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Media Player - Request Media</title>
-
-	<link rel="dns-prefetch" href="//www.youtube.com">
-	<link rel="dns-prefetch" href="//i.ytimg.com">
-	<link rel="dns-prefetch" href="//yt3.ggpht.com">
-	<link rel="dns-prefetch" href="//www.gstatic.com">
-	<link rel="preconnect" href="https://www.youtube.com" crossorigin>
-
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="dark">
+	<title>Media Player</title>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css">
 	<link rel="stylesheet" href="./styles/request.css">
 </head>
-
 <body>
-	<!-- Codec requirements popup -->
-	<div id="codec-popup" class="codec-popup hidden">
-		<div class="popup-overlay" data-action="close-codec"></div>
-		<div class="popup-content">
-			<div class="popup-header">
-				<h3 data-i18n="request.codec_required_title">GModPatchTool Required</h3>
-				<button class="close-btn" data-action="close-codec">&times;</button>
+	<main class="shell">
+		<section class="hero" aria-labelledby="hero-title">
+			<h1 id="hero-title" data-i18n="request.hero_title">What do you want to play?</h1>
+			<p data-i18n="request.hero_body">Paste a media URL, or choose a service below.</p>
+
+			<div class="request-box">
+				<div class="input-wrap">
+					<i class="fa-solid fa-link" aria-hidden="true"></i>
+					<input id="urlinput" type="url" autocomplete="off" spellcheck="false"
+						data-i18n-placeholder="request.url_placeholder"
+						placeholder="https://youtube.com/watch?v=..."
+						aria-label="Media URL">
+					<button id="clear-btn" class="icon-btn hidden" type="button" aria-label="Clear URL">
+						<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					</button>
+				</div>
+				<button id="submit-btn" class="request-btn" type="button">
+					<span data-i18n="request.url_submit">Request media</span>
+					<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+				</button>
 			</div>
-			<div class="popup-body">
-				<div class="popup-icon">&#127909;</div>
-				<p><strong id="service-name-popup"></strong> <span data-i18n="request.codec_required_body">requires GModPatchTool to function properly.</span></p>
-				<div class="instructions">
-					<h4 data-i18n="request.codec_steps_title">To enable this service:</h4>
-					<ol>
-						<li data-i18n="request.codec_step1">Download and apply GModPatchTool</li>
-						<li data-i18n="request.codec_step2">Restart Garry's Mod completely</li>
-						<li data-i18n="request.codec_step3">Return to Media Player and try again</li>
-					</ol>
+
+			<button id="support-info-btn" class="support-link" type="button">
+				<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+				<span data-i18n="request.support_info">Supported formats & examples</span>
+				<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+			</button>
+		</section>
+
+		<section class="providers" aria-labelledby="providers-title">
+			<div class="section-heading">
+				<div>
+					<span class="section-kicker" data-i18n="request.services_kicker">SERVICES</span>
+					<h2 id="providers-title" data-i18n="request.services_title">Choose a provider</h2>
 				</div>
 			</div>
-			<div class="popup-actions">
-				<button data-action="close-codec" class="btn-secondary" data-i18n="request.codec_cancel">Cancel</button>
-				<button data-action="codec-instructions" class="btn-primary" data-i18n="request.codec_get">Get GModPatchTool</button>
+
+			<div id="services-grid" class="services-grid" aria-live="polite"></div>
+			<p id="empty-state" class="empty-state hidden" data-i18n="request.services_empty">No service matches your search.</p>
+		</section>
+	</main>
+
+	<div id="codec-popup" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="codec-title">
+		<button class="modal-backdrop" data-action="close-codec" aria-label="Close dialog"></button>
+		<div class="modal-card">
+			<button class="modal-close" data-action="close-codec" aria-label="Close dialog">
+				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+			</button>
+			<div class="modal-icon"><i class="fa-solid fa-video" aria-hidden="true"></i></div>
+			<span class="section-kicker" data-i18n="request.codec_overlay">CODEC REQUIRED</span>
+			<h2 id="codec-title" data-i18n="request.codec_required_title">GModPatchTool is required</h2>
+			<p><strong id="service-name-popup"></strong> <span data-i18n="request.codec_required_body">needs the H.264 codec support provided by GModPatchTool.</span></p>
+			<ol>
+				<li data-i18n="request.codec_step1">Download and apply GModPatchTool</li>
+				<li data-i18n="request.codec_step2">Restart Garry's Mod completely</li>
+				<li data-i18n="request.codec_step3">Return to Media Player and try again</li>
+			</ol>
+			<div class="modal-actions">
+				<button class="btn-secondary" data-action="close-codec" type="button" data-i18n="request.codec_cancel">Not now</button>
+				<button class="btn-primary" data-action="codec-instructions" type="button">
+					<span data-i18n="request.codec_get">Get GModPatchTool</span>
+					<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+				</button>
 			</div>
 		</div>
 	</div>
 
-	<!-- Main container -->
-	<div class="app-container">
-		<!-- Services grid -->
-		<section class="services-section">
-			<div class="services-grid" id="services-grid">
-				<!-- Service cards populated by JavaScript -->
-			</div>
-		</section>
-
-		<!-- URL input section -->
-		<section class="url-section">
-			<div class="url-container">
-				<h2 class="url-title" data-i18n="request.url_title">Or paste a direct URL</h2>
-				<div class="input-group">
-					<input
-						id="urlinput"
-						type="url"
-						class="url-input"
-						data-i18n-placeholder="request.url_placeholder"
-						placeholder="Paste your video URL here..."
-						autocomplete="off"
-						spellcheck="false"
-					>
-					<button data-action="request-url" class="submit-btn" id="submit-btn">
-						<span class="btn-text" data-i18n="request.url_submit">Request</span>
-						<span class="btn-icon">&rarr;</span>
-					</button>
-				</div>
-				<div class="supported-formats">
-					<span data-i18n="request.url_formats">Supports common share links from supported services, images (JPG, PNG, GIF), video files (MP4, MOV, MKV, WebM), audio files (MP3, WAV, OGG), also Google Drive links</span>
-				</div>
-			</div>
-		</section>
-
-		<!-- Status indicator -->
-		<div id="status-indicator" class="status-indicator hidden">
-			<div class="status-content">
-				<div class="spinner"></div>
-				<span id="status-text" data-i18n="request.status_checking">Checking URL...</span>
-			</div>
+	<div id="support-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-title">
+		<button class="modal-backdrop" data-action="close-support" aria-label="Close supported formats"></button>
+		<div class="modal-card support-card">
+			<button class="modal-close" data-action="close-support" aria-label="Close dialog">
+				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+			</button>
+			<span class="section-kicker" data-i18n="request.support_kicker">REFERENCE</span>
+			<h2 id="support-title" data-i18n="request.support_title">Supported formats & URLs</h2>
+			<p class="support-intro" data-i18n="request.support_intro">These examples reflect the URL services currently implemented in Media Player.</p>
+			<div id="support-content" class="support-content"></div>
 		</div>
+	</div>
+
+	<div id="toast" class="toast hidden" role="status" aria-live="polite">
+		<i id="toast-icon" class="fa-solid fa-circle-check" aria-hidden="true"></i>
+		<span id="toast-text"></span>
 	</div>
 
 	<script src="./scripts/i18n.js"></script>
-	<script src="./scripts/translations.js"></script>
 	<script src="./scripts/request.js"></script>
 </body>
 </html>

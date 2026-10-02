@@ -1,220 +1,346 @@
-// public/scripts/request.js
 'use strict';
 
-// Service definitions with codec requirements
 const services = [
-	{ name: 'YouTube', icon: 'youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false },
-	{ name: 'Bilibili', icon: 'bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true },
-	{ name: 'Twitch', icon: 'twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true },
-	{ name: 'SoundCloud', icon: 'soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false },
-	{ name: 'Dailymotion', icon: 'dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true },
-	{ name: 'Internet Archive', icon: 'archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true },
-	{ name: 'Odysee', icon: 'odysee', url: 'https://odysee.com/', action: 'select', requiresCodec: true },
+	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false, group: 'Video' },
+	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false, group: 'Audio' },
+	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true, group: 'Video' },
+	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true, group: 'Live' },
+	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true, group: 'Video' },
+	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true, group: 'Archive' },
+	{ name: 'Odysee', icon: 'fa-solid fa-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' }
 ];
 
-// Codec support detection
 let hasCodecSupport = false;
 
+const supportGroups = [
+	{
+		key: 'images',
+		title: 'Images',
+		icon: 'fa-regular fa-image',
+		note: 'Direct image URLs are supported by the resource media service.',
+		items: [
+			['.jpg / .jpeg', 'https://example.com/poster.jpg'],
+			['.png', 'https://example.com/image.png'],
+			['.gif', 'https://example.com/animation.gif'],
+			['.bmp', 'https://example.com/image.bmp']
+		]
+	},
+	{
+		key: 'video',
+		title: 'Video',
+		icon: 'fa-solid fa-video',
+		note: 'WebM is handled by the regular media path. MP4, MOV and MKV use the codec-dependent path.',
+		items: [
+			['.webm', 'https://example.com/video.webm'],
+			['.mp4', 'https://example.com/video.mp4'],
+			['.mov', 'https://example.com/video.mov'],
+			['.mkv', 'https://example.com/video.mkv']
+		]
+	},
+	{
+		key: 'audio',
+		title: 'Audio',
+		icon: 'fa-solid fa-music',
+		note: 'Direct audio files are supported by the audio media service.',
+		items: [
+			['.mp3', 'https://example.com/audio.mp3'],
+			['.wav', 'https://example.com/audio.wav'],
+			['.ogg', 'https://example.com/audio.ogg'],
+			['.m4a', 'https://example.com/audio.m4a'],
+			['.aac', 'https://example.com/audio.aac'],
+			['.flac', 'https://example.com/audio.flac']
+		]
+	},
+	{
+		key: 'streaming',
+		title: 'Streaming',
+		icon: 'fa-solid fa-tower-broadcast',
+		note: 'HLS and DASH manifest URLs can be requested directly.',
+		items: [
+			['.m3u8', 'https://example.com/stream.m3u8'],
+			['.mpd', 'https://example.com/manifest.mpd']
+		]
+	},
+	{
+		key: 'services',
+		title: 'Supported service URLs',
+		icon: 'fa-solid fa-globe',
+		note: 'These share/provider URLs map to the service implementations available in Media Player.',
+		items: [
+			['YouTube', 'https://www.youtube.com/watch?v=VIDEO_ID'],
+			['Twitch', 'https://www.twitch.tv/CHANNEL'],
+			['SoundCloud', 'https://soundcloud.com/artist/track'],
+			['Dailymotion', 'https://www.dailymotion.com/video/VIDEO_ID'],
+			['Bilibili', 'https://www.bilibili.com/video/VIDEO_ID'],
+			['Odysee', 'https://odysee.com/@channel:1/video:1'],
+			['Archive.org', 'https://archive.org/details/ITEM_ID'],
+			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view']
+		]
+	}
+];
+
+const $ = (selector) => document.querySelector(selector);
+
+function gmodAvailable(name) {
+	return typeof gmod !== 'undefined' && typeof gmod[name] === 'function';
+}
+
+function playUISound(click) {
+	if (gmodAvailable('clickSound')) {
+		gmod.clickSound(click);
+	}
+}
+
 function checkCodecSupport() {
-	return new Promise((resolve) => {
-		const video = document.createElement('video');
-		const support = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === "probably";
-		hasCodecSupport = support;
-		resolve({ hasCodecSupport: support });
+	const video = document.createElement('video');
+	hasCodecSupport = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === 'probably';
+	return hasCodecSupport;
+}
+
+function showToast(message, type = 'success') {
+	const toast = $('#toast');
+	$('#toast-text').textContent = message;
+	$('#toast-icon').className = type === 'error'
+		? 'fa-solid fa-circle-exclamation'
+		: 'fa-solid fa-circle-check';
+	toast.classList.remove('hidden');
+	window.clearTimeout(showToast.timer);
+	showToast.timer = window.setTimeout(() => toast.classList.add('hidden'), 2200);
+}
+
+function renderSupportContent() {
+	const root = $('#support-content');
+	root.innerHTML = supportGroups.map(group => `
+		<section class="support-group">
+			<div class="support-group-title">
+				<span class="support-group-icon"><i class="${group.icon}" aria-hidden="true"></i></span>
+				<div><h3>${MP_I18N.t('request.support_' + group.key)}</h3><p>${MP_I18N.t('request.support_' + group.key + '_note')}</p></div>
+			</div>
+			<div class="support-items">
+				${group.items.map(([label, example]) => `
+					<button type="button" class="support-item" data-copy="${example}" title="Copy example">
+						<span class="support-label">${label}</span>
+						<code>${example}</code>
+						<i class="fa-regular fa-copy" aria-hidden="true"></i>
+					</button>
+				`).join('')}
+			</div>
+		</section>
+	`).join('');
+
+	root.querySelectorAll('[data-copy]').forEach(button => {
+		button.addEventListener('click', async () => {
+			const value = button.dataset.copy;
+			try {
+				await navigator.clipboard.writeText(value);
+				showToast(MP_I18N.t('request.copy_success'));
+			} catch {
+				$('#urlinput').value = value;
+				$('#clear-btn').classList.remove('hidden');
+				closeSupportPopup();
+				$('#urlinput').focus();
+			}
+		});
 	});
 }
 
-// Initialize service grid
-async function initializeServices() {
-	const grid = document.getElementById('services-grid');
-	const codecCheck = await checkCodecSupport();
+function showSupportPopup() {
+	renderSupportContent();
+	$('#support-modal').classList.remove('hidden');
+	document.body.style.overflow = 'hidden';
+}
+
+function closeSupportPopup() {
+	$('#support-modal').classList.add('hidden');
+	document.body.style.overflow = '';
+}
+
+function openService(url) {
+	if (gmodAvailable('openUrl')) {
+		gmod.openUrl(url);
+		return;
+	}
+	window.open(url, '_blank');
+}
+
+function isValidURL(value) {
+	try { new URL(value); return true; } catch { return /^https?:\/\//.test(value) || /^www\./.test(value) || (value.includes('.') && value.length > 5); }
+}
+
+function requestUrl() {
+	const input = $('#urlinput');
+	const url = input.value.trim();
+
+	if (!url) {
+		showToast(MP_I18N.t('request.url_empty'), 'error');
+		input.focus();
+		return;
+	}
+
+	if (!isValidURL(url)) {
+		showToast(MP_I18N.t('request.url_invalid'), 'error');
+		input.focus();
+		return;
+	}
+
+	if (!gmodAvailable('requestUrl')) {
+		showToast(MP_I18N.t('request.bridge_unavailable'), 'error');
+		return;
+	}
+
+	const button = $('#submit-btn');
+	button.disabled = true;
+	playUISound(true);
+	gmod.requestUrl(url);
+	showToast(MP_I18N.t('request.status_sent'));
+	window.setTimeout(() => {
+		button.disabled = false;
+	}, 900);
+}
+
+function showCodecPopup(service) {
+	$('#service-name-popup').textContent = service.name;
+	$('#codec-popup').classList.remove('hidden');
+	document.body.style.overflow = 'hidden';
+}
+
+function closeCodecPopup() {
+	$('#codec-popup').classList.add('hidden');
+	document.body.style.overflow = '';
+}
+
+function openCodecInstructions() {
+	if (gmodAvailable('openUrl')) {
+		gmod.openUrl('https://www.solsticegamestudios.com/fixmedia/');
+	} else {
+		showToast(MP_I18N.t('request.overlay_unavailable'), 'error');
+	}
+	closeCodecPopup();
+}
+
+function selectService(service) {
+	playUISound(true);
+
+	if (service.action === 'open') {
+		openService(service.url);
+		return;
+	}
+
+	window.location.href = service.url;
+}
+
+function renderServices() {
+	const grid = $('#services-grid');
+	grid.innerHTML = '';
 
 	services.forEach(service => {
-		const card = document.createElement('div');
-		card.className = 'service-card';
-		card.dataset.href = service.url;
-		card.dataset.action = service.action;
+		const disabled = service.requiresCodec && !hasCodecSupport;
+		const card = document.createElement('button');
+		card.type = 'button';
+		card.className = 'service-card' + (disabled ? ' disabled' : '');
+		card.setAttribute('aria-disabled', disabled ? 'true' : 'false');
 		card.dataset.serviceName = service.name;
 
-		const isDisabled = service.requiresCodec && !codecCheck.hasCodecSupport;
+		const icon = document.createElement('span');
+		icon.className = 'service-icon';
 
-		if (isDisabled) {
-			card.classList.add('service-disabled');
-			card.addEventListener('click', (e) => {
-				e.preventDefault();
-				showCodecPopup(service.name);
-			});
-		} else {
-			card.addEventListener('click', () => selectService(card));
-			card.addEventListener('mouseenter', hoverService);
+		const iconElement = document.createElement('i');
+		iconElement.className = service.icon;
+		iconElement.setAttribute('aria-hidden', 'true');
+		icon.appendChild(iconElement);
+
+		const meta = document.createElement('span');
+		meta.className = 'service-meta';
+
+		const text = document.createElement('span');
+		const name = document.createElement('span');
+		name.className = 'service-name';
+		name.textContent = service.name;
+		text.appendChild(name);
+
+		if (disabled) {
+			const sub = document.createElement('span');
+			sub.className = 'service-sub';
+			sub.textContent = MP_I18N.t('request.codec_overlay');
+			text.appendChild(sub);
 		}
 
-		card.innerHTML = `
-			<div class="service-card-inner">
-				<div class="service-icon logo-${service.icon}"></div>
-				<div class="service-name">${service.name}</div>
-				${isDisabled ? `<div class="disabled-overlay">${MP_I18N.t("request.codec_overlay")}</div>` : ''}
-			</div>
-		`;
+		const action = document.createElement('span');
+		action.className = disabled ? 'badge' : 'service-arrow';
+		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '';
+		if (!disabled) {
+			const arrow = document.createElement('i');
+			arrow.className = 'fa-solid fa-arrow-up-right-from-square';
+			arrow.setAttribute('aria-hidden', 'true');
+			action.appendChild(arrow);
+		}
+
+		meta.append(text, action);
+		card.append(icon, meta);
+
+		card.addEventListener('mouseenter', () => playUISound(false));
+		card.addEventListener('click', () => {
+			if (disabled) {
+				showCodecPopup(service);
+				return;
+			}
+			selectService(service);
+		});
 
 		grid.appendChild(card);
 	});
 }
 
-function showCodecPopup(serviceName) {
-	const popup = document.getElementById('codec-popup');
-	const serviceNameElement = document.getElementById('service-name-popup');
+async function initialize() {
+	await MP_I18N.initFromHash();
+	checkCodecSupport();
+	renderServices();
 
-	serviceNameElement.textContent = serviceName;
-	popup.classList.remove('hidden');
-	document.body.style.overflow = 'hidden';
-}
-
-function closeCodecPopup() {
-	const popup = document.getElementById('codec-popup');
-	popup.classList.add('hidden');
-	document.body.style.overflow = '';
-}
-
-function openCodecInstructions() {
-	const url = 'https://www.solsticegamestudios.com/fixmedia/';
-
-	if (typeof gmod !== 'undefined' && gmod.openUrl) {
-		gmod.openUrl(url);
-	} else {
-		window.open(url, '_blank');
-	}
-	closeCodecPopup();
-}
-
-function selectService(elem) {
-	if (elem.classList.contains('service-disabled')) {
-		return;
-	}
-
-	playUISound(true);
-
-	const href = elem.dataset.href;
-	const action = elem.dataset.action;
-
-	if (action === 'open') {
-		openService(elem);
-	} else {
-		window.location.href = href;
-	}
-}
-
-function openService(elem) {
-	const href = elem.dataset.href;
-	if (typeof gmod !== 'undefined' && gmod.openUrl) {
-		gmod.openUrl(href);
-	} else {
-		window.open(href, '_blank');
-	}
-}
-
-function requestUrl() {
-	const elem = document.getElementById('urlinput');
-	const url = elem.value.trim();
-	const statusIndicator = document.getElementById('status-indicator');
-	const statusText = document.getElementById('status-text');
-	const submitBtn = document.getElementById('submit-btn');
-
-	if (url.length === 0) return;
-
-	statusIndicator.classList.remove('hidden');
-	statusText.textContent = MP_I18N.t('request.status_sent');
-	submitBtn.disabled = true;
-
-	setTimeout(() => {
-		statusIndicator.classList.add('hidden');
-		submitBtn.disabled = false;
-	}, 2000);
-
-	if (typeof gmod !== 'undefined' && gmod.requestUrl) {
-		gmod.requestUrl(url);
-	}
-}
-
-function onUrlKeyDown(event) {
-	const key = event.keyCode || event.which;
-	if (key === 13) {
-		requestUrl();
-	}
-}
-
-function playUISound(click) {
-	if (typeof gmod !== 'undefined') {
-		if (click) {
-			console.log("PLAY: garrysmod/ui_click.wav");
-		} else {
-			console.log("PLAY: garrysmod/ui_hover.wav")
+	$('#submit-btn').addEventListener('click', requestUrl);
+	$('#urlinput').addEventListener('keydown', event => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			requestUrl();
 		}
-	}
-}
+	});
+	$('#urlinput').addEventListener('input', event => {
+		$('#clear-btn').classList.toggle('hidden', !event.target.value);
+	});
+	$('#clear-btn').addEventListener('click', () => {
+		$('#urlinput').value = '';
+		$('#clear-btn').classList.add('hidden');
+		$('#urlinput').focus();
+	});
+	$('#support-info-btn').addEventListener('click', showSupportPopup);
 
-function hoverService() {
-	playUISound(false);
-}
+	document.querySelectorAll('[data-action="close-support"]').forEach(el => {
+		el.addEventListener('click', closeSupportPopup);
+	});
+	document.querySelectorAll('[data-action="close-codec"]').forEach(el => {
+		el.addEventListener('click', closeCodecPopup);
+	});
+	const instructions = $('[data-action="codec-instructions"]');
+	if (instructions) instructions.addEventListener('click', openCodecInstructions);
 
-function initializeUrlInput() {
-	const urlInput = document.getElementById('urlinput');
-	if (urlInput) {
-		urlInput.addEventListener('keydown', onUrlKeyDown);
-	}
-}
-
-function initializeAutoInput() {
-	const urlInput = document.getElementById('urlinput');
-	if (!urlInput) return;
-
-	// Focus input on keypress
-	document.addEventListener('keydown', (event) => {
-		if (document.activeElement === urlInput ||
-			event.ctrlKey || event.metaKey || event.altKey ||
-			event.key === 'Tab' || event.key === 'Escape') {
+	document.addEventListener('keydown', event => {
+		if (event.key === 'Escape') {
+			closeCodecPopup();
+			closeSupportPopup();
 			return;
 		}
-
-		urlInput.focus();
+		if (
+			document.activeElement !== $('#urlinput') &&
+			!event.ctrlKey && !event.metaKey && !event.altKey &&
+			event.key.length === 1
+		) {
+			$('#urlinput').focus();
+		}
 	});
 }
 
-function isValidURL(string) {
-	try {
-		new URL(string);
-		return true;
-	} catch {
-		return /^https?:\/\//.test(string) ||
-			   /^www\./.test(string) ||
-			   string.includes('.') && string.length > 5;
-	}
-}
+document.addEventListener('DOMContentLoaded', initialize);
 
-document.addEventListener('DOMContentLoaded', () => {
-	MP_I18N.initFromHash();
-	initializeServices();
-	initializeUrlInput();
-	initializeAutoInput();
-});
-
-// Global function exports
 window.requestUrl = requestUrl;
 window.selectService = selectService;
 window.openService = openService;
-window.hoverService = hoverService;
-
-document.addEventListener('DOMContentLoaded', () => {
-	const popupOverlay = document.querySelector('[data-action="close-codec"]');
-	if (popupOverlay) popupOverlay.addEventListener('click', closeCodecPopup);
-
-	document.querySelectorAll('[data-action="close-codec"]').forEach((element) => {
-		element.addEventListener('click', closeCodecPopup);
-	});
-
-	const instructionsButton = document.querySelector('[data-action="codec-instructions"]');
-	if (instructionsButton) instructionsButton.addEventListener('click', openCodecInstructions);
-
-	const requestButton = document.querySelector('[data-action="request-url"]');
-	if (requestButton) requestButton.addEventListener('click', requestUrl);
-});
+window.hoverService = playUISound;

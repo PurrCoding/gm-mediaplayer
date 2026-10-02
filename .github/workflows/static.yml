@@ -46,21 +46,7 @@ jobs:
           echo "::group::Minifying HTML files"
           find public -name "*.html" -type f | while read file; do
             original_size=$(stat -c%s "$file")
-            html-minifier-terser \
-              --collapse-whitespace \
-              --collapse-boolean-attributes \
-              --remove-comments \
-              --remove-optional-tags \
-              --remove-redundant-attributes \
-              --remove-script-type-attributes \
-              --remove-tag-whitespace \
-              --use-short-doctype \
-              --sort-attributes \
-              --sort-class-name \
-              --minify-css true \
-              --minify-js true \
-              --output "$file" \
-              "$file"
+            html-minifier-terser               --collapse-whitespace               --collapse-boolean-attributes               --remove-comments               --remove-optional-tags               --remove-redundant-attributes               --remove-script-type-attributes               --remove-tag-whitespace               --use-short-doctype               --sort-attributes               --sort-class-name               --minify-css true               --minify-js true               --output "$file"               "$file"
             new_size=$(stat -c%s "$file")
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done
@@ -82,7 +68,7 @@ jobs:
           echo "::group::Minifying JavaScript files"
           find public -name "*.js" -type f | while read file; do
             original_size=$(stat -c%s "$file")
-            terser "$file" --ecma 2020 --compress passes=3 --mangle --output "$file"
+            terser "$file"               --ecma 2020               --compress passes=3,ecma=2020               --mangle               --comments false               --output "$file"
             new_size=$(stat -c%s "$file")
             echo "✓ $file: ${original_size}B → ${new_size}B (saved $((original_size - new_size))B)"
           done

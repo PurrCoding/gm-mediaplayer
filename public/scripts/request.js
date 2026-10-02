@@ -1,16 +1,78 @@
 'use strict';
 
 const services = [
-	{ name: 'YouTube', icon: 'youtube.png', url: 'https://youtube.com/', action: 'select', requiresCodec: false },
-	{ name: 'Bilibili', icon: 'bilibili.svg', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true },
-	{ name: 'Twitch', icon: 'twitch.svg', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true },
-	{ name: 'SoundCloud', icon: 'soundcloud.svg', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false },
-	{ name: 'Dailymotion', icon: 'dailymotion.png', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true },
-	{ name: 'Internet Archive', icon: 'archive.svg', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true },
-	{ name: 'Odysee', icon: 'odysee.svg', url: 'https://odysee.com/', action: 'select', requiresCodec: true }
+	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false, group: 'Video' },
+	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false, group: 'Audio' },
+	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true, group: 'Video' },
+	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true, group: 'Live' },
+	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true, group: 'Video' },
+	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true, group: 'Archive' },
+	{ name: 'Odysee', icon: 'fa-solid fa-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' }
 ];
 
 let hasCodecSupport = false;
+
+const supportGroups = [
+	{
+		title: 'Images',
+		icon: 'fa-regular fa-image',
+		note: 'Direct image URLs are supported by the resource media service.',
+		items: [
+			['.jpg / .jpeg', 'https://example.com/poster.jpg'],
+			['.png', 'https://example.com/image.png'],
+			['.gif', 'https://example.com/animation.gif'],
+			['.bmp', 'https://example.com/image.bmp']
+		]
+	},
+	{
+		title: 'Video',
+		icon: 'fa-solid fa-video',
+		note: 'WebM is handled by the regular media path. MP4, MOV and MKV use the codec-dependent path.',
+		items: [
+			['.webm', 'https://example.com/video.webm'],
+			['.mp4', 'https://example.com/video.mp4'],
+			['.mov', 'https://example.com/video.mov'],
+			['.mkv', 'https://example.com/video.mkv']
+		]
+	},
+	{
+		title: 'Audio',
+		icon: 'fa-solid fa-music',
+		note: 'Direct audio files are supported by the audio media service.',
+		items: [
+			['.mp3', 'https://example.com/audio.mp3'],
+			['.wav', 'https://example.com/audio.wav'],
+			['.ogg', 'https://example.com/audio.ogg'],
+			['.m4a', 'https://example.com/audio.m4a'],
+			['.aac', 'https://example.com/audio.aac'],
+			['.flac', 'https://example.com/audio.flac']
+		]
+	},
+	{
+		title: 'Streaming',
+		icon: 'fa-solid fa-tower-broadcast',
+		note: 'HLS and DASH manifest URLs can be requested directly.',
+		items: [
+			['.m3u8', 'https://example.com/stream.m3u8'],
+			['.mpd', 'https://example.com/manifest.mpd']
+		]
+	},
+	{
+		title: 'Supported service URLs',
+		icon: 'fa-solid fa-globe',
+		note: 'These share/provider URLs map to the service implementations available in Media Player.',
+		items: [
+			['YouTube', 'https://www.youtube.com/watch?v=VIDEO_ID'],
+			['Twitch', 'https://www.twitch.tv/CHANNEL'],
+			['SoundCloud', 'https://soundcloud.com/artist/track'],
+			['Dailymotion', 'https://www.dailymotion.com/video/VIDEO_ID'],
+			['Bilibili', 'https://www.bilibili.com/video/VIDEO_ID'],
+			['Odysee', 'https://odysee.com/@channel:1/video:1'],
+			['Archive.org', 'https://archive.org/details/ITEM_ID'],
+			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view']
+		]
+	}
+];
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -33,11 +95,59 @@ function checkCodecSupport() {
 function showToast(message, type = 'success') {
 	const toast = $('#toast');
 	$('#toast-text').textContent = message;
-	$('#toast-icon').textContent = type === 'error' ? '!' : '✓';
-	toast.classList.toggle('error', type === 'error');
+	$('#toast-icon').className = type === 'error'
+		? 'fa-solid fa-circle-exclamation'
+		: 'fa-solid fa-circle-check';
 	toast.classList.remove('hidden');
 	window.clearTimeout(showToast.timer);
-	showToast.timer = window.setTimeout(() => toast.classList.add('hidden'), 2400);
+	showToast.timer = window.setTimeout(() => toast.classList.add('hidden'), 2200);
+}
+
+function renderSupportContent() {
+	const root = $('#support-content');
+	root.innerHTML = supportGroups.map(group => `
+		<section class="support-group">
+			<div class="support-group-title">
+				<span class="support-group-icon"><i class="${group.icon}" aria-hidden="true"></i></span>
+				<div><h3>${group.title}</h3><p>${group.note}</p></div>
+			</div>
+			<div class="support-items">
+				${group.items.map(([label, example]) => `
+					<button type="button" class="support-item" data-copy="${example}" title="Copy example">
+						<span class="support-label">${label}</span>
+						<code>${example}</code>
+						<i class="fa-regular fa-copy" aria-hidden="true"></i>
+					</button>
+				`).join('')}
+			</div>
+		</section>
+	`).join('');
+
+	root.querySelectorAll('[data-copy]').forEach(button => {
+		button.addEventListener('click', async () => {
+			const value = button.dataset.copy;
+			try {
+				await navigator.clipboard.writeText(value);
+				showToast(MP_I18N.t('request.copy_success'));
+			} catch {
+				$('#urlinput').value = value;
+				$('#clear-btn').classList.remove('hidden');
+				closeSupportPopup();
+				$('#urlinput').focus();
+			}
+		});
+	});
+}
+
+function showSupportPopup() {
+	renderSupportContent();
+	$('#support-modal').classList.remove('hidden');
+	document.body.style.overflow = 'hidden';
+}
+
+function closeSupportPopup() {
+	$('#support-modal').classList.add('hidden');
+	document.body.style.overflow = '';
 }
 
 function openService(url) {
@@ -46,10 +156,6 @@ function openService(url) {
 		return;
 	}
 	gmod.openUrl(url);
-}
-
-function navigateToService(url) {
-	window.location.href = url;
 }
 
 function requestUrl() {
@@ -88,8 +194,8 @@ function requestUrl() {
 	}, 900);
 }
 
-function showCodecPopup(serviceName) {
-	$('#service-name-popup').textContent = serviceName;
+function showCodecPopup(service) {
+	$('#service-name-popup').textContent = service.name;
 	$('#codec-popup').classList.remove('hidden');
 	document.body.style.overflow = 'hidden';
 }
@@ -100,7 +206,11 @@ function closeCodecPopup() {
 }
 
 function openCodecInstructions() {
-	openService('https://www.solsticegamestudios.com/fixmedia/');
+	if (gmodAvailable('openUrl')) {
+		gmod.openUrl('https://www.solsticegamestudios.com/fixmedia/');
+	} else {
+		showToast(MP_I18N.t('request.overlay_unavailable'), 'error');
+	}
 	closeCodecPopup();
 }
 
@@ -112,59 +222,62 @@ function selectService(service) {
 		return;
 	}
 
-	navigateToService(service.url);
+	window.location.href = service.url;
 }
 
 function renderServices() {
 	const grid = $('#services-grid');
-	grid.textContent = '';
+	grid.innerHTML = '';
 
-	services.forEach((service) => {
+	services.forEach(service => {
 		const disabled = service.requiresCodec && !hasCodecSupport;
 		const card = document.createElement('button');
 		card.type = 'button';
 		card.className = 'service-card' + (disabled ? ' disabled' : '');
 		card.setAttribute('aria-disabled', disabled ? 'true' : 'false');
-		card.setAttribute('aria-label', service.name);
+		card.dataset.serviceName = service.name;
 
 		const icon = document.createElement('span');
 		icon.className = 'service-icon';
 
-		const image = document.createElement('img');
-		image.src = './images/' + service.icon;
-		image.alt = '';
-		image.loading = 'lazy';
-		icon.appendChild(image);
+		const iconElement = document.createElement('i');
+		iconElement.className = service.icon;
+		iconElement.setAttribute('aria-hidden', 'true');
+		icon.appendChild(iconElement);
 
 		const meta = document.createElement('span');
 		meta.className = 'service-meta';
 
+		const text = document.createElement('span');
 		const name = document.createElement('span');
 		name.className = 'service-name';
 		name.textContent = service.name;
-
-		const textWrap = document.createElement('span');
-		textWrap.append(name);
+		text.appendChild(name);
 
 		if (disabled) {
-			const details = document.createElement('span');
-			details.className = 'service-sub';
-			details.textContent = MP_I18N.t('request.codec_overlay');
-			textWrap.append(details);
+			const sub = document.createElement('span');
+			sub.className = 'service-sub';
+			sub.textContent = MP_I18N.t('request.codec_overlay');
+			text.appendChild(sub);
 		}
-
-		meta.append(textWrap);
 
 		const action = document.createElement('span');
 		action.className = disabled ? 'badge' : 'service-arrow';
-		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '↗';
-		meta.append(action);
+		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '';
+		if (!disabled) {
+			const arrow = document.createElement('i');
+			arrow.className = 'fa-solid fa-arrow-up-right-from-square';
+			arrow.setAttribute('aria-hidden', 'true');
+			action.appendChild(arrow);
+		}
 
+		meta.append(text, action);
 		card.append(icon, meta);
+
 		card.addEventListener('mouseenter', () => playUISound(false));
 		card.addEventListener('click', () => {
 			if (disabled) {
-				showCodecPopup(service.name);
+				showCodecPopup(service);
 				return;
 			}
 			selectService(service);
@@ -174,46 +287,51 @@ function renderServices() {
 	});
 }
 
-function initializeInput() {
-	const input = $('#urlinput');
-	const clearButton = $('#clear-btn');
+function initialize() {
+	MP_I18N.initFromHash();
+	checkCodecSupport();
+	renderServices();
 
-	input.addEventListener('input', () => {
-		clearButton.classList.toggle('hidden', input.value.length === 0);
-	});
-
-	input.addEventListener('keydown', (event) => {
+	$('#submit-btn').addEventListener('click', requestUrl);
+	$('#urlinput').addEventListener('keydown', event => {
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			requestUrl();
 		}
 	});
-
-	clearButton.addEventListener('click', () => {
-		input.value = '';
-		clearButton.classList.add('hidden');
-		input.focus();
+	$('#urlinput').addEventListener('input', event => {
+		$('#clear-btn').classList.toggle('hidden', !event.target.value);
 	});
-}
-
-function initializeModal() {
-	document.querySelectorAll('[data-action="close-codec"]').forEach((element) => {
-		element.addEventListener('click', closeCodecPopup);
+	$('#clear-btn').addEventListener('click', () => {
+		$('#urlinput').value = '';
+		$('#clear-btn').classList.add('hidden');
+		$('#urlinput').focus();
 	});
+	$('#support-info-btn').addEventListener('click', showSupportPopup);
 
-	const instructionsButton = document.querySelector('[data-action="codec-instructions"]');
-	if (instructionsButton) {
-		instructionsButton.addEventListener('click', openCodecInstructions);
-	}
-}
+	document.querySelectorAll('[data-action="close-support"]').forEach(el => {
+		el.addEventListener('click', closeSupportPopup);
+	});
+	document.querySelectorAll('[data-action="close-codec"]').forEach(el => {
+		el.addEventListener('click', closeCodecPopup);
+	});
+	const instructions = $('[data-action="codec-instructions"]');
+	if (instructions) instructions.addEventListener('click', openCodecInstructions);
 
-function initialize() {
-	MP_I18N.initFromHash();
-	checkCodecSupport();
-	renderServices();
-	initializeInput();
-	initializeModal();
-	$('#submit-btn').addEventListener('click', requestUrl);
+	document.addEventListener('keydown', event => {
+		if (event.key === 'Escape') {
+			closeCodecPopup();
+			closeSupportPopup();
+			return;
+		}
+		if (
+			document.activeElement !== $('#urlinput') &&
+			!event.ctrlKey && !event.metaKey && !event.altKey &&
+			event.key.length === 1
+		) {
+			$('#urlinput').focus();
+		}
+	});
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

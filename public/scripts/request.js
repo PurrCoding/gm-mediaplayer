@@ -42,7 +42,7 @@ function showToast(message, type = 'success') {
 
 function openService(url) {
 	if (!gmodAvailable('openUrl')) {
-		showToast('Steam Overlay is unavailable.', 'error');
+		showToast(MP_I18N.t('request.overlay_unavailable'), 'error');
 		return;
 	}
 	gmod.openUrl(url);
@@ -124,7 +124,7 @@ function renderServices() {
 		const card = document.createElement('button');
 		card.type = 'button';
 		card.className = 'service-card' + (disabled ? ' disabled' : '');
-		card.disabled = disabled;
+		card.setAttribute('aria-disabled', disabled ? 'true' : 'false');
 		card.setAttribute('aria-label', service.name);
 
 		const icon = document.createElement('span');

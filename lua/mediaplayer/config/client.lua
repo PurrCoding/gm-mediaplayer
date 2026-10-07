@@ -10,7 +10,7 @@ Special note to workshop uploaders: Adding more media players to the workshop wi
 	Everyone is welcome to participate in this PurrCoding fork instead.
 ]]--
 
-local baseUrl = "https://mp.purrcoding.com/"
+local baseUrl = "https://gm-mediaplayer.purrcoding.com/"
 
 MediaPlayer.SetConfig({
 

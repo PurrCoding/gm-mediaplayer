@@ -1,31 +1,68 @@
 @echo off
-REM ============================================================
-REM  Garry's Mod Addon Publishing Script
-REM  This script packs and updates a workshop addon using
-REM  gmad.exe and gmpublish.exe. The addon folder is the same
-REM  directory where this .bat file is located.
-REM ============================================================
+setlocal EnableExtensions
 
-REM --- Path to Garry's Mod bin tools (adjust if needed) ---
-set "basepath=D:\SteamLibrary\common\GarrysMod\bin"
-set "gmad=%basepath%\gmad.exe"
-set "gmpublish=%basepath%\gmpublish.exe"
+rem ============================================================
+rem Build and publish Media Player Redux to the Steam Workshop.
+rem ============================================================
 
-REM --- Use the directory of this .bat file as the addon source ---
-REM %cd% = drive + path of the script, always ends with a backslash
-set "publish_path=%cd%"
+rem Run from the directory containing this script, regardless of
+rem the directory the caller launched it from.
+pushd "%~dp0" || (
+    echo ERROR: Could not enter the publishing directory.
+    exit /b 1
+)
+set "publish_path=%CD%"
 
-REM --- Output .gma name and workshop addon ID ---
+rem Adjust this path if Garry's Mod is installed elsewhere.
+set "gmod_bin=D:\SteamLibrary\common\GarrysMod\bin"
+set "gmad=%gmod_bin%\gmad.exe"
+set "gmpublish=%gmod_bin%\gmpublish.exe"
+
 set "publish_gma=workshop.gma"
 set "publish_id=3001397905"
+set "result=1"
 
-REM --- Create .gma file from the addon folder ---
-call "%gmad%" create -folder "%publish_path%" -out "%publish_gma%"
+rem Check required tools before building the package.
+if not exist "%gmad%" (
+    echo ERROR: gmad.exe was not found: "%gmad%"
+    goto :cleanup
+)
+if not exist "%gmpublish%" (
+    echo ERROR: gmpublish.exe was not found: "%gmpublish%"
+    goto :cleanup
+)
 
-REM --- Upload/update the addon on the Steam Workshop ---
-call "%gmpublish%" update -addon "%publish_gma%" -id "%publish_id%"
+echo Building "%publish_gma%"...
+"%gmad%" create -folder "%publish_path%" -out "%publish_gma%"
+if errorlevel 1 (
+    echo ERROR: gmad failed to build the addon.
+    goto :cleanup
+)
+if not exist "%publish_gma%" (
+    echo ERROR: gmad did not create "%publish_gma%".
+    goto :cleanup
+)
 
-REM --- Clean up temporary .gma file ---
-del "%publish_gma%"
+echo.
+echo Uploading addon to Steam Workshop...
+"%gmpublish%" update -addon "%publish_gma%" -id "%publish_id%"
+if errorlevel 1 (
+    echo ERROR: Steam Workshop publishing failed.
+    goto :cleanup
+)
 
-pause
+set "result=0"
+echo.
+echo Publishing completed successfully.
+
+:cleanup
+echo.
+if exist "%publish_gma%" (
+    echo Removing temporary package...
+    del "%publish_gma%"
+)
+popd
+if "%result%"=="0" (
+    pause
+)
+exit /b %result%

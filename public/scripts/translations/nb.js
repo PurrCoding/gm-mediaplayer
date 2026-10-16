@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('nb', {
 	"request.codec_overlay":         "Kodek påkrevd",
-	"request.url_title":             "Eller lim inn en URL direkte",
 	"request.url_placeholder":       "Lim inn en video-URL her...",
 	"request.url_submit":            "Forespør",
-	"request.url_formats":           "Støtter lenker fra støttede tjenester, bilder (JPG, PNG, GIF), videofiler (MP4, MOV, MKV, WebM), lydfiler (MP3, WAV, OGG) og Google Drive-lenker",
-	"request.status_checking":       "Sjekker URL...",
 	"request.status_sent":           "Forespørsel sendt!",
 	"request.kicker": "MEDIASPILLER",
 	"request.hero_title": "Hva vil du spille av?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('nb', {
 	"request.url_empty": "Lim inn en medie-URL først.",
 	"request.url_invalid": "Skriv inn en gyldig HTTP(S)-URL.",
 	"request.bridge_unavailable": "Media Player-forespørselsbroen er utilgjengelig.",
-	"request.overlay_unavailable": "Steam Overlay er utilgjengelig.",
 	"request.support_images": "Bilder",
 	"request.support_images_note": "Direkte URL-er til bilder støttes.",
 	"request.support_video": "Video",

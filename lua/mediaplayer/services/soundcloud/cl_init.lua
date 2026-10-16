@@ -7,14 +7,17 @@ local JS_Play = "if(window.MediaPlayer) MediaPlayer.play();"
 local JS_Volume = "if(window.MediaPlayer) MediaPlayer.setVolume(%s * 100);"
 local JS_Seek = [[
 	if (window.MediaPlayer) {
-		var seekTime = %s
-		var curTime = MediaPlayer.currentTime
-
-		var diffTime = Math.abs(curTime - seekTime)
-		if (diffTime > 5) {
-			MediaPlayer.currentTime = seekTime
+		var seekTime = %s;
+		var curTime = Number(window.MediaPlayer.currentTime) || 0;
+		var diffTime = Math.abs(curTime - seekTime);
+		if (diffTime > 2) {
+			if (typeof window.MediaPlayer.seekTo === "function") {
+				window.MediaPlayer.seekTo(Math.max(0, seekTime) * 1000);
+			} else {
+				window.MediaPlayer.currentTime = seekTime;
+			}
 		}
-	end
+	}
 ]]
 
 local EMBED_HTML = [[
@@ -61,28 +64,42 @@ local EMBED_HTML = [[
 			document.body.style.margin = "0";
 			document.body.style.overflow = "hidden";
 
+			const startTime = {@startTime};
 			const player = SC.Widget(frame);
 			player.bind(SC.Widget.Events.READY, function() {
 				player.getDuration(function(duration) {
-					let totalDuration = duration || 0;
-					let curTime = 0;
-					if (!shouldPlay) return;
+					let totalDuration = Number(duration) || 0;
+					let curTimeMs = Math.max(0, Number(startTime) || 0) * 1000;
 
 					frame.setAttribute("height", window.innerHeight);
-					setInterval(function() {
-						player.getPosition(function(position) { curTime = position; });
-					}, 250);
 
 					Object.defineProperty(player, "currentTime", {
-						get: function() { return curTime / 1000; },
-						set: function(time) { player.seekTo(time * 1000); }
+						get: function() { return curTimeMs / 1000; },
+						set: function(time) {
+							const t = Math.max(0, Number(time) || 0);
+							curTimeMs = t * 1000;
+							player.seekTo(curTimeMs);
+						}
 					});
 					Object.defineProperty(player, "duration", {
 						get: function() { return totalDuration / 1000; }
 					});
 
-					player.play();
+					// Keep position cache fresh for Sync()/seek comparisons.
+					setInterval(function() {
+						player.getPosition(function(position) {
+							curTimeMs = Number(position) || 0;
+						});
+					}, 250);
+
 					window.MediaPlayer = player;
+
+					if (startTime > 0) {
+						player.seekTo(curTimeMs);
+					}
+					if (shouldPlay) {
+						player.play();
+					}
 				});
 			});
 			player.bind(SC.Widget.Events.ERROR, function(event) {
@@ -105,8 +122,9 @@ function SERVICE:OnBrowserReady( browser )
 	BaseClass.OnBrowserReady( self, browser )
 
 	local html = EMBED_HTML
-	html = html:Replace("{@audioPath}", self:GetSoundCloudTrackId())
+	html = html:Replace("{@audioPath}", self:GetSoundCloudTrackId() or "")
 	html = html:Replace("{@shouldPlay}", "true")
+	html = html:Replace("{@startTime}", tostring(math.max(0, math.floor(self:CurrentTime() or 0))))
 
 	browser:SetHTML(html)
 

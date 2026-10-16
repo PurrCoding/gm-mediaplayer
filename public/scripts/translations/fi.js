@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('fi', {
 	"request.codec_overlay":         "Koodekki vaaditaan",
-	"request.url_title":             "Tai liitä URL suoraan",
 	"request.url_placeholder":       "Liitä video-URL tähän...",
 	"request.url_submit":            "Pyydä",
-	"request.url_formats":           "Tukee linkkejä tuetuista palveluista, kuvia (JPG, PNG, GIF), videotiedostoja (MP4, MOV, MKV, WebM), äänitiedostoja (MP3, WAV, OGG) ja Google Drive -linkkejä",
-	"request.status_checking":       "Tarkistetaan URL...",
 	"request.status_sent":           "Pyyntö lähetetty!",
 	"request.kicker": "MEDIASOITIN",
 	"request.hero_title": "Mitä haluat toistaa?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('fi', {
 	"request.url_empty": "Liitä ensin media-URL.",
 	"request.url_invalid": "Anna kelvollinen HTTP(S)-URL.",
 	"request.bridge_unavailable": "Media Playerin pyyntöyhteys ei ole käytettävissä.",
-	"request.overlay_unavailable": "Steam Overlay ei ole käytettävissä.",
 	"request.support_images": "Kuvat",
 	"request.support_images_note": "Suorat kuva-URL-osoitteet ovat tuettuja.",
 	"request.support_video": "Video",

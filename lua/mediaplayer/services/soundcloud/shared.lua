@@ -6,6 +6,8 @@ SERVICE.Name 	= "SoundCloud"
 SERVICE.Id 		= "sc"
 SERVICE.Base 	= "browser"
 SERVICE.PrefetchMetadata = true
+-- SoundCloud playback requires a newer CEF than the stock GMod CEF 86.
+SERVICE.RequiresGModPatchTool = true
 
 local Ignored = {
 	["sets"] = true,

@@ -6,9 +6,6 @@ SERVICE.Base 	= "browser"
 
 SERVICE.PrefetchMetadata = true
 
--- video-OID_ID or live-OID_ID
-local VK_ID_PATTERN = "((?:video|live)%-%d+_%d+)"
-
 function SERVICE:New( url )
 	local obj = BaseClass.New( self, url )
 	obj._data = obj:GetVKVideoId()
@@ -20,12 +17,7 @@ function SERVICE:Match( url )
 		return false
 	end
 
-	-- /video-OID_ID, /live-OID_ID, or ?z=video-... / ?z=live-...
-	if string.find( url, "(?:video|live)%-%d+_%d+" ) then
-		return true
-	end
-
-	-- Lua patterns have no non-capturing groups; check both forms
+	-- /video-OID_ID, /live-OID_ID, or ?z=...
 	if string.find( url, "video%-%d+_%d+" ) or string.find( url, "live%-%d+_%d+" ) then
 		return true
 	end
@@ -82,12 +74,8 @@ end
 function SERVICE:GetVKEmbedParts()
 	local data = self:GetVKVideoId()
 	if not data then return nil, nil end
-	-- video-OID_ID or live-OID_ID → oid, id for video_ext.php
-	local oid, id = string.match( data, "(?:video|live)%-(%d+)_(%d+)" )
-	-- Lua has no non-capturing groups
-	if not oid then
-		oid, id = string.match( data, "video%-(%d+)_(%d+)" )
-	end
+
+	local oid, id = string.match( data, "video%-(%d+)_(%d+)" )
 	if not oid then
 		oid, id = string.match( data, "live%-(%d+)_(%d+)" )
 	end

@@ -250,12 +250,7 @@ function renderServices() {
 	const grid = getElement('#services-grid');
 	grid.innerHTML = '';
 
-	services.filter(service => {
-		if (service.name === 'SoundCloud') {
-			return hasCodecSupport && window.MP_LEGACY_GMOD !== true;
-		}
-		return !(window.MP_LEGACY_GMOD === true && service.requiresCodec);
-	}).forEach(service => {
+	services.filter(service => !(window.MP_LEGACY_GMOD === true && service.requiresCodec)).forEach(service => {
 		const disabled = service.requiresCodec && !hasCodecSupport;
 		const card = document.createElement('button');
 		card.type = 'button';

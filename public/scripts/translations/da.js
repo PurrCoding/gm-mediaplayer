@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('da', {
 	"request.url_placeholder":       "Indsæt en video-URL her...",
 	"request.url_submit":            "Anmod",
 	"request.status_sent":           "Anmodning sendt!",
-	"request.kicker": "MEDIEAFSPILLER",
 	"request.hero_title": "Hvad vil du afspille?",
 	"request.hero_body": "Indsæt en medie-URL, eller vælg en tjeneste nedenfor.",
 	"request.services_kicker": "TJENESTER",

@@ -1,6 +1,7 @@
 'use strict';
 
 MP_I18N.registerLanguage('en', {
+	"request.soundcloud_patch_notice": "Requires GModPatchTool (stock CEF 86 is too old)",
 	"request.codec_required_title":  "GModPatchTool Required",
 	"request.codec_required_body":   "requires GModPatchTool to function properly.",
 	"request.codec_steps_title":     "To enable this service:",

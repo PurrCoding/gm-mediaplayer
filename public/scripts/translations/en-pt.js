@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('en-pt', {
-	"request.codec_overlay":         "Codec Be Required",
 	"request.url_placeholder":       "Paste yer video URL here...",
 	"request.url_submit":            "Request",
 	"request.status_sent":           "Request sent, arr!",

@@ -152,7 +152,7 @@ local METADATA_HTML = [[
 (async function() {
   const trackUrl = "https://soundcloud.com/{@audioPath}";
   // SoundCloud playback requires a patched/newer CEF in Garry's Mod.
-  const requiresGModPatchTool = true;
+  const requiresGModPatchTool = {@requiresGModPatchTool};
   const emit = function(title, duration) {
     if (!title) return false;
     console.log("METADATA:" + JSON.stringify({
@@ -234,6 +234,7 @@ local METADATA_HTML = [[
 
 function SERVICE:PreRequest(callback)
 	local html = METADATA_HTML:Replace("{@audioPath}", self:GetSoundCloudTrackId() or "")
+	html = html:Replace("{@requiresGModPatchTool}", self.RequiresGModPatchTool and "true" or "false")
 	self:DHTMLPrefetch(callback, { html = html, timeout = 12 })
 end
 

@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('ru', {
 	"request.url_placeholder":       "Вставьте URL видео сюда...",
 	"request.url_submit":            "Запросить",
 	"request.status_sent":           "Запрос отправлен!",
-	"request.kicker": "МЕДИАПЛЕЕР",
 	"request.hero_title": "Что вы хотите воспроизвести?",
 	"request.hero_body": "Вставьте URL медиа или выберите сервис ниже.",
 	"request.services_kicker": "СЕРВИСЫ",

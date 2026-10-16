@@ -1,14 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('sv-se', {
-	"request.codec_required_title":  "GModPatchTool krävs",
-	"request.codec_required_body":   "kräver GModPatchTool för att fungera korrekt.",
-	"request.codec_steps_title":     "För att aktivera denna tjänst:",
-	"request.codec_step1":           "Ladda ner och tillämpa GModPatchTool",
-	"request.codec_step2":           "Starta om Garry's Mod helt",
-	"request.codec_step3":           "Gå tillbaka till Media Player och försök igen",
-	"request.codec_cancel":          "Avbryt",
-	"request.codec_get":             "Hämta GModPatchTool",
 	"request.codec_overlay":         "Codec krävs",
 	"request.url_title":             "Eller klistra in en URL direkt",
 	"request.url_placeholder":       "Klistra in en video-URL här...",

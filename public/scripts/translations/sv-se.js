@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('sv-se', {
 	"request.url_placeholder":       "Klistra in en video-URL här...",
 	"request.url_submit":            "Begär",
 	"request.status_sent":           "Begäran skickad!",
-	"request.kicker": "MEDIASPELARE",
 	"request.hero_title": "Vad vill du spela upp?",
 	"request.hero_body": "Klistra in en medie-URL eller välj en tjänst nedan.",
 	"request.services_kicker": "TJÄNSTER",

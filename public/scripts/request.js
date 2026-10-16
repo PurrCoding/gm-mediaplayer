@@ -135,7 +135,7 @@ function renderSupportContent() {
 			</div>
 			<div class="support-items">
 				${group.items.map(([label, example]) => `
-					<button type="button" class="support-item" data-copy="${example}" title="Copy example">
+					<button type="button" class="support-item" data-copy="${example}" title="${MP_I18N.t('request.copy_example')}">
 						<span class="support-label">${label}</span>
 						<code>${example}</code>
 						<i class="fa-regular fa-copy" aria-hidden="true"></i>
@@ -284,28 +284,7 @@ function renderServices() {
 	});
 }
 
-async function bindSupportButton() {
-	const button = document.getElementById('support-info-btn');
-	if (button) {
-		button.addEventListener('click', () => {
-			if (typeof window.showSupportPopup === 'function') {
-				window.showSupportPopup();
-			}
-		});
-	}
-
-	const backdrop = document.querySelector('[data-action="close-support"]');
-	if (backdrop) {
-		backdrop.addEventListener('click', () => {
-			if (typeof window.closeSupportPopup === 'function') {
-				window.closeSupportPopup();
-			}
-		});
-	}
-}
-
 async function initialize() {
-	bindSupportButton();
 	bindRequestUI();
 	checkCodecSupport();
 	renderServices();

@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('fi', {
 	"request.url_placeholder":       "Liitä video-URL tähän...",
 	"request.url_submit":            "Pyydä",
 	"request.status_sent":           "Pyyntö lähetetty!",
-	"request.kicker": "MEDIASOITIN",
 	"request.hero_title": "Mitä haluat toistaa?",
 	"request.hero_body": "Liitä media-URL tai valitse palvelu alta.",
 	"request.services_kicker": "PALVELUT",

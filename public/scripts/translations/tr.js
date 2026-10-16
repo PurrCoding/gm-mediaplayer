@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('tr', {
 	"request.codec_overlay":         "Codec gerekli",
-	"request.url_title":             "Veya doğrudan bir URL yapıştırın",
 	"request.url_placeholder":       "Buraya bir video URL'si yapıştırın...",
 	"request.url_submit":            "İstek",
-	"request.url_formats":           "Desteklenen hizmetlerden bağlantılar, resimler (JPG, PNG, GIF), video dosyaları (MP4, MOV, MKV, WebM), ses dosyaları (MP3, WAV, OGG) ve Google Drive bağlantılarını destekler",
-	"request.status_checking":       "URL kontrol ediliyor...",
 	"request.status_sent":           "İstek gönderildi!",
 	"request.kicker": "MEDYA OYNATICI",
 	"request.hero_title": "Ne oynatmak istiyorsun?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('tr', {
 	"request.url_empty": "Önce bir medya URL’si yapıştırın.",
 	"request.url_invalid": "Geçerli bir HTTP(S) URL’si girin.",
 	"request.bridge_unavailable": "Media Player istek bağlantısı kullanılamıyor.",
-	"request.overlay_unavailable": "Steam Overlay kullanılamıyor.",
 	"request.support_images": "Görseller",
 	"request.support_images_note": "Doğrudan görsel URL’leri desteklenir.",
 	"request.support_video": "Video",

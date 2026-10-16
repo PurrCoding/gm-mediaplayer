@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('nl', {
 	"request.url_placeholder":       "Plak hier een video-URL...",
 	"request.url_submit":            "Aanvragen",
 	"request.status_sent":           "Aanvraag verzonden!",
-	"request.kicker": "MEDIA PLAYER",
 	"request.hero_title": "Wat wil je afspelen?",
 	"request.hero_body": "Plak een media-URL of kies hieronder een dienst.",
 	"request.services_kicker": "DIENSTEN",

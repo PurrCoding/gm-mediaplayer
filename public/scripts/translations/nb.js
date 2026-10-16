@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('nb', {
 	"request.url_placeholder":       "Lim inn en video-URL her...",
 	"request.url_submit":            "Forespør",
 	"request.status_sent":           "Forespørsel sendt!",
-	"request.kicker": "MEDIASPILLER",
 	"request.hero_title": "Hva vil du spille av?",
 	"request.hero_body": "Lim inn en medie-URL eller velg en tjeneste nedenfor.",
 	"request.services_kicker": "TJENESTER",

@@ -261,6 +261,7 @@ function SERVICE:GetMetadata(callback)
 		return
 	end
 
+	-- Client already flagged DRM: reject immediately, no further processing.
 	if self._metaEncrypted then
 		callback(nil, ("SoundCloud Error: %s"):format(self._metaError or ENCRYPTED_STREAM_ERR))
 		return
@@ -275,6 +276,7 @@ function SERVICE:GetMetadata(callback)
 	end
 
 	local function runHydrationFallback(primaryError)
+		-- Encrypted must never reach hydration.
 		if IsEncryptedStreamError(primaryError) then
 			callback(nil, ("SoundCloud Error: %s"):format(primaryError))
 			return
@@ -286,7 +288,8 @@ function SERVICE:GetMetadata(callback)
 					local meta, e = self:ParseSoundCloudHTML(body)
 					return { meta = meta, err = e }
 				end)
-				if ok and pack and istable(pack.meta) and pack.meta.title then
+				if ok and pack and istable(pack.meta) and pack.meta.title
+					and (tonumber(pack.meta.duration) or 0) > 0 then
 					deliver(pack.meta)
 					return
 				end
@@ -294,6 +297,10 @@ function SERVICE:GetMetadata(callback)
 					or (ok and pack and pack.err)
 					or (not ok and tostring(pack))
 					or "Failed to parse metadata"
+				if IsEncryptedStreamError(msg) then
+					callback(nil, ("SoundCloud Error: %s"):format(msg))
+					return
+				end
 				callback(nil, ("SoundCloud Error: %s"):format(msg))
 			end,
 			function(reason)
@@ -302,22 +309,25 @@ function SERVICE:GetMetadata(callback)
 		)
 	end
 
-	if self._metaTitle and self._metaTitle ~= "" and self._metaTitle ~= "Unknown"
-		and (self._metaDuration or 0) > 0 then
-		deliver({
-			title = self._metaTitle,
-			duration = self._metaDuration
-		})
-		return
-	end
-
 	local trackPath = self:GetSoundCloudTrackId()
+
+	-- Server resolve is authoritative for DRM. Always run it first.
+	-- Encrypted → hard stop (no client meta, no hydration).
 	if trackPath then
 		self:ResolveTrack(trackPath, function(metadata)
 			deliver(metadata)
 		end, function(err)
 			if IsEncryptedStreamError(err) then
 				callback(nil, ("SoundCloud Error: %s"):format(err))
+				return
+			end
+			-- Non-DRM only: optional client prefetch, then hydration.
+			if self._metaTitle and self._metaTitle ~= "" and self._metaTitle ~= "Unknown"
+				and (self._metaDuration or 0) > 0 then
+				deliver({
+					title = self._metaTitle,
+					duration = self._metaDuration
+				})
 				return
 			end
 			runHydrationFallback(err)

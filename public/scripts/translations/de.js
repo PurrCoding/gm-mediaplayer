@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('de', {
-	"request.soundcloud_patch_notice": "Benötigt GModPatchTool (CEF 86 ist zu alt)",
 	"request.codec_required_title":  "GModPatchTool erforderlich",
 	"request.codec_required_body":   "benötigt GModPatchTool um richtig zu funktionieren.",
 	"request.codec_steps_title":     "Um diesen Dienst zu aktivieren:",

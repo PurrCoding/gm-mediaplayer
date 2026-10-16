@@ -297,7 +297,6 @@ async function initialize() {
 		console.warn('Media Player translations unavailable:', error);
 	}
 
-	checkCodecSupport();
 	renderServices();
 	renderSupportContent();
 }

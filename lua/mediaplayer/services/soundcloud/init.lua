@@ -42,6 +42,19 @@ function SERVICE:GetMetadata( callback )
 		return
 	end
 
+	-- Prefer metadata supplied by the client's multi-stage CEF probe.
+	if self._metaTitle and self._metaTitle ~= "" and self._metaTitle ~= "Unknown" then
+		local metadata = {
+			title = self._metaTitle,
+			duration = math.max(0, self._metaDuration or 0)
+		}
+		self:SetMetadata(metadata, true)
+		if self:IsTimed() then MediaPlayer.Metadata:Save(self) end
+		callback(self._metadata)
+		return
+	end
+
+	-- Final fallback: scrape the SoundCloud page from the server.
 	self:Fetch( self.url,
 		function( body, length, headers, code )
 			local status, metadata = pcall(self.ParseSoundCloudHTML, self, body)
@@ -63,4 +76,13 @@ function SERVICE:GetMetadata( callback )
 			callback(nil, ("SoundCloud Error: %s"):format(reason))
 		end
 	)
+end
+
+function SERVICE:NetReadRequest()
+	if not self.PrefetchMetadata then return end
+	self._metaTitle = net.ReadString()
+	self._metaDuration = net.ReadUInt(16)
+	if self._metaTitle == "" or self._metaTitle == "Unknown" then
+		self._metaTitle = nil
+	end
 end

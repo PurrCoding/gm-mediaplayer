@@ -1,14 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('zh-tw', {
-	"request.codec_required_title":  "需要 GModPatchTool",
-	"request.codec_required_body":   "需要 GModPatchTool 才能正常運行。",
-	"request.codec_steps_title":     "要啟用此服務：",
-	"request.codec_step1":           "下載並套用 GModPatchTool",
-	"request.codec_step2":           "完全重啟 Garry's Mod",
-	"request.codec_step3":           "返回 Media Player 並重試",
-	"request.codec_cancel":          "取消",
-	"request.codec_get":             "取得 GModPatchTool",
 	"request.codec_overlay":         "需要編解碼器",
 	"request.url_title":             "或直接貼上URL",
 	"request.url_placeholder":       "在此貼上影片URL...",

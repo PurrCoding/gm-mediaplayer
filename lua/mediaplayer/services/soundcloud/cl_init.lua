@@ -14,7 +14,7 @@ local JS_Seek = [[
 		if (diffTime > 5) {
 			MediaPlayer.currentTime = seekTime
 		}
-	}
+	end
 ]]
 
 local EMBED_HTML = [[
@@ -140,91 +140,119 @@ function SERVICE:IsMouseInputEnabled()
 	return IsValid( self.Browser )
 end
 
--- Client-side, multi-stage metadata probe.
--- Stage 1: unofficial SoundCloud resolve endpoint.
--- Stage 2: oEmbed title and the official widget API.
--- Stage 3: direct widget URL if oEmbed is unavailable.
--- The server-side HTML parser remains the final fallback.
+-- Client-side metadata probe (minimal):
+-- 1) scrape client_id + api-widget resolve (incl. DRM gate)
+-- 2) oEmbed title only if resolve failed for non-DRM reasons
+-- No SC.Widget metadata probe — playback widget stays in EMBED_HTML only.
 local METADATA_HTML = [[
-<!doctype html><html><head><meta charset="utf-8">
-<script src="https://w.soundcloud.com/player/api.js"></script></head><body>
+<!doctype html><html><head><meta charset="utf-8"></head><body>
 <script>
 (async function() {
   const trackUrl = "https://soundcloud.com/{@audioPath}";
+  const FALLBACK_CLIENT_ID = "nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic";
+  let completed = false;
+  let safetyTimeout = setTimeout(function() {
+    if (completed) return;
+    completed = true;
+    console.log("ERROR:SoundCloud metadata probe timed out");
+  }, 12000);
+
   const emit = function(title, duration) {
-    if (!title) return false;
+    if (completed || !title) return false;
+    completed = true;
+    clearTimeout(safetyTimeout);
     console.log("METADATA:" + JSON.stringify({
-      title: title,
+      title: String(title),
       duration: Math.floor(Math.max(0, Number(duration) || 0) / 1000)
     }));
     return true;
   };
   const debug = function(message) { console.log("DEBUG:SoundCloud probe: " + message); };
 
-  // Stage 1: API resolve. This endpoint is undocumented and may stop working.
+  async function scrapeClientId() {
+    try {
+      const page = await fetch("https://soundcloud.com/", { credentials: "omit" });
+      if (!page.ok) throw new Error("homepage HTTP " + page.status);
+      const html = await page.text();
+      const srcs = [];
+      const re = /<script[^>]+src=["']([^"']+)["']/gi;
+      let m;
+      while ((m = re.exec(html)) !== null) {
+        if (/sndcdn\.com|soundcloud\.com/i.test(m[1])) srcs.push(m[1]);
+      }
+      for (let i = srcs.length - 1; i >= 0; i--) {
+        let src = srcs[i];
+        if (!/^https?:\/\//i.test(src)) {
+          src = "https://a-v2.sndcdn.com" + (src.charAt(0) === "/" ? src : "/" + src);
+        }
+        try {
+          const jsRes = await fetch(src, { credentials: "omit" });
+          if (!jsRes.ok) continue;
+          const js = await jsRes.text();
+          const idMatch = js.match(/client_id\s*:\s*["']([0-9a-zA-Z]{32})["']/)
+            || js.match(/"client_id"\s*:\s*"([0-9a-zA-Z]{32})"/);
+          if (idMatch) return idMatch[1];
+        } catch (e) {}
+      }
+    } catch (error) {
+      debug("client_id scrape failed (" + error + ")");
+    }
+    return FALLBACK_CLIENT_ID;
+  }
+
+  function titleFromTrack(data) {
+    if (!data || !data.title) return null;
+    const user = data.user && (data.user.username || data.user.permalink);
+    if (user && data.title.indexOf(user) === -1) return user + " - " + data.title;
+    return data.title;
+  }
+
+  // Stage 1: resolve with fresh (or fallback) client_id
   try {
+    const clientId = await scrapeClientId();
     const resolveUrl = "https://api-widget.soundcloud.com/resolve?url="
       + encodeURIComponent(trackUrl)
-      + "&format=json&client_id=nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic&app_version=1792051948";
-    const response = await fetch(resolveUrl);
+      + "&format=json&client_id=" + encodeURIComponent(clientId);
+    const response = await fetch(resolveUrl, { credentials: "omit" });
     if (!response.ok) throw new Error("resolve HTTP " + response.status);
     const data = await response.json();
-    if (data && data.title && Number(data.full_duration || data.duration || 0) > 0) {
-      emit(data.title, data.full_duration || data.duration);
-      return;
-    }
-    debug("resolve response did not contain a title");
-  } catch (error) { debug("resolve unavailable; trying oEmbed/widget fallback (" + error + ")"); }
+    const track = (data && data.collection && data.collection[0]) || data;
+    const duration = track && (track.full_duration || track.duration);
+    const title = titleFromTrack(track);
 
-  // Stage 2: oEmbed. Prefer its title, but ask the official widget for duration.
-  let embedUrl = null;
-  let embedTitle = null;
+    // Reject DRM-only streams — stop all further metadata stages.
+    if (track && track.media && Array.isArray(track.media.transcodings) && track.media.transcodings.length > 0) {
+      const playable = track.media.transcodings.some(function(t) {
+        const proto = ((t.format && t.format.protocol) || t.protocol || "").toLowerCase();
+        return proto && proto.indexOf("encrypted") === -1
+          && proto.indexOf("cbc-") !== 0 && proto.indexOf("ctr-") !== 0;
+      });
+      if (!playable) {
+        completed = true;
+        clearTimeout(safetyTimeout);
+        console.log("ERROR:SoundCloud track only offers encrypted/DRM streams (not playable in GMod)");
+        return;
+      }
+    }
+
+    if (title && Number(duration) > 0 && emit(title, duration)) return;
+    debug("resolve response was incomplete");
+  } catch (error) {
+    debug("resolve unavailable; trying oEmbed only (" + error + ")");
+  }
+
+  // Stage 2 (last resort): oEmbed title only — no widget metadata probe
   try {
     const response = await fetch("https://soundcloud.com/oembed?format=json&url="
       + encodeURIComponent(trackUrl));
     if (!response.ok) throw new Error("oEmbed HTTP " + response.status);
     const data = await response.json();
-    embedTitle = data && data.title;
-    const match = data && data.html && data.html.match(/src=["']([^"']+)["']/i);
-    if (match) embedUrl = match[1].replace(/&amp;/g, "&");
-    if (embedTitle && !embedUrl) debug("oEmbed had a title but no iframe URL");
-  } catch (error) { debug("oEmbed failed: " + error); }
-
-  // Stage 3: use either oEmbed's iframe URL or a direct permalink widget.
-  try {
-    const playerUrl = embedUrl || ("https://w.soundcloud.com/player/?url="
-      + encodeURIComponent(trackUrl) + "&auto_play=false&hide_related=true&show_comments=false");
-    const frame = document.createElement("iframe");
-    frame.setAttribute("allow", "autoplay");
-    frame.setAttribute("width", "100%");
-    frame.setAttribute("height", "166");
-    frame.src = playerUrl;
-    document.body.appendChild(frame);
-    const player = SC.Widget(frame);
-    let finished = false;
-    const finish = function(title, duration) {
-      if (finished) return;
-      finished = true;
-      if (!title || !(Number(duration) > 0)) {
-        console.log("ERROR:SoundCloud widget returned incomplete metadata");
-        return;
-      }
-      emit(title || embedTitle, duration);
-    };
-    player.bind(SC.Widget.Events.READY, function() {
-      player.getCurrentSound(function(sound) {
-        player.getDuration(function(duration) {
-          finish((sound && sound.title) || embedTitle, duration || (sound && sound.duration) || 0);
-        });
-      });
-    });
-    player.bind(SC.Widget.Events.ERROR, function() {
-      debug("widget emitted an error");
-    });
+    if (data && data.title && emit(data.title, 0)) return;
   } catch (error) {
-    debug("widget fallback failed: " + error);
-    console.log("ERROR:SoundCloud client metadata probe exhausted");
+    debug("oEmbed failed: " + error);
   }
+
+  console.log("ERROR:SoundCloud client metadata probe exhausted");
 })();
 </script></body></html>
 ]];
@@ -235,6 +263,8 @@ function SERVICE:PreRequest(callback)
 end
 
 function SERVICE:OnPrefetchMetadata(metadata, callback)
+	self._metaEncrypted = false
+	self._metaError = nil
 	self._metaTitle = metadata.title
 	self._metaDuration = tonumber(metadata.duration) or 0
 	if not self._metaTitle or self._metaTitle == "" or self._metaTitle == "Unknown" then
@@ -244,11 +274,20 @@ function SERVICE:OnPrefetchMetadata(metadata, callback)
 end
 
 function SERVICE:OnPrefetchError(errmsg, callback)
-	-- Let server-side HTML parsing try next.
+	-- DRM: mark so the server skips hydration and fails cleanly.
+	if isstring(errmsg) and errmsg:find("encrypted/DRM", 1, true) then
+		self._metaEncrypted = true
+		self._metaError = errmsg
+		self._metaTitle = nil
+		self._metaDuration = 0
+	end
+	-- Non-DRM errors: allow server resolve / hydration fallback.
 	callback()
 end
 
 function SERVICE:NetWriteRequest()
+	net.WriteBool(self._metaEncrypted == true)
+	net.WriteString(self._metaError or "")
 	net.WriteString(self._metaTitle or "Unknown")
 	net.WriteUInt(math.max(0, math.min(65535, self._metaDuration or 0)), 16)
 end

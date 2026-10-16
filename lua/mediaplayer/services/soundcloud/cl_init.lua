@@ -19,79 +19,78 @@ local JS_Seek = [[
 
 local EMBED_HTML = [[
 	<!doctype html>
-	<html>
-
-	<head>
+	<html><head>
+		<meta charset="utf-8">
 		<script src="https://w.soundcloud.com/player/api.js"></script>
-	</head>
+	</head><body>
+	<script>
+		(async function() {
+			const audioTrack = "https://soundcloud.com/{@audioPath}";
+			const shouldPlay = {@shouldPlay};
+			let frame = null;
 
-	<body>
-		<script>
-			(async () => {
-				const audioTrack = "https://soundcloud.com/{@audioPath}"
-				const shouldPlay = {@shouldPlay}
-
-				const response = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(audioTrack)}`)
-				const json = await response.json()
-
-				if (!!json && !!json.html) {
-					const container = document.createElement('div');
+			// Stage 1: ask oEmbed for SoundCloud's recommended iframe.
+			try {
+				const response = await fetch("https://soundcloud.com/oembed?format=json&url="
+					+ encodeURIComponent(audioTrack));
+				if (!response.ok) throw new Error("oEmbed HTTP " + response.status);
+				const json = await response.json();
+				if (json && json.html) {
+					const container = document.createElement("div");
 					container.innerHTML = json.html;
-
-					document.body.appendChild(container)
-					document.body.style.overflow = 'hidden';
-
-					const frame = container.firstElementChild
-					var player = SC.Widget(frame);
-					player.bind(SC.Widget.Events.READY, function () {
-						var totalDuration = 0
-						var curVol = 0
-						var curTime = 0
-
-						player.getDuration((duration) => {
-							totalDuration = duration
-
-							if (shouldPlay) {
-								frame.setAttribute("height", window.innerHeight)
-
-								setInterval(function () {
-									player.getVolume((volume) => { curVol = volume });
-									player.getPosition((currentTime) => { curTime = currentTime });
-								}, 100);
-
-								{ // Native audio controll
-									player.currentTime = 0;
-									player.duration = 0;
-
-									Object.defineProperty(player, "currentTime", {
-										get() {
-											return curTime / 1000;
-										},
-										set(time) {
-											player.seekTo(time * 1000);
-										},
-									});
-
-									Object.defineProperty(player, "duration", {
-										get() {
-											return totalDuration / 1000;
-										},
-									});
-
-									player.play()
-									window.MediaPlayer = player
-
-								}
-							}
-						});
-					});
+					frame = container.querySelector("iframe");
+					if (frame) document.body.appendChild(frame);
 				}
-			})()
+			} catch (error) {
+				console.log("DEBUG:SoundCloud player oEmbed failed: " + error);
+			}
 
-		</script>
-	</body>
+			// Stage 2: build the official widget URL directly if oEmbed fails.
+			if (!frame) {
+				frame = document.createElement("iframe");
+				const encodedTrack = encodeURIComponent(audioTrack).replace(/%2F/g, "/");
+				frame.src = "https://w.soundcloud.com/player/?url=" + encodedTrack
+					+ "&auto_play=" + (shouldPlay ? "true" : "false")
+					+ "&hide_related=true&show_comments=false&show_user=true&visual=false";
+				document.body.appendChild(frame);
+			}
 
-	</html>
+			frame.setAttribute("allow", "autoplay");
+			frame.setAttribute("width", "100%");
+			frame.setAttribute("height", "166");
+			document.body.style.margin = "0";
+			document.body.style.overflow = "hidden";
+
+			const player = SC.Widget(frame);
+			player.bind(SC.Widget.Events.READY, function() {
+				player.getDuration(function(duration) {
+					let totalDuration = duration || 0;
+					let curTime = 0;
+					if (!shouldPlay) return;
+
+					frame.setAttribute("height", window.innerHeight);
+					setInterval(function() {
+						player.getPosition(function(position) { curTime = position; });
+					}, 250);
+
+					Object.defineProperty(player, "currentTime", {
+						get: function() { return curTime / 1000; },
+						set: function(time) { player.seekTo(time * 1000); }
+					});
+					Object.defineProperty(player, "duration", {
+						get: function() { return totalDuration / 1000; }
+					});
+
+					player.play();
+					window.MediaPlayer = player;
+				});
+			});
+			player.bind(SC.Widget.Events.ERROR, function(event) {
+				console.log("ERROR:SoundCloud widget error");
+			});
+		})();
+	</script>
+	</body></html>
 ]]
 
 function SERVICE:OnBrowserReady( browser )

@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('ja', {
 	"request.url_placeholder":       "動画のURLをここに貼り付け...",
 	"request.url_submit":            "リクエスト",
 	"request.status_sent":           "リクエスト送信済み！",
-	"request.kicker": "メディアプレーヤー",
 	"request.hero_title": "何を再生しますか？",
 	"request.hero_body": "メディアURLを貼り付けるか、下からサービスを選択してください。",
 	"request.services_kicker": "サービス",

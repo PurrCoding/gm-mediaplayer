@@ -19,7 +19,7 @@ var ua = navigator.userAgent || '';
 
 const services = [
 	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false, group: 'Video' },
-	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false, group: 'Audio' },
+	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false, patchNotice: true, group: 'Audio' },
 	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true, group: 'Video' },
 	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true, group: 'Live' },
 	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true, group: 'Video' },
@@ -275,10 +275,12 @@ function renderServices() {
 		name.textContent = service.name;
 		text.appendChild(name);
 
-		if (disabled) {
+		if (disabled || service.patchNotice) {
 			const sub = document.createElement('span');
-			sub.className = 'service-sub';
-			sub.textContent = MP_I18N.t('request.codec_overlay');
+			sub.className = 'service-sub' + (service.patchNotice && !disabled ? ' patch-notice' : '');
+			sub.textContent = disabled
+				? MP_I18N.t('request.codec_overlay')
+				: MP_I18N.t('request.soundcloud_patch_notice');
 			text.appendChild(sub);
 		}
 

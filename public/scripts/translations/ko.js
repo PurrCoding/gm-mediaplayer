@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('ko', {
 	"request.url_placeholder":       "여기에 동영상 URL을 붙여넣으세요...",
 	"request.url_submit":            "요청",
 	"request.status_sent":           "요청 전송됨!",
-	"request.kicker": "미디어 플레이어",
 	"request.hero_title": "무엇을 재생할까요?",
 	"request.hero_body": "미디어 URL을 붙여넣거나 아래에서 서비스를 선택하세요.",
 	"request.services_kicker": "서비스",

@@ -174,7 +174,7 @@ local METADATA_HTML = [[
       return;
     }
     debug("resolve response did not contain a title");
-  } catch (error) { debug("resolve failed: " + error); }
+  } catch (error) { debug("resolve unavailable; trying oEmbed/widget fallback (" + error + ")"); }
 
   // Stage 2: oEmbed. Prefer its title, but ask the official widget for duration.
   let embedUrl = null;

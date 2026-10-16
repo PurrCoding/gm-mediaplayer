@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('uk', {
 	"request.url_placeholder":       "Вставте URL відео тут...",
 	"request.url_submit":            "Запитати",
 	"request.status_sent":           "Запит надіслано!",
-	"request.kicker": "МЕДІАПЛЕЄР",
 	"request.hero_title": "Що ви хочете відтворити?",
 	"request.hero_body": "Вставте URL медіа або виберіть сервіс нижче.",
 	"request.services_kicker": "СЕРВІСИ",

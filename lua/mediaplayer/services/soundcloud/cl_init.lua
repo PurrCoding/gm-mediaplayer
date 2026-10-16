@@ -151,11 +151,14 @@ local METADATA_HTML = [[
 <script>
 (async function() {
   const trackUrl = "https://soundcloud.com/{@audioPath}";
+  // SoundCloud playback requires a patched/newer CEF in Garry's Mod.
+  const requiresGModPatchTool = true;
   const emit = function(title, duration) {
     if (!title) return false;
     console.log("METADATA:" + JSON.stringify({
       title: title,
-      duration: Math.floor(Math.max(0, Number(duration) || 0) / 1000)
+      duration: Math.floor(Math.max(0, Number(duration) || 0) / 1000),
+      requiresGModPatchTool: requiresGModPatchTool
     }));
     return true;
   };
@@ -235,6 +238,7 @@ function SERVICE:PreRequest(callback)
 end
 
 function SERVICE:OnPrefetchMetadata(metadata, callback)
+	self._requiresGModPatchTool = metadata.requiresGModPatchTool == true
 	self._metaTitle = metadata.title
 	self._metaDuration = tonumber(metadata.duration) or 0
 	if not self._metaTitle or self._metaTitle == "" or self._metaTitle == "Unknown" then

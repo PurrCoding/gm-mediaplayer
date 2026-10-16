@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('pl', {
 	"request.codec_overlay":         "Wymagany kodek",
-	"request.url_title":             "Lub wklej URL bezpośrednio",
 	"request.url_placeholder":       "Wklej URL filmu tutaj...",
 	"request.url_submit":            "Wyślij",
-	"request.url_formats":           "Obsługuje linki z obsługiwanych serwisów, obrazy (JPG, PNG, GIF), pliki wideo (MP4, MOV, MKV, WebM), pliki audio (MP3, WAV, OGG) i linki Google Drive",
-	"request.status_checking":       "Sprawdzanie URL...",
 	"request.status_sent":           "Żądanie wysłane!",
 	"request.kicker": "ODTWARZACZ MULTIMEDIÓW",
 	"request.hero_title": "Co chcesz odtworzyć?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('pl', {
 	"request.url_empty": "Najpierw wklej URL multimediów.",
 	"request.url_invalid": "Wprowadź prawidłowy adres HTTP(S).",
 	"request.bridge_unavailable": "Most żądań Media Player jest niedostępny.",
-	"request.overlay_unavailable": "Nakładka Steam jest niedostępna.",
 	"request.support_images": "Obrazy",
 	"request.support_images_note": "Obsługiwane są bezpośrednie adresy URL obrazów.",
 	"request.support_video": "Wideo",

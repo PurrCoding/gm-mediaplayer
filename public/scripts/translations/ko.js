@@ -1,14 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('ko', {
-	"request.codec_required_title":  "GModPatchTool 필요",
-	"request.codec_required_body":   "정상 작동을 위해 GModPatchTool이 필요합니다.",
-	"request.codec_steps_title":     "이 서비스를 활성화하려면:",
-	"request.codec_step1":           "GModPatchTool을 다운로드하고 적용하세요",
-	"request.codec_step2":           "Garry's Mod를 완전히 재시작하세요",
-	"request.codec_step3":           "Media Player로 돌아가서 다시 시도하세요",
-	"request.codec_cancel":          "취소",
-	"request.codec_get":             "GModPatchTool 받기",
 	"request.codec_overlay":         "코덱 필요",
 	"request.url_title":             "또는 URL을 직접 붙여넣기",
 	"request.url_placeholder":       "여기에 동영상 URL을 붙여넣으세요...",

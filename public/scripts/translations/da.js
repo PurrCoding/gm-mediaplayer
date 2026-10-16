@@ -1,14 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('da', {
-	"request.codec_required_title":  "GModPatchTool påkrævet",
-	"request.codec_required_body":   "kræver GModPatchTool for at fungere korrekt.",
-	"request.codec_steps_title":     "For at aktivere denne tjeneste:",
-	"request.codec_step1":           "Download og anvend GModPatchTool",
-	"request.codec_step2":           "Genstart Garry's Mod fuldstændigt",
-	"request.codec_step3":           "Gå tilbage til Media Player og prøv igen",
-	"request.codec_cancel":          "Annuller",
-	"request.codec_get":             "Hent GModPatchTool",
 	"request.codec_overlay":         "Codec påkrævet",
 	"request.url_title":             "Eller indsæt en URL direkte",
 	"request.url_placeholder":       "Indsæt en video-URL her...",

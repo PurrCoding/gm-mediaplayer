@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('es-es', {
 	"request.codec_overlay":         "Codec requerido",
-	"request.url_title":             "O pega una URL directamente",
 	"request.url_placeholder":       "Pega una URL de video aquí...",
 	"request.url_submit":            "Solicitar",
-	"request.url_formats":           "Soporta enlaces de servicios compatibles, imágenes (JPG, PNG, GIF), archivos de video (MP4, MOV, MKV, WebM), archivos de audio (MP3, WAV, OGG) y enlaces de Google Drive",
-	"request.status_checking":       "Comprobando URL...",
 	"request.status_sent":           "¡Solicitud enviada!",
 	"request.kicker": "REPRODUCTOR MULTIMEDIA",
 	"request.hero_title": "¿Qué quieres reproducir?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('es-es', {
 	"request.url_empty": "Primero pega una URL multimedia.",
 	"request.url_invalid": "Introduce una URL HTTP(S) válida.",
 	"request.bridge_unavailable": "El puente de solicitudes de Media Player no está disponible.",
-	"request.overlay_unavailable": "La superposición de Steam no está disponible.",
 	"request.support_images": "Imágenes",
 	"request.support_images_note": "Se admiten URL directas de imágenes.",
 	"request.support_video": "Vídeo",

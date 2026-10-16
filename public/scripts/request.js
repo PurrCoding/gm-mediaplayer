@@ -109,7 +109,8 @@ function playUISound(click) {
 }
 
 function checkCodecSupport() {
-	hasCodecSupport = document.createElement("video").canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"') === "probably";
+	const support = document.createElement("video").canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+	hasCodecSupport = support === "probably" || support === "maybe";
 	return hasCodecSupport;
 }
 

@@ -18,50 +18,125 @@ local JS_Seek = [[
 	}
 ]]
 
-local JS_Interface = [[
-	var checkerInterval = setInterval(function() {
-		var player = document.getElementsByTagName("video")[0];
-		if (!!player) {
-			if (player.paused) { player.play(); }
-			if (!player.paused && player.readyState === 4) {
-				if (player.muted) { player.muted = false; }
-				clearInterval(checkerInterval);
-				window.MediaPlayer = player;
-				document.body.style.backgroundColor = "black";
+--[[
+	VK embeds put the real <video> under div.video-container.s-t and/or Shadow DOM.
+	Same recursive finder pattern as OK (shadow-root-container + nested roots).
+]]
+local JS_FIND_VIDEO = [[
+	function findVideo(root) {
+		if (!root) return null;
+
+		var container = root.querySelector && root.querySelector("div.video-container.s-t");
+		if (container) {
+			var inContainer = container.querySelector("video");
+			if (inContainer) return inContainer;
+			if (container.shadowRoot) {
+				var v = findVideo(container.shadowRoot);
+				if (v) return v;
 			}
 		}
-	}, 50);
+
+		var vid = root.querySelector && root.querySelector("video");
+		if (vid) return vid;
+
+		var rootContainer = root.querySelector && root.querySelector(".shadow-root-container");
+		if (rootContainer && rootContainer.shadowRoot) {
+			var v2 = findVideo(rootContainer.shadowRoot);
+			if (v2) return v2;
+		}
+
+		var all = root.querySelectorAll ? root.querySelectorAll("*") : [];
+		for (var i = 0; i < all.length; i++) {
+			var el = all[i];
+			if (el.shadowRoot) {
+				var v3 = findVideo(el.shadowRoot);
+				if (v3) return v3;
+			}
+		}
+		return null;
+	}
+]]
+
+local JS_Interface = [[
+	(function() {
+		]] .. JS_FIND_VIDEO .. [[
+
+		var checkerInterval = setInterval(function() {
+			var player = findVideo(document);
+			if (!player) return;
+
+			if (player.paused) { try { player.play(); } catch (e) {} }
+
+			if (!player.paused && player.readyState >= 3) {
+				if (player.muted) { player.muted = false; }
+
+				clearInterval(checkerInterval);
+
+				window.MediaPlayer = player;
+				document.body.style.backgroundColor = "black";
+
+				player.addEventListener("seeking", function() {
+					if (!player.paused) { player.pause(); }
+					var onProgress = function() {
+						if (player.paused && player.readyState >= 3) {
+							player.removeEventListener("progress", onProgress);
+							player.play();
+						}
+					};
+					player.addEventListener("progress", onProgress);
+				});
+			}
+		}, 50);
+	})();
 ]]
 
 local METADATA_JS = [[
-	var checkerInterval = setInterval(function() {
-		var player = document.getElementsByTagName("video")[0];
-		if (typeof (player) != "undefined") {
-			player.muted = true;
+	(function() {
+		]] .. JS_FIND_VIDEO .. [[
+
+		var checkerInterval = setInterval(function() {
+			var player = findVideo(document);
+			if (!player) return;
+
 			clearInterval(checkerInterval);
-			if (window.metaevent_set) { return; }
+			if (window.metaevent_set) return;
 
-			var titleEl = document.getElementsByClassName("videoplayer_title_link _clickable")[0];
-			var title = titleEl ? titleEl.innerText : "VK Video";
+			player.muted = true;
 
-			player.addEventListener("loadedmetadata", function() {
+			var titleEl = document.querySelector(".videoplayer_title_link, .videoplayer_title_link._clickable");
+			var title = titleEl ? (titleEl.innerText || titleEl.textContent) : "VK Video";
+
+			var finish = function() {
+				if (window.metaevent_set) return;
 				window.metaevent_set = true;
-				var thumbEl = document.getElementsByClassName("videoplayer_thumb")[0];
+
 				var thumb = "";
-				if (thumbEl && thumbEl.style.backgroundImage) {
+				var thumbEl = document.querySelector(".videoplayer_thumb");
+				if (thumbEl && thumbEl.style && thumbEl.style.backgroundImage) {
 					thumb = thumbEl.style.backgroundImage.slice(4, -1).replace(/["']/g, "");
 				}
+
 				console.log("METADATA:" + JSON.stringify({
 					title: title,
 					thumbnail: thumb,
 					duration: player.duration || 0
 				}));
-			});
-			player.addEventListener("error", function() {
-				console.log("ERROR:" + (player.error ? player.error.code : 5));
-			});
-		}
-	}, 50);
+			};
+
+			if (player.readyState >= 1 && !isNaN(player.duration) && player.duration > 0) {
+				finish();
+			} else {
+				player.addEventListener("loadedmetadata", finish);
+				player.addEventListener("error", function() {
+					console.log("ERROR:" + (player.error ? player.error.code : 5));
+				});
+				// Fallback if loadedmetadata never fires
+				setTimeout(function() {
+					if (!window.metaevent_set) finish();
+				}, 8000);
+			}
+		}, 50);
+	})();
 ]]
 
 function SERVICE:GetEmbedURL()
@@ -122,7 +197,7 @@ function SERVICE:PreRequest( callback )
 	self:DHTMLPrefetch( callback, {
 		url = url,
 		js = METADATA_JS,
-		timeout = 15,
+		timeout = 25,
 	} )
 end
 

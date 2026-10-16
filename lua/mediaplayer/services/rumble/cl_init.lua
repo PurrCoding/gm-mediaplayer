@@ -5,8 +5,6 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local JS_Pause = "if(window.MediaPlayer) MediaPlayer.pause();"
 local JS_Play = "if(window.MediaPlayer) MediaPlayer.play();"
 
--- Volume only — do not force muted=false here every tick; that fights the UI.
--- Unmute once when applying a non-zero volume so autoplay-mute can be cleared.
 local JS_Volume = [[
 	if (window.MediaPlayer) {
 		var v = %s;
@@ -26,19 +24,26 @@ local JS_Seek = [[
 	}
 ]]
 
--- Cinema-style bind: unmute only, never hard-code volume (MediaPlayer owns volume)
+--[[
+	Bind when the <video> is actually playing, then apply volume once.
+	{@volume} is replaced with the current MediaPlayer volume (0–1).
+	READY: is observed by the browser base HookBrowserReady path.
+]]
 local JS_Interface = [[
 	var checkerInterval = setInterval(function() {
 		var player = document.getElementsByTagName("video")[0];
-		if (!!player && player.paused == false && player.readyState == 4) {
-			if (player.muted) { player.muted = false; }
-
+		if (!!player && player.paused == false && player.readyState >= 3) {
 			clearInterval(checkerInterval);
 
 			document.body.style.backgroundColor = "black";
 			window.MediaPlayer = player;
 
-			// One-shot unmute if embed re-mutes after autoplay policy
+			player.muted = false;
+			player.volume = {@volume};
+
+			console.log("READY:");
+
+			// If the embed re-mutes after autoplay policy, clear mute only
 			setTimeout(function() {
 				if (window.MediaPlayer && window.MediaPlayer.muted) {
 					window.MediaPlayer.muted = false;
@@ -78,15 +83,13 @@ function SERVICE:OnBrowserReady( browser )
 		url = url .. ( string.find( url, "%?", 1, true ) and "&" or "?" ) .. "t=" .. math.Round( curTime )
 	end
 
+	-- Capture volume at open time; apply inside JS only after playback starts
+	local vol = tonumber( self:Volume() ) or 0.15
+	local interface = JS_Interface:Replace( "{@volume}", string.format( "%.4f", vol ) )
+
 	browser:OpenURL( url )
 	browser.OnDocumentReady = function()
-		browser:QueueJavascript( JS_Interface )
-		-- Apply the real MediaPlayer volume once the <video> is bound
-		timer.Simple( 0.6, function()
-			if IsValid( self.Browser ) then
-				self:SetVolume( self:Volume() )
-			end
-		end )
+		browser:QueueJavascript( interface )
 	end
 end
 

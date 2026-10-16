@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('zh-cn', {
 	"request.url_placeholder":       "在此粘贴视频URL...",
 	"request.url_submit":            "请求",
 	"request.status_sent":           "请求已发送！",
-	"request.kicker": "媒体播放器",
 	"request.hero_title": "你想播放什么？",
 	"request.hero_body": "粘贴媒体 URL，或从下方选择服务。",
 	"request.services_kicker": "服务",

@@ -142,8 +142,7 @@ end
 
 -- Client-side metadata probe (minimal):
 -- 1) scrape client_id + api-widget resolve (incl. DRM gate)
--- 2) oEmbed title only if resolve failed for non-DRM reasons
--- No SC.Widget metadata probe — playback widget stays in EMBED_HTML only.
+-- No oEmbed / widget metadata fallback — incomplete or DRM tracks must not be requested.
 local METADATA_HTML = [[
 <!doctype html><html><head><meta charset="utf-8"></head><body>
 <script>
@@ -241,17 +240,7 @@ local METADATA_HTML = [[
     debug("resolve unavailable; trying oEmbed only (" + error + ")");
   }
 
-  // Stage 2 (last resort): oEmbed title only — no widget metadata probe
-  try {
-    const response = await fetch("https://soundcloud.com/oembed?format=json&url="
-      + encodeURIComponent(trackUrl));
-    if (!response.ok) throw new Error("oEmbed HTTP " + response.status);
-    const data = await response.json();
-    if (data && data.title && emit(data.title, 0)) return;
-  } catch (error) {
-    debug("oEmbed failed: " + error);
-  }
-
+  // No oEmbed fallback: title-only / duration 0 must not queue unplayable tracks.
   console.log("ERROR:SoundCloud client metadata probe exhausted");
 })();
 </script></body></html>
@@ -263,25 +252,31 @@ function SERVICE:PreRequest(callback)
 end
 
 function SERVICE:OnPrefetchMetadata(metadata, callback)
+	local duration = tonumber(metadata.duration) or 0
+	local title = metadata.title
+	-- Duration 0 is not acceptable for timed SoundCloud tracks (often oEmbed-only / incomplete).
+	if not title or title == "" or title == "Unknown" or duration <= 0 then
+		callback("SoundCloud metadata incomplete (missing title or duration)")
+		return
+	end
 	self._metaEncrypted = false
 	self._metaError = nil
-	self._metaTitle = metadata.title
-	self._metaDuration = tonumber(metadata.duration) or 0
-	if not self._metaTitle or self._metaTitle == "" or self._metaTitle == "Unknown" then
-		self._metaTitle = nil
-	end
+	self._metaTitle = title
+	self._metaDuration = duration
 	callback()
 end
 
 function SERVICE:OnPrefetchError(errmsg, callback)
-	-- DRM: mark so the server skips hydration and fails cleanly.
+	-- DRM / encrypted-only: fail the request on the client — never net it to the server.
 	if isstring(errmsg) and errmsg:find("encrypted/DRM", 1, true) then
 		self._metaEncrypted = true
 		self._metaError = errmsg
 		self._metaTitle = nil
 		self._metaDuration = 0
+		callback(errmsg)
+		return
 	end
-	-- Non-DRM errors: allow server resolve / hydration fallback.
+	-- Non-DRM probe errors: still send request; server resolve / hydration may succeed.
 	callback()
 end
 

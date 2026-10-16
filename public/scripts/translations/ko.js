@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('ko', {
-	"request.codec_overlay":         "코덱 필요",
 	"request.url_placeholder":       "여기에 동영상 URL을 붙여넣으세요...",
 	"request.url_submit":            "요청",
 	"request.status_sent":           "요청 전송됨!",

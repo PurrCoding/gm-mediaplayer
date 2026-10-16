@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('uk', {
 	"request.codec_overlay":         "Потрібен кодек",
-	"request.url_title":             "Або вставте URL напряму",
 	"request.url_placeholder":       "Вставте URL відео тут...",
 	"request.url_submit":            "Запитати",
-	"request.url_formats":           "Підтримує посилання з підтримуваних сервісів, зображення (JPG, PNG, GIF), відеофайли (MP4, MOV, MKV, WebM), аудіофайли (MP3, WAV, OGG) та посилання Google Drive",
-	"request.status_checking":       "Перевірка URL...",
 	"request.status_sent":           "Запит надіслано!",
 	"request.kicker": "МЕДІАПЛЕЄР",
 	"request.hero_title": "Що ви хочете відтворити?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('uk', {
 	"request.url_empty": "Спочатку вставте URL медіа.",
 	"request.url_invalid": "Введіть коректний HTTP(S)-URL.",
 	"request.bridge_unavailable": "Міст запитів Media Player недоступний.",
-	"request.overlay_unavailable": "Steam Overlay недоступний.",
 	"request.support_images": "Зображення",
 	"request.support_images_note": "Підтримуються прямі URL зображень.",
 	"request.support_video": "Відео",

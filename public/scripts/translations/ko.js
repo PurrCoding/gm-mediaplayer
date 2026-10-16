@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('ko', {
 	"request.codec_overlay":         "코덱 필요",
-	"request.url_title":             "또는 URL을 직접 붙여넣기",
 	"request.url_placeholder":       "여기에 동영상 URL을 붙여넣으세요...",
 	"request.url_submit":            "요청",
-	"request.url_formats":           "지원 서비스 링크, 이미지 (JPG, PNG, GIF), 동영상 파일 (MP4, MOV, MKV, WebM), 오디오 파일 (MP3, WAV, OGG) 및 Google Drive 링크 지원",
-	"request.status_checking":       "URL 확인 중...",
 	"request.status_sent":           "요청 전송됨!",
 	"request.kicker": "미디어 플레이어",
 	"request.hero_title": "무엇을 재생할까요?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('ko', {
 	"request.url_empty": "먼저 미디어 URL을 붙여넣으세요.",
 	"request.url_invalid": "유효한 HTTP(S) URL을 입력하세요.",
 	"request.bridge_unavailable": "Media Player 요청 브리지를 사용할 수 없습니다.",
-	"request.overlay_unavailable": "Steam 오버레이를 사용할 수 없습니다.",
 	"request.support_images": "이미지",
 	"request.support_images_note": "이미지 직접 URL을 지원합니다.",
 	"request.support_video": "비디오",

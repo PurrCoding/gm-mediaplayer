@@ -4,61 +4,90 @@ SERVICE.Name 	= "Kick"
 SERVICE.Id 		= "kick"
 SERVICE.Base 	= "browser"
 
--- Same ignore list as Cinema sh_kick.lua
 local Ignored = {
 	category = true,
 	browse = true,
+	videos = true,
 }
 
 function SERVICE:New( url )
 	local obj = BaseClass.New( self, url )
-	obj._data = obj:GetKickChannel()
+	obj._data = obj:GetKickData()
 	return obj
 end
 
---[[
-	Cinema Match only checks host; GetURLInfo does the real gate:
-	  path:match("^/([%a%d-_]+)") and not Ignored[data]
-	MediaPlayer ValidUrl uses Match alone, so Match must enforce the same rules.
-]]
 function SERVICE:Match( url )
 	if not url or not string.find( url, "kick%.com" ) then
 		return false
 	end
 
 	local path = string.match( url, "kick%.com(/[^%s?#]*)" ) or ""
-	-- Cinema: url.path:match("^/([%a%d-_]+)")
-	local data = string.match( path, "^/([%a%d-_]+)" )
-	if not data or Ignored[data] then
-		return false
+
+	-- VOD: /channel/videos/{uuid}
+	if string.match( path, "^/([%a%d-_]+)/videos/([%w%-]+)" ) then
+		return true
 	end
 
-	return true
+	-- Live: /channel
+	local data = string.match( path, "^/([%a%d-_]+)/?$" )
+		or string.match( path, "^/([%a%d-_]+)" )
+	if data and not Ignored[data] then
+		return true
+	end
+
+	return false
 end
 
-function SERVICE:GetKickChannel()
-	if self.channelId then
-		return self.channelId
+--[[
+	Returns path token used for page open:
+	  live  → "channel"
+	  vod   → "channel/videos/uuid"
+]]
+function SERVICE:GetKickData()
+	if self._kickData then
+		return self._kickData
 	end
 
 	local path = self.urlinfo and self.urlinfo.path
 	if not path and self.url then
 		path = string.match( self.url, "kick%.com(/[^%s?#]*)" )
 	end
-	if not path then
-		return nil
+	if not path then return nil end
+
+	local channel, uuid = string.match( path, "^/([%a%d-_]+)/videos/([%w%-]+)" )
+	if channel and uuid then
+		self._kickData = channel .. "/videos/" .. uuid
+		self._kickVodId = uuid
+		self._kickChannel = channel
+		return self._kickData
 	end
 
-	-- Cinema GetURLInfo: local data = url.path:match("^/([%a%d-_]+)")
-	local data = string.match( path, "^/([%a%d-_]+)" )
-	if data and not Ignored[data] then
-		self.channelId = data
-		return data
+	local live = string.match( path, "^/([%a%d-_]+)" )
+	if live and not Ignored[live] then
+		self._kickData = live
+		self._kickChannel = live
+		return live
 	end
 
 	return nil
 end
 
+function SERVICE:GetKickChannel()
+	if self._kickChannel then return self._kickChannel end
+	self:GetKickData()
+	return self._kickChannel
+end
+
+function SERVICE:GetKickVodId()
+	if self._kickVodId then return self._kickVodId end
+	self:GetKickData()
+	return self._kickVodId
+end
+
+function SERVICE:IsKickVOD()
+	return self:GetKickVodId() ~= nil
+end
+
 function SERVICE:IsTimed()
-	return false
+	return self:IsKickVOD()
 end

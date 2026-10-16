@@ -13,7 +13,17 @@ local JS_Volume = [[
 	}
 ]]
 
--- Cinema mature-gate handling + unmute after click (autoplay policy)
+local JS_Seek = [[
+	if (window.MediaPlayer) {
+		var seekTime = %s;
+		var curTime = window.MediaPlayer.currentTime;
+		var diffTime = Math.abs(curTime - seekTime);
+		if (diffTime > 5) {
+			window.MediaPlayer.currentTime = seekTime;
+		}
+	}
+]]
+
 local JS_Interface = [[
 	(async () => {
 		var checkerInterval = setInterval(function() {
@@ -37,7 +47,6 @@ local JS_Interface = [[
 
 				window.MediaPlayer = player;
 
-				// Mature accept often leaves the element muted; clear a few times
 				var unmuteTries = 0;
 				var unmuteTimer = setInterval(function() {
 					if (!window.MediaPlayer || unmuteTries > 10) {
@@ -52,6 +61,11 @@ local JS_Interface = [[
 	})();
 ]]
 
+function SERVICE:GetPageURL()
+	local data = self:GetKickData()
+	return ("https://kick.com/%s"):format( data or "" )
+end
+
 function SERVICE:OnBrowserReady( browser )
 	if self._Paused then
 		self.Browser:RunJavascript( JS_Play )
@@ -61,8 +75,7 @@ function SERVICE:OnBrowserReady( browser )
 
 	BaseClass.OnBrowserReady( self, browser )
 
-	local channel = self:GetKickChannel()
-	browser:OpenURL( ("https://kick.com/%s"):format( channel or "" ) )
+	browser:OpenURL( self:GetPageURL() )
 	browser.OnDocumentReady = function()
 		browser:QueueJavascript( JS_Interface )
 		timer.Simple( 1.0, function()
@@ -85,4 +98,11 @@ end
 function SERVICE:SetVolume( volume )
 	if not IsValid( self.Browser ) then return end
 	self.Browser:RunJavascript( JS_Volume:format( volume ) )
+end
+
+function SERVICE:Sync()
+	local seekTime = self:CurrentTime()
+	if IsValid( self.Browser ) and self:IsTimed() and seekTime > 0 then
+		self.Browser:RunJavascript( JS_Seek:format( seekTime ) )
+	end
 end

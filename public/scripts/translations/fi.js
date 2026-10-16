@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('fi', {
-	"request.codec_overlay":         "Koodekki vaaditaan",
 	"request.url_placeholder":       "Liitä video-URL tähän...",
 	"request.url_submit":            "Pyydä",
 	"request.status_sent":           "Pyyntö lähetetty!",

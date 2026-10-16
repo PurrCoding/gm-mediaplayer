@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('sv-se', {
 	"request.codec_overlay":         "Codec krävs",
-	"request.url_title":             "Eller klistra in en URL direkt",
 	"request.url_placeholder":       "Klistra in en video-URL här...",
 	"request.url_submit":            "Begär",
-	"request.url_formats":           "Stöder länkar från stödda tjänster, bilder (JPG, PNG, GIF), videofiler (MP4, MOV, MKV, WebM), ljudfiler (MP3, WAV, OGG) och Google Drive-länkar",
-	"request.status_checking":       "Kontrollerar URL...",
 	"request.status_sent":           "Begäran skickad!",
 	"request.kicker": "MEDIASPELARE",
 	"request.hero_title": "Vad vill du spela upp?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('sv-se', {
 	"request.url_empty": "Klistra först in en medie-URL.",
 	"request.url_invalid": "Ange en giltig HTTP(S)-URL.",
 	"request.bridge_unavailable": "Media Players begäransbrygga är inte tillgänglig.",
-	"request.overlay_unavailable": "Steam Overlay är inte tillgängligt.",
 	"request.support_images": "Bilder",
 	"request.support_images_note": "Direkta bild-URL:er stöds.",
 	"request.support_video": "Video",

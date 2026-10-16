@@ -4,12 +4,17 @@ DEFINE_BASECLASS( "mp_service_browser" )
 
 local JS_Pause = "if(window.MediaPlayer) MediaPlayer.pause();"
 local JS_Play = "if(window.MediaPlayer) MediaPlayer.play();"
+
+-- Volume only — do not force muted=false here every tick; that fights the UI.
+-- Unmute once when applying a non-zero volume so autoplay-mute can be cleared.
 local JS_Volume = [[
 	if (window.MediaPlayer) {
-		MediaPlayer.muted = false;
-		MediaPlayer.volume = %s;
+		var v = %s;
+		if (v > 0) { window.MediaPlayer.muted = false; }
+		window.MediaPlayer.volume = v;
 	}
 ]]
+
 local JS_Seek = [[
 	if (window.MediaPlayer) {
 		var seekTime = %s;
@@ -21,30 +26,24 @@ local JS_Seek = [[
 	}
 ]]
 
--- Cinema THEATER_JS + keep unmuting (autoplay often forces mute)
+-- Cinema-style bind: unmute only, never hard-code volume (MediaPlayer owns volume)
 local JS_Interface = [[
 	var checkerInterval = setInterval(function() {
 		var player = document.getElementsByTagName("video")[0];
 		if (!!player && player.paused == false && player.readyState == 4) {
-			player.muted = false;
-			try { player.volume = 1; } catch (e) {}
+			if (player.muted) { player.muted = false; }
 
 			clearInterval(checkerInterval);
 
 			document.body.style.backgroundColor = "black";
 			window.MediaPlayer = player;
 
-			// Re-apply unmute shortly after bind (embed scripts may re-mute)
+			// One-shot unmute if embed re-mutes after autoplay policy
 			setTimeout(function() {
-				if (window.MediaPlayer) {
+				if (window.MediaPlayer && window.MediaPlayer.muted) {
 					window.MediaPlayer.muted = false;
 				}
-			}, 200);
-			setTimeout(function() {
-				if (window.MediaPlayer) {
-					window.MediaPlayer.muted = false;
-				}
-			}, 1000);
+			}, 300);
 		}
 	}, 50);
 ]]
@@ -52,7 +51,6 @@ local JS_Interface = [[
 function SERVICE:GetURL()
 	local embedUrl = self._metadata and self._metadata.embedUrl
 	if embedUrl and embedUrl ~= "" then
-		-- Cinema: embed + "?pub=7a20&rel=5&autoplay=2"
 		return embedUrl .. "?pub=7a20&rel=5&autoplay=2"
 	end
 
@@ -76,7 +74,6 @@ function SERVICE:OnBrowserReady( browser )
 	local url = self:GetURL()
 	local curTime = self:CurrentTime()
 
-	-- Cinema appends &t= for timed media
 	if self:IsTimed() and curTime > 3 then
 		url = url .. ( string.find( url, "%?", 1, true ) and "&" or "?" ) .. "t=" .. math.Round( curTime )
 	end
@@ -84,8 +81,8 @@ function SERVICE:OnBrowserReady( browser )
 	browser:OpenURL( url )
 	browser.OnDocumentReady = function()
 		browser:QueueJavascript( JS_Interface )
-		-- Apply MediaPlayer volume after the <video> binds
-		timer.Simple( 0.5, function()
+		-- Apply the real MediaPlayer volume once the <video> is bound
+		timer.Simple( 0.6, function()
 			if IsValid( self.Browser ) then
 				self:SetVolume( self:Volume() )
 			end

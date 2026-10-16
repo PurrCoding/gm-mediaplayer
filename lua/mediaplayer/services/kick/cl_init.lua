@@ -4,9 +4,16 @@ DEFINE_BASECLASS( "mp_service_browser" )
 
 local JS_Pause = "if(window.MediaPlayer) MediaPlayer.pause();"
 local JS_Play = "if(window.MediaPlayer) MediaPlayer.play();"
-local JS_Volume = "if(window.MediaPlayer) MediaPlayer.volume = %s;"
 
--- Extract the live player, dismiss mature gate, strip chrome UI.
+local JS_Volume = [[
+	if (window.MediaPlayer) {
+		var v = %s;
+		if (v > 0) { window.MediaPlayer.muted = false; }
+		window.MediaPlayer.volume = v;
+	}
+]]
+
+-- Cinema mature-gate handling + unmute after click (autoplay policy)
 local JS_Interface = [[
 	(async () => {
 		var checkerInterval = setInterval(function() {
@@ -20,7 +27,8 @@ local JS_Interface = [[
 			if (!!player) {
 				clearInterval(checkerInterval);
 
-				if (player.muted) { player.muted = false; }
+				player.muted = false;
+				try { player.play(); } catch (e) {}
 
 				document.body.appendChild(player);
 				var main = document.querySelector("div[class^=\"group/main\"]");
@@ -28,6 +36,17 @@ local JS_Interface = [[
 				document.body.style.backgroundColor = "black";
 
 				window.MediaPlayer = player;
+
+				// Mature accept often leaves the element muted; clear a few times
+				var unmuteTries = 0;
+				var unmuteTimer = setInterval(function() {
+					if (!window.MediaPlayer || unmuteTries > 10) {
+						clearInterval(unmuteTimer);
+						return;
+					}
+					window.MediaPlayer.muted = false;
+					unmuteTries++;
+				}, 200);
 			}
 		}, 50);
 	})();
@@ -46,6 +65,11 @@ function SERVICE:OnBrowserReady( browser )
 	browser:OpenURL( ("https://kick.com/%s"):format( channel or "" ) )
 	browser.OnDocumentReady = function()
 		browser:QueueJavascript( JS_Interface )
+		timer.Simple( 1.0, function()
+			if IsValid( self.Browser ) then
+				self:SetVolume( self:Volume() )
+			end
+		end )
 	end
 end
 

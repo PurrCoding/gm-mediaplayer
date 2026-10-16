@@ -1,14 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('tr', {
-	"request.codec_required_title":  "GModPatchTool gerekli",
-	"request.codec_required_body":   "düzgün çalışması için GModPatchTool gerektirir.",
-	"request.codec_steps_title":     "Bu hizmeti etkinleştirmek için:",
-	"request.codec_step1":           "GModPatchTool'u indirin ve uygulayın",
-	"request.codec_step2":           "Garry's Mod'u tamamen yeniden başlatın",
-	"request.codec_step3":           "Media Player'a geri dönün ve tekrar deneyin",
-	"request.codec_cancel":          "İptal",
-	"request.codec_get":             "GModPatchTool'u İndir",
 	"request.codec_overlay":         "Codec gerekli",
 	"request.url_title":             "Veya doğrudan bir URL yapıştırın",
 	"request.url_placeholder":       "Buraya bir video URL'si yapıştırın...",

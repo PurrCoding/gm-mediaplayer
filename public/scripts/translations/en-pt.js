@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('en-pt', {
 	"request.url_placeholder":       "Paste yer video URL here...",
 	"request.url_submit":            "Request",
 	"request.status_sent":           "Request sent, arr!",
-	"request.kicker": "MEDIA PLAYER",
 	"request.hero_title": "What be ye wantin’ to play?",
 	"request.hero_body": "Paste a media URL, or pick a service below, matey.",
 	"request.services_kicker": "SERVICES",

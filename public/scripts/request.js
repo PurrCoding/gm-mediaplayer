@@ -255,16 +255,8 @@ function renderServices() {
 		name.textContent = service.name;
 		text.appendChild(name);
 
-		if (disabled) {
-			const sub = document.createElement('span');
-			sub.className = 'service-sub';
-			sub.textContent = MP_I18N.t('request.codec_overlay');
-			text.appendChild(sub);
-		}
-
 		const action = document.createElement('span');
-		action.className = disabled ? 'badge' : 'service-arrow';
-		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '';
+		action.className = 'service-arrow';
 		if (!disabled) {
 			const arrow = document.createElement('i');
 			arrow.className = 'fa-solid fa-arrow-up-right-from-square';

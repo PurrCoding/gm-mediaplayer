@@ -18,10 +18,6 @@ local JS_Seek = [[
 	}
 ]]
 
---[[
-	VK embeds put the real <video> under div.video-container.s-t and/or Shadow DOM.
-	Same recursive finder pattern as OK (shadow-root-container + nested roots).
-]]
 local JS_FIND_VIDEO = [[
 	function findVideo(root) {
 		if (!root) return null;
@@ -90,9 +86,21 @@ local JS_Interface = [[
 	})();
 ]]
 
+-- Title: use document.title / <title> from the page header entirely
 local METADATA_JS = [[
 	(function() {
 		]] .. JS_FIND_VIDEO .. [[
+
+		function pageTitle() {
+			var t = (document.title || "").trim();
+			if (t) return t;
+			var el = document.querySelector("head title");
+			if (el) {
+				var text = (el.textContent || el.innerText || "").trim();
+				if (text) return text;
+			}
+			return "VK Video";
+		}
 
 		var checkerInterval = setInterval(function() {
 			var player = findVideo(document);
@@ -102,9 +110,6 @@ local METADATA_JS = [[
 			if (window.metaevent_set) return;
 
 			player.muted = true;
-
-			var titleEl = document.querySelector(".videoplayer_title_link, .videoplayer_title_link._clickable");
-			var title = titleEl ? (titleEl.innerText || titleEl.textContent) : "VK Video";
 
 			var finish = function() {
 				if (window.metaevent_set) return;
@@ -117,20 +122,19 @@ local METADATA_JS = [[
 				}
 
 				console.log("METADATA:" + JSON.stringify({
-					title: title,
+					title: pageTitle(),
 					thumbnail: thumb,
 					duration: player.duration || 0
 				}));
 			};
 
-			if (player.readyState >= 1 && !isNaN(player.duration) && player.duration > 0) {
+			if (player.readyState >= 1 && !isNaN(player.duration)) {
 				finish();
 			} else {
 				player.addEventListener("loadedmetadata", finish);
 				player.addEventListener("error", function() {
 					console.log("ERROR:" + (player.error ? player.error.code : 5));
 				});
-				// Fallback if loadedmetadata never fires
 				setTimeout(function() {
 					if (!window.metaevent_set) finish();
 				}, 8000);

@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('ja', {
 	"request.codec_overlay":         "コーデックが必要",
-	"request.url_title":             "またはURLを直接貼り付け",
 	"request.url_placeholder":       "動画のURLをここに貼り付け...",
 	"request.url_submit":            "リクエスト",
-	"request.url_formats":           "対応サービスのリンク、画像 (JPG, PNG, GIF)、動画ファイル (MP4, MOV, MKV, WebM)、音声ファイル (MP3, WAV, OGG)、Google Driveリンクに対応",
-	"request.status_checking":       "URLを確認中...",
 	"request.status_sent":           "リクエスト送信済み！",
 	"request.kicker": "メディアプレーヤー",
 	"request.hero_title": "何を再生しますか？",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('ja', {
 	"request.url_empty": "先にメディアURLを貼り付けてください。",
 	"request.url_invalid": "有効なHTTP(S) URLを入力してください。",
 	"request.bridge_unavailable": "Media Playerのリクエストブリッジを利用できません。",
-	"request.overlay_unavailable": "Steamオーバーレイを利用できません。",
 	"request.support_images": "画像",
 	"request.support_images_note": "画像の直接URLに対応しています。",
 	"request.support_video": "動画",

@@ -215,26 +215,6 @@ function requestUrl() {
 	}, 900);
 }
 
-function showCodecPopup(service) {
-	getElement('#service-name-popup').textContent = service.name;
-	getElement('#codec-popup').classList.remove('hidden');
-	document.body.style.overflow = 'hidden';
-}
-
-function closeCodecPopup() {
-	getElement('#codec-popup').classList.add('hidden');
-	document.body.style.overflow = '';
-}
-
-function openCodecInstructions() {
-	if (gmodAvailable('openUrl')) {
-		gmod.openUrl('https://www.solsticegamestudios.com/fixmedia/');
-	} else {
-		showToast(MP_I18N.t('request.overlay_unavailable'), 'error');
-	}
-	closeCodecPopup();
-}
-
 function selectService(service) {
 	playUISound(true);
 
@@ -297,11 +277,7 @@ function renderServices() {
 
 		card.addEventListener('mouseenter', () => playUISound(false));
 		card.addEventListener('click', () => {
-			if (disabled) {
-				showCodecPopup(service);
-				return;
-			}
-			selectService(service);
+			if (!disabled) selectService(service);
 		});
 
 		grid.appendChild(card);
@@ -368,15 +344,9 @@ function bindRequestUI() {
 	document.querySelectorAll('[data-action="close-support"]').forEach(el => {
 		el.addEventListener('click', closeSupportPopup);
 	});
-	document.querySelectorAll('[data-action="close-codec"]').forEach(el => {
-		el.addEventListener('click', closeCodecPopup);
-	});
-	const instructions = getElement('[data-action="codec-instructions"]');
-	if (instructions) instructions.addEventListener('click', openCodecInstructions);
 
 	document.addEventListener('keydown', event => {
 		if (event.key === 'Escape') {
-			closeCodecPopup();
 			closeSupportPopup();
 			return;
 		}
@@ -395,9 +365,6 @@ document.addEventListener('DOMContentLoaded', initialize);
 window.requestUrl = requestUrl;
 window.showSupportPopup = showSupportPopup;
 window.closeSupportPopup = closeSupportPopup;
-window.showCodecPopup = showCodecPopup;
-window.closeCodecPopup = closeCodecPopup;
-window.openCodecInstructions = openCodecInstructions;
 window.selectService = selectService;
 window.openService = openService;
 window.hoverService = playUISound;

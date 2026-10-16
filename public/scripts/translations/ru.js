@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('ru', {
 	"request.codec_overlay":         "Требуется кодек",
-	"request.url_title":             "Или вставьте URL напрямую",
 	"request.url_placeholder":       "Вставьте URL видео сюда...",
 	"request.url_submit":            "Запросить",
-	"request.url_formats":           "Поддерживает ссылки из поддерживаемых сервисов, изображения (JPG, PNG, GIF), видеофайлы (MP4, MOV, MKV, WebM), аудиофайлы (MP3, WAV, OGG) и ссылки Google Drive",
-	"request.status_checking":       "Проверка URL...",
 	"request.status_sent":           "Запрос отправлен!",
 	"request.kicker": "МЕДИАПЛЕЕР",
 	"request.hero_title": "Что вы хотите воспроизвести?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('ru', {
 	"request.url_empty": "Сначала вставьте URL медиа.",
 	"request.url_invalid": "Введите корректный HTTP(S)-URL.",
 	"request.bridge_unavailable": "Мост запросов Media Player недоступен.",
-	"request.overlay_unavailable": "Steam Overlay недоступен.",
 	"request.support_images": "Изображения",
 	"request.support_images_note": "Поддерживаются прямые URL изображений.",
 	"request.support_video": "Видео",

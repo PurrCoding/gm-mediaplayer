@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('es-es', {
 	"request.url_placeholder":       "Pega una URL de video aquí...",
 	"request.url_submit":            "Solicitar",
 	"request.status_sent":           "¡Solicitud enviada!",
-	"request.kicker": "REPRODUCTOR MULTIMEDIA",
 	"request.hero_title": "¿Qué quieres reproducir?",
 	"request.hero_body": "Pega una URL multimedia o elige un servicio abajo.",
 	"request.services_kicker": "SERVICIOS",

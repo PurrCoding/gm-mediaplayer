@@ -4,7 +4,8 @@ SERVICE.Name 	= "Kick"
 SERVICE.Id 		= "kick"
 SERVICE.Base 	= "browser"
 
-local IgnoredPaths = {
+-- Same ignore list as Cinema sh_kick.lua
+local Ignored = {
 	category = true,
 	browse = true,
 }
@@ -15,8 +16,24 @@ function SERVICE:New( url )
 	return obj
 end
 
+--[[
+	Cinema Match only checks host; GetURLInfo does the real gate:
+	  path:match("^/([%a%d-_]+)") and not Ignored[data]
+	MediaPlayer ValidUrl uses Match alone, so Match must enforce the same rules.
+]]
 function SERVICE:Match( url )
-	return string.find( url, "kick%.com" ) ~= nil
+	if not url or not string.find( url, "kick%.com" ) then
+		return false
+	end
+
+	local path = string.match( url, "kick%.com(/[^%s?#]*)" ) or ""
+	-- Cinema: url.path:match("^/([%a%d-_]+)")
+	local data = string.match( path, "^/([%a%d-_]+)" )
+	if not data or Ignored[data] then
+		return false
+	end
+
+	return true
 end
 
 function SERVICE:GetKickChannel()
@@ -24,18 +41,24 @@ function SERVICE:GetKickChannel()
 		return self.channelId
 	end
 
-	if self.urlinfo and self.urlinfo.path then
-		local channel = string.match( self.urlinfo.path, "^/([%a%d-_]+)" )
-		if channel and not IgnoredPaths[channel] then
-			self.channelId = channel
-			return channel
-		end
+	local path = self.urlinfo and self.urlinfo.path
+	if not path and self.url then
+		path = string.match( self.url, "kick%.com(/[^%s?#]*)" )
+	end
+	if not path then
+		return nil
+	end
+
+	-- Cinema GetURLInfo: local data = url.path:match("^/([%a%d-_]+)")
+	local data = string.match( path, "^/([%a%d-_]+)" )
+	if data and not Ignored[data] then
+		self.channelId = data
+		return data
 	end
 
 	return nil
 end
 
--- Kick is live-only in this integration
 function SERVICE:IsTimed()
 	return false
 end

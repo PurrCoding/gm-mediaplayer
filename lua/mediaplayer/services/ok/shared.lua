@@ -4,6 +4,7 @@ SERVICE.Name 	= "OK"
 SERVICE.Id 		= "ok"
 SERVICE.Base 	= "browser"
 
+-- Cinema ValidTypes
 local ValidTypes = {
 	video = true,
 	live = true,
@@ -15,8 +16,23 @@ function SERVICE:New( url )
 	return obj
 end
 
+--[[
+	Cinema Match only checks host; GetURLInfo requires:
+	  path:match("^/([%w%-_]+)/(%d+)") and ValidTypes[typeID]
+	i.e. /video/123 or /live/123 only.
+]]
 function SERVICE:Match( url )
-	return string.find( url, "ok%.ru" ) ~= nil
+	if not url or not string.find( url, "ok%.ru" ) then
+		return false
+	end
+
+	local path = string.match( url, "ok%.ru(/[^%s?#]*)" ) or ""
+	local typeID, videoID = string.match( path, "^/([%w%-_]+)/(%d+)" )
+	if typeID and videoID and ValidTypes[typeID] then
+		return true
+	end
+
+	return false
 end
 
 function SERVICE:GetOKVideoData()
@@ -24,12 +40,19 @@ function SERVICE:GetOKVideoData()
 		return self.okData
 	end
 
-	if self.urlinfo and self.urlinfo.path then
-		local typeID, videoID = string.match( self.urlinfo.path, "^/([%w%-_]+)/(%d+)" )
-		if typeID and videoID and ValidTypes[typeID] then
-			self.okData = typeID .. "," .. videoID
-			return self.okData
-		end
+	local path = self.urlinfo and self.urlinfo.path
+	if not path and self.url then
+		path = string.match( self.url, "ok%.ru(/[^%s?#]*)" )
+	end
+	if not path then
+		return nil
+	end
+
+	-- Cinema: local typeID, videoID = url.path:match("^/([%w%-_]+)/(%d+)")
+	local typeID, videoID = string.match( path, "^/([%w%-_]+)/(%d+)" )
+	if typeID and videoID and ValidTypes[typeID] then
+		self.okData = typeID .. "," .. videoID
+		return self.okData
 	end
 
 	return nil

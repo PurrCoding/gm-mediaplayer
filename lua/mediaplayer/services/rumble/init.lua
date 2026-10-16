@@ -1,7 +1,14 @@
 AddCSLuaFile "shared.lua"
 include "shared.lua"
 
-local MetadataUrl = "https://rumble.com/api/Media/oembed.json?url=https://rumble.com/%s.html"
+-- Cinema: API_URL = "https://rumble.com/api/Media/oembed.json?url=https://rumble.com/%s"
+-- then appends ".html" for watch-page slugs. Shorts keep path without extra .html.
+local function BuildOEmbedUrl( videoId, isShort )
+	if isShort then
+		return "https://rumble.com/api/Media/oembed.json?url=https://rumble.com/" .. videoId
+	end
+	return "https://rumble.com/api/Media/oembed.json?url=https://rumble.com/" .. videoId .. ".html"
+end
 
 local function OnReceiveMetadata( self, callback, body )
 	local data = util.JSONToTable( body )
@@ -16,7 +23,7 @@ local function OnReceiveMetadata( self, callback, body )
 	local duration = tonumber( data.duration ) or 0
 	metadata.duration = duration
 
-	-- Extract stable embed path from oEmbed HTML for client playback
+	-- Cinema extracts embed from oEmbed html field
 	if data.html then
 		local embed = string.match( data.html, "(https://rumble%.com/embed/[%a%d-_]+/)" )
 		if embed then
@@ -45,7 +52,7 @@ function SERVICE:GetMetadata( callback )
 		return callback( false, "Invalid Rumble URL." )
 	end
 
-	local apiurl = MetadataUrl:format( videoId )
+	local apiurl = BuildOEmbedUrl( videoId, self:IsRumbleShort() )
 
 	self:Fetch( apiurl,
 		function( body, length, headers, code )

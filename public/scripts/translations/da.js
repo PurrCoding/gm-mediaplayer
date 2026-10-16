@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('da', {
-	"request.codec_overlay":         "Codec påkrævet",
 	"request.url_placeholder":       "Indsæt en video-URL her...",
 	"request.url_submit":            "Anmod",
 	"request.status_sent":           "Anmodning sendt!",

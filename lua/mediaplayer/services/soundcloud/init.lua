@@ -7,11 +7,8 @@ local function IsEncryptedStreamError(err)
 	return isstring(err) and err:find("encrypted/DRM", 1, true) ~= nil
 end
 
--- True if media has at least one non-encrypted transcoding usable in GMod CEF.
--- Major-label / AD_SUPPORTED tracks often only expose cbc-/ctr-encrypted-hls.
 local function HasPlayableTranscoding(media)
 	if not istable(media) or not istable(media.transcodings) then
-		-- Unknown media block: do not hard-fail (hydration often omits it).
 		return true
 	end
 	if #media.transcodings == 0 then
@@ -69,15 +66,17 @@ local function MetadataFromResolve(data)
 		return nil, ENCRYPTED_STREAM_ERR
 	end
 
+	local durationSec = math.floor(math.max(0, durationMs) / 1000)
+	if durationSec <= 0 then
+		return nil, "missing duration"
+	end
+
 	return {
 		title = BuildTitle(track),
-		duration = math.floor(math.max(0, durationMs) / 1000)
+		duration = durationSec
 	}
 end
 
--- ---------------------------------------------------------------------------
--- Dynamic client_id (yt-dlp style)
--- ---------------------------------------------------------------------------
 local CLIENT_ID_TTL = 6 * 60 * 60
 local CLIENT_ID_FALLBACK = "nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic"
 
@@ -262,7 +261,6 @@ function SERVICE:GetMetadata(callback)
 		return
 	end
 
-	-- Client reported DRM-only stream: do not try any further crawlers.
 	if self._metaEncrypted then
 		callback(nil, ("SoundCloud Error: %s"):format(self._metaError or ENCRYPTED_STREAM_ERR))
 		return
@@ -304,16 +302,15 @@ function SERVICE:GetMetadata(callback)
 		)
 	end
 
-	-- Prefer client prefetch when present (non-DRM).
-	if self._metaTitle and self._metaTitle ~= "" and self._metaTitle ~= "Unknown" then
+	if self._metaTitle and self._metaTitle ~= "" and self._metaTitle ~= "Unknown"
+		and (self._metaDuration or 0) > 0 then
 		deliver({
 			title = self._metaTitle,
-			duration = math.max(0, self._metaDuration or 0)
+			duration = self._metaDuration
 		})
 		return
 	end
 
-	-- Server resolve (primary when client prefetch missing).
 	local trackPath = self:GetSoundCloudTrackId()
 	if trackPath then
 		self:ResolveTrack(trackPath, function(metadata)

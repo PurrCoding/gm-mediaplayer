@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('en', {
 	"request.codec_overlay":         "Codec Required",
-	"request.url_title":             "Or paste a URL directly",
 	"request.url_placeholder":       "Paste a video URL here...",
 	"request.url_submit":            "Request",
-	"request.url_formats":           "Supports share links from supported services, images (JPG, PNG, GIF), video files (MP4, MOV, MKV, WebM), audio files (MP3, WAV, OGG) and Google Drive links",
-	"request.status_checking":       "Checking URL...",
 	"request.status_sent":           "Request sent!",
 	"request.kicker": "MEDIA PLAYER",
 	"request.hero_title": "What do you want to play?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('en', {
 	"request.url_empty": "Paste a media URL first.",
 	"request.url_invalid": "Please enter a valid HTTP(S) URL.",
 	"request.bridge_unavailable": "Media Player request bridge is unavailable.",
-	"request.overlay_unavailable": "Steam Overlay is unavailable.",
 	"request.support_images": "Images",
 	"request.support_images_note": "Direct image URLs are supported by the resource media service.",
 	"request.support_video": "Video",

@@ -192,6 +192,7 @@ button { color: inherit; }
 .legacy-gmod .modal-backdrop { backdrop-filter: none; }
 .legacy-gmod .support-link { display: none !important; }
 .legacy-gmod .service-card.codec-required { display: none !important; }
+.legacy-gmod .service-card[data-service-name="SoundCloud"] { display: none !important; }
 .legacy-gmod .legacy-limit-notice { display: flex; }
 .legacy-limit-notice {
   display: none; align-items: center; gap: 12px; margin: 0 0 18px; padding: 13px 15px;

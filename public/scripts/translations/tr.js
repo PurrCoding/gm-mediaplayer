@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('tr', {
 	"request.url_placeholder":       "Buraya bir video URL'si yapıştırın...",
 	"request.url_submit":            "İstek",
 	"request.status_sent":           "İstek gönderildi!",
-	"request.kicker": "MEDYA OYNATICI",
 	"request.hero_title": "Ne oynatmak istiyorsun?",
 	"request.hero_body": "Bir medya URL’si yapıştırın veya aşağıdan bir hizmet seçin.",
 	"request.services_kicker": "HİZMETLER",

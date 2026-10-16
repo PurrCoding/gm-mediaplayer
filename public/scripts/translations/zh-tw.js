@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('zh-tw', {
 	"request.url_placeholder":       "在此貼上影片URL...",
 	"request.url_submit":            "請求",
 	"request.status_sent":           "請求已傳送！",
-	"request.kicker": "媒體播放器",
 	"request.hero_title": "你想播放什麼？",
 	"request.hero_body": "貼上媒體 URL，或從下方選擇服務。",
 	"request.services_kicker": "服務",

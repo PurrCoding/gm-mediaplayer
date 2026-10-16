@@ -151,14 +151,11 @@ local METADATA_HTML = [[
 <script>
 (async function() {
   const trackUrl = "https://soundcloud.com/{@audioPath}";
-  // SoundCloud playback requires a patched/newer CEF in Garry's Mod.
-  const requiresGModPatchTool = {@requiresGModPatchTool};
   const emit = function(title, duration) {
     if (!title) return false;
     console.log("METADATA:" + JSON.stringify({
       title: title,
-      duration: Math.floor(Math.max(0, Number(duration) || 0) / 1000),
-      requiresGModPatchTool: requiresGModPatchTool
+      duration: Math.floor(Math.max(0, Number(duration) || 0) / 1000)
     }));
     return true;
   };
@@ -234,12 +231,10 @@ local METADATA_HTML = [[
 
 function SERVICE:PreRequest(callback)
 	local html = METADATA_HTML:Replace("{@audioPath}", self:GetSoundCloudTrackId() or "")
-	html = html:Replace("{@requiresGModPatchTool}", self.RequiresGModPatchTool and "true" or "false")
 	self:DHTMLPrefetch(callback, { html = html, timeout = 12 })
 end
 
 function SERVICE:OnPrefetchMetadata(metadata, callback)
-	self._requiresGModPatchTool = metadata.requiresGModPatchTool == true
 	self._metaTitle = metadata.title
 	self._metaDuration = tonumber(metadata.duration) or 0
 	if not self._metaTitle or self._metaTitle == "" or self._metaTitle == "Unknown" then

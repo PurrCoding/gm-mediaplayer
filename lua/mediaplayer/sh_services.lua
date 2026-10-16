@@ -133,6 +133,10 @@ do
 		"odysee",
 		"rumble",
 		"kick",
+		"ok",
+		"vk",
+		"mega",
+		"jellyfin",
 
 		-- HTML Resources
 		"resource", -- base

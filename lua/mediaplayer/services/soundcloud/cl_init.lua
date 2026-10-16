@@ -170,8 +170,8 @@ local METADATA_HTML = [[
     const response = await fetch(resolveUrl);
     if (!response.ok) throw new Error("resolve HTTP " + response.status);
     const data = await response.json();
-    if (data && data.title) {
-      emit(data.title, data.full_duration || data.duration || 0);
+    if (data && data.title && Number(data.full_duration || data.duration || 0) > 0) {
+      emit(data.title, data.full_duration || data.duration);
       return;
     }
     debug("resolve response did not contain a title");
@@ -188,10 +188,7 @@ local METADATA_HTML = [[
     embedTitle = data && data.title;
     const match = data && data.html && data.html.match(/src=["']([^"']+)["']/i);
     if (match) embedUrl = match[1].replace(/&amp;/g, "&");
-    if (embedTitle && !embedUrl) {
-      // Title alone is still useful if widget initialization is blocked.
-      if (emit(embedTitle, 0)) return;
-    }
+    if (embedTitle && !embedUrl) debug("oEmbed had a title but no iframe URL");
   } catch (error) { debug("oEmbed failed: " + error); }
 
   // Stage 3: use either oEmbed's iframe URL or a direct permalink widget.
@@ -209,8 +206,11 @@ local METADATA_HTML = [[
     const finish = function(title, duration) {
       if (finished) return;
       finished = true;
-      if (!emit(title || embedTitle, duration || 0))
-        console.log("ERROR:SoundCloud widget returned no title");
+      if (!title || !(Number(duration) > 0)) {
+        console.log("ERROR:SoundCloud widget returned incomplete metadata");
+        return;
+      }
+      emit(title || embedTitle, duration);
     };
     player.bind(SC.Widget.Events.READY, function() {
       player.getCurrentSound(function(sound) {
@@ -221,11 +221,9 @@ local METADATA_HTML = [[
     });
     player.bind(SC.Widget.Events.ERROR, function() {
       debug("widget emitted an error");
-      if (embedTitle) finish(embedTitle, 0);
     });
   } catch (error) {
     debug("widget fallback failed: " + error);
-    if (embedTitle && emit(embedTitle, 0)) return;
     console.log("ERROR:SoundCloud client metadata probe exhausted");
   }
 })();

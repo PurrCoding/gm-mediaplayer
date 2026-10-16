@@ -33,7 +33,7 @@ It is a community-maintained continuation of the original Media Player by [Samue
 
 YouTube, Bilibili, SoundCloud, Twitch, Dailymotion, Internet Archive, Google Drive, Odysee, direct audio URLs (such as `.mp3` and `.ogg`), HTML5 video, images, and optional unrestricted webpage playback.
 
-Support varies by provider and URL type. Playback can also depend on the Chromium/CEF codecs available in the player's Garry's Mod installation. **SoundCloud requires a newer CEF than the stock GMod CEF 86; install GModPatchTool to update the embedded browser before using SoundCloud.**
+Support varies by provider and URL type. Playback can also depend on the Chromium/CEF codecs available in the player's Garry's Mod installation. **SoundCloud requires GModPatchTool because the stock Garry's Mod CEF 86 browser is too old for reliable playback.** **SoundCloud requires a newer CEF than the stock GMod CEF 86; install GModPatchTool to update the embedded browser before using SoundCloud.**
 
 ### Spatial Media Player
 
@@ -43,6 +43,7 @@ Attach an audio source to many props with the Spatial Media Player tool. Players
 
 - Garry's Mod (the **x86-64 branch is recommended** for HTML/Chromium playback).
 - [GMod CEF Codec Fix](https://github.com/solsticegamestudios/GModCEFCodecFix) is strongly recommended for H.264 and similar codecs.
+- **SoundCloud requires [GModPatchTool](https://github.com/solsticegamestudios/GModPatchTool)** to update the embedded browser; the stock CEF 86 is too old for reliable playback.
 - **SoundCloud additionally requires [GModPatchTool](https://github.com/solsticegamestudios/GModPatchTool)** to update the embedded CEF browser; the stock CEF 86 browser is too old for reliable SoundCloud playback.
 
 Unlike Cinema, this project is a regular addon and can be used in Sandbox and most other gamemodes.

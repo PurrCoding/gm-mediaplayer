@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('nl', {
-	"request.codec_overlay":         "Codec vereist",
 	"request.url_placeholder":       "Plak hier een video-URL...",
 	"request.url_submit":            "Aanvragen",
 	"request.status_sent":           "Aanvraag verzonden!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('nl', {
 	"request.support_services": "URL’s van ondersteunde diensten",
 	"request.support_services_note": "Deze URL’s verwijzen naar diensten die beschikbaar zijn in Media Player.",
 	"request.copy_example": "Voorbeeld kopiëren"
-
 });

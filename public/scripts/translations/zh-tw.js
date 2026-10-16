@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('zh-tw', {
-	"request.codec_overlay":         "需要編解碼器",
 	"request.url_placeholder":       "在此貼上影片URL...",
 	"request.url_submit":            "請求",
 	"request.status_sent":           "請求已傳送！",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('zh-tw', {
 	"request.support_services": "支援的服務 URL",
 	"request.support_services_note": "這些 URL 對應 Media Player 中可用的服務。",
 	"request.copy_example": "複製範例"
-
 });

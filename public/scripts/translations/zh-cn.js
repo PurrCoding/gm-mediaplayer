@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('zh-cn', {
-	"request.codec_overlay":         "需要编解码器",
 	"request.url_placeholder":       "在此粘贴视频URL...",
 	"request.url_submit":            "请求",
 	"request.status_sent":           "请求已发送！",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('zh-cn', {
 	"request.support_services": "支持的服务 URL",
 	"request.support_services_note": "这些 URL 对应 Media Player 中可用的服务。",
 	"request.copy_example": "复制示例"
-
 });

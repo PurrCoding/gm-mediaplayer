@@ -28,5 +28,4 @@ MP_I18N.registerLanguage('fi', {
 	"request.support_services": "Tuettujen palveluiden URL-osoitteet",
 	"request.support_services_note": "Nämä URL-osoitteet vastaavat Media Playerissa saatavilla olevia palveluita.",
 	"request.copy_example": "Kopioi esimerkki"
-
 });

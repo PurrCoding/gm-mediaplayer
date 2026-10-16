@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('nb', {
-	"request.codec_overlay":         "Kodek påkrevd",
 	"request.url_placeholder":       "Lim inn en video-URL her...",
 	"request.url_submit":            "Forespør",
 	"request.status_sent":           "Forespørsel sendt!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('nb', {
 	"request.support_services": "URL-er til støttede tjenester",
 	"request.support_services_note": "Disse URL-ene tilsvarer tjenester som er tilgjengelige i Media Player.",
 	"request.copy_example": "Kopier eksempel"
-
 });

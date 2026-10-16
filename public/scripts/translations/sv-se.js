@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('sv-se', {
-	"request.codec_overlay":         "Codec krävs",
 	"request.url_placeholder":       "Klistra in en video-URL här...",
 	"request.url_submit":            "Begär",
 	"request.status_sent":           "Begäran skickad!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('sv-se', {
 	"request.support_services": "URL:er till tjänster som stöds",
 	"request.support_services_note": "Dessa URL:er motsvarar tjänster som finns i Media Player.",
 	"request.copy_example": "Kopiera exempel"
-
 });

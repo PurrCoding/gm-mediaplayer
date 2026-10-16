@@ -28,5 +28,4 @@ MP_I18N.registerLanguage('ko', {
 	"request.support_services": "지원 서비스 URL",
 	"request.support_services_note": "이 URL은 Media Player에서 사용할 수 있는 서비스에 해당합니다.",
 	"request.copy_example": "예시 복사"
-
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('pl', {
-	"request.codec_overlay":         "Wymagany kodek",
 	"request.url_placeholder":       "Wklej URL filmu tutaj...",
 	"request.url_submit":            "Wyślij",
 	"request.status_sent":           "Żądanie wysłane!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('pl', {
 	"request.support_services": "Adresy URL obsługiwanych usług",
 	"request.support_services_note": "Te adresy odpowiadają usługom dostępnym w Media Player.",
 	"request.copy_example": "Kopiuj przykład"
-
 });

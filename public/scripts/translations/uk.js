@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('uk', {
-	"request.codec_overlay":         "Потрібен кодек",
 	"request.url_placeholder":       "Вставте URL відео тут...",
 	"request.url_submit":            "Запитати",
 	"request.status_sent":           "Запит надіслано!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('uk', {
 	"request.support_services": "URL підтримуваних сервісів",
 	"request.support_services_note": "Ці URL відповідають сервісам, доступним у Media Player.",
 	"request.copy_example": "Копіювати приклад"
-
 });

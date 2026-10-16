@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('ru', {
-	"request.codec_overlay":         "Требуется кодек",
 	"request.url_placeholder":       "Вставьте URL видео сюда...",
 	"request.url_submit":            "Запросить",
 	"request.status_sent":           "Запрос отправлен!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('ru', {
 	"request.support_services": "URL поддерживаемых сервисов",
 	"request.support_services_note": "Эти URL соответствуют сервисам, доступным в Media Player.",
 	"request.copy_example": "Копировать пример"
-
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('tr', {
-	"request.codec_overlay":         "Codec gerekli",
 	"request.url_placeholder":       "Buraya bir video URL'si yapıştırın...",
 	"request.url_submit":            "İstek",
 	"request.status_sent":           "İstek gönderildi!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('tr', {
 	"request.support_services": "Desteklenen hizmet URL’leri",
 	"request.support_services_note": "Bu URL’ler Media Player’da bulunan hizmetlere karşılık gelir.",
 	"request.copy_example": "Örneği kopyala"
-
 });

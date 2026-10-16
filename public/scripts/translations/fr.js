@@ -28,5 +28,4 @@ MP_I18N.registerLanguage('fr', {
 	"request.support_services": "URL de services pris en charge",
 	"request.support_services_note": "Ces URL correspondent aux services disponibles dans Media Player.",
 	"request.copy_example": "Copier l’exemple"
-
 });

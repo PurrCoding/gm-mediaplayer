@@ -28,5 +28,4 @@ MP_I18N.registerLanguage('ja', {
 	"request.support_services": "対応サービスのURL",
 	"request.support_services_note": "これらのURLはMedia Playerで利用できるサービスに対応しています。",
 	"request.copy_example": "例をコピー"
-
 });

@@ -28,5 +28,4 @@ MP_I18N.registerLanguage('en-pt', {
 	"request.support_services": "Supported service URLs",
 	"request.support_services_note": "These URLs map to services available in Media Player.",
 	"request.copy_example": "Copy example"
-
 });

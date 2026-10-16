@@ -1,7 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('pt-br', {
-	"request.codec_overlay":         "Codec necessário",
 	"request.url_placeholder":       "Cole uma URL de vídeo aqui...",
 	"request.url_submit":            "Solicitar",
 	"request.status_sent":           "Solicitação enviada!",
@@ -29,5 +28,4 @@ MP_I18N.registerLanguage('pt-br', {
 	"request.support_services": "URLs de serviços compatíveis",
 	"request.support_services_note": "Estas URLs correspondem aos serviços disponíveis no Media Player.",
 	"request.copy_example": "Copiar exemplo"
-
 });

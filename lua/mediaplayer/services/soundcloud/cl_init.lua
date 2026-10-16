@@ -214,7 +214,7 @@ local METADATA_HTML = [[
     player.bind(SC.Widget.Events.READY, function() {
       player.getCurrentSound(function(sound) {
         player.getDuration(function(duration) {
-          finish(sound && sound.title, duration || (sound && sound.duration) || 0);
+          finish((sound && sound.title) || embedTitle, duration || (sound && sound.duration) || 0);
         });
       });
     });

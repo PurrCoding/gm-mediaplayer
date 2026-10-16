@@ -2,11 +2,8 @@
 
 MP_I18N.registerLanguage('de', {
 	"request.codec_overlay":         "Codec erforderlich",
-	"request.url_title":             "Oder direkt eine URL einfügen",
 	"request.url_placeholder":       "Video-URL hier einfügen...",
 	"request.url_submit":            "Anfragen",
-	"request.url_formats":           "Unterstützt Links von unterstützten Diensten, Bilder (JPG, PNG, GIF), Videodateien (MP4, MOV, MKV, WebM), Audiodateien (MP3, WAV, OGG) und Google Drive Links",
-	"request.status_checking":       "URL wird überprüft...",
 	"request.status_sent":           "Anfrage gesendet!",
 	"request.kicker": "MEDIA PLAYER",
 	"request.hero_title": "Was möchtest du abspielen?",
@@ -22,7 +19,6 @@ MP_I18N.registerLanguage('de', {
 	"request.url_empty": "Füge zuerst eine Medien-URL ein.",
 	"request.url_invalid": "Bitte gib eine gültige HTTP(S)-URL ein.",
 	"request.bridge_unavailable": "Die Media-Player-Anfrageverbindung ist nicht verfügbar.",
-	"request.overlay_unavailable": "Das Steam Overlay ist nicht verfügbar.",
 	"request.support_images": "Bilder",
 	"request.support_images_note": "Direkte Bild-URLs werden vom Medien-Dienst unterstützt.",
 	"request.support_video": "Video",

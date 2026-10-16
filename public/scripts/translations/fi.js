@@ -1,14 +1,6 @@
 'use strict';
 
 MP_I18N.registerLanguage('fi', {
-	"request.codec_required_title":  "GModPatchTool vaaditaan",
-	"request.codec_required_body":   "vaatii GModPatchToolin toimiakseen oikein.",
-	"request.codec_steps_title":     "Ottaaksesi tämän palvelun käyttöön:",
-	"request.codec_step1":           "Lataa ja ota käyttöön GModPatchTool",
-	"request.codec_step2":           "Käynnistä Garry's Mod kokonaan uudelleen",
-	"request.codec_step3":           "Palaa Media Playeriin ja yritä uudelleen",
-	"request.codec_cancel":          "Peruuta",
-	"request.codec_get":             "Hanki GModPatchTool",
 	"request.codec_overlay":         "Koodekki vaaditaan",
 	"request.url_title":             "Tai liitä URL suoraan",
 	"request.url_placeholder":       "Liitä video-URL tähän...",

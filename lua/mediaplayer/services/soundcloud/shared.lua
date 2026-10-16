@@ -9,12 +9,18 @@ SERVICE.PrefetchMetadata = true
 
 local Ignored = {
 	["sets"] = true,
+	["albums"] = true,
+	["likes"] = true,
+	["comments"] = true,
+	["followers"] = true,
+	["following"] = true,
+	["tracks"] = true,
 }
 
 local function extractTrackId(urlinfo)
 	if urlinfo.path then
-		local path1, path2 = urlinfo.path:match("/([%a%d-_]+)/([%a%d-_]+)$")
-		if path1 and not Ignored[path1] and path2 then
+		local path1, path2 = urlinfo.path:match("^/([%a%d-_]+)/([%a%d-_]+)/?$")
+		if path1 and not Ignored[path1] and path2 and not Ignored[path2] then
 			return ("%s/%s"):format(path1, path2)
 		end
 	end

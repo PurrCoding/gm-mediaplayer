@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('ru', {
-	"request.codec_required_title":  "Требуется GModPatchTool",
-	"request.codec_required_body":   "требуется GModPatchTool для корректной работы.",
-	"request.codec_steps_title":     "Чтобы включить этот сервис:",
-	"request.codec_step1":           "Скачать и применить GModPatchTool",
-	"request.codec_step2":           "Полностью перезапустить Garry's Mod",
-	"request.codec_step3":           "Вернуться в Media Player и попробовать снова",
-	"request.codec_cancel":          "Отмена",
-	"request.codec_get":             "Скачать GModPatchTool",
-	"request.codec_overlay":         "Требуется кодек",
-	"request.url_title":             "Или вставьте URL напрямую",
 	"request.url_placeholder":       "Вставьте URL видео сюда...",
 	"request.url_submit":            "Запросить",
-	"request.url_formats":           "Поддерживает ссылки из поддерживаемых сервисов, изображения (JPG, PNG, GIF), видеофайлы (MP4, MOV, MKV, WebM), аудиофайлы (MP3, WAV, OGG) и ссылки Google Drive",
-	"request.status_checking":       "Проверка URL...",
 	"request.status_sent":           "Запрос отправлен!",
-	"request.kicker": "МЕДИАПЛЕЕР",
 	"request.hero_title": "Что вы хотите воспроизвести?",
 	"request.hero_body": "Вставьте URL медиа или выберите сервис ниже.",
 	"request.services_kicker": "СЕРВИСЫ",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('ru', {
 	"request.url_empty": "Сначала вставьте URL медиа.",
 	"request.url_invalid": "Введите корректный HTTP(S)-URL.",
 	"request.bridge_unavailable": "Мост запросов Media Player недоступен.",
-	"request.overlay_unavailable": "Steam Overlay недоступен.",
 	"request.support_images": "Изображения",
 	"request.support_images_note": "Поддерживаются прямые URL изображений.",
 	"request.support_video": "Видео",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('ru', {
 	"request.support_services": "URL поддерживаемых сервисов",
 	"request.support_services_note": "Эти URL соответствуют сервисам, доступным в Media Player.",
 	"request.copy_example": "Копировать пример"
-
 });

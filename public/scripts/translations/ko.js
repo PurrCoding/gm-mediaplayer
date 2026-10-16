@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('ko', {
-	"request.codec_required_title":  "GModPatchTool 필요",
-	"request.codec_required_body":   "정상 작동을 위해 GModPatchTool이 필요합니다.",
-	"request.codec_steps_title":     "이 서비스를 활성화하려면:",
-	"request.codec_step1":           "GModPatchTool을 다운로드하고 적용하세요",
-	"request.codec_step2":           "Garry's Mod를 완전히 재시작하세요",
-	"request.codec_step3":           "Media Player로 돌아가서 다시 시도하세요",
-	"request.codec_cancel":          "취소",
-	"request.codec_get":             "GModPatchTool 받기",
-	"request.codec_overlay":         "코덱 필요",
-	"request.url_title":             "또는 URL을 직접 붙여넣기",
 	"request.url_placeholder":       "여기에 동영상 URL을 붙여넣으세요...",
 	"request.url_submit":            "요청",
-	"request.url_formats":           "지원 서비스 링크, 이미지 (JPG, PNG, GIF), 동영상 파일 (MP4, MOV, MKV, WebM), 오디오 파일 (MP3, WAV, OGG) 및 Google Drive 링크 지원",
-	"request.status_checking":       "URL 확인 중...",
 	"request.status_sent":           "요청 전송됨!",
-	"request.kicker": "미디어 플레이어",
 	"request.hero_title": "무엇을 재생할까요?",
 	"request.hero_body": "미디어 URL을 붙여넣거나 아래에서 서비스를 선택하세요.",
 	"request.services_kicker": "서비스",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('ko', {
 	"request.url_empty": "먼저 미디어 URL을 붙여넣으세요.",
 	"request.url_invalid": "유효한 HTTP(S) URL을 입력하세요.",
 	"request.bridge_unavailable": "Media Player 요청 브리지를 사용할 수 없습니다.",
-	"request.overlay_unavailable": "Steam 오버레이를 사용할 수 없습니다.",
 	"request.support_images": "이미지",
 	"request.support_images_note": "이미지 직접 URL을 지원합니다.",
 	"request.support_video": "비디오",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('ko', {
 	"request.support_services": "지원 서비스 URL",
 	"request.support_services_note": "이 URL은 Media Player에서 사용할 수 있는 서비스에 해당합니다.",
 	"request.copy_example": "예시 복사"
-
 });

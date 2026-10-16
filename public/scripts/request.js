@@ -19,7 +19,7 @@ var ua = navigator.userAgent || '';
 
 const services = [
 	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', action: 'select', requiresCodec: false, group: 'Video' },
-	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: false, group: 'Audio' },
+	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: true, group: 'Audio' },
 	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true, group: 'Video' },
 	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true, group: 'Live' },
 	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true, group: 'Video' },
@@ -109,8 +109,8 @@ function playUISound(click) {
 }
 
 function checkCodecSupport() {
-	const video = document.createElement('video');
-	hasCodecSupport = video.canPlayType('video/mp4; codecs="avc1.42E01E"') === 'probably';
+	const support = document.createElement("video").canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+	hasCodecSupport = support === "probably" || support === "maybe";
 	return hasCodecSupport;
 }
 
@@ -135,7 +135,7 @@ function renderSupportContent() {
 			</div>
 			<div class="support-items">
 				${group.items.map(([label, example]) => `
-					<button type="button" class="support-item" data-copy="${example}" title="Copy example">
+					<button type="button" class="support-item" data-copy="${example}" title="${MP_I18N.t('request.copy_example')}">
 						<span class="support-label">${label}</span>
 						<code>${example}</code>
 						<i class="fa-regular fa-copy" aria-hidden="true"></i>
@@ -215,26 +215,6 @@ function requestUrl() {
 	}, 900);
 }
 
-function showCodecPopup(service) {
-	getElement('#service-name-popup').textContent = service.name;
-	getElement('#codec-popup').classList.remove('hidden');
-	document.body.style.overflow = 'hidden';
-}
-
-function closeCodecPopup() {
-	getElement('#codec-popup').classList.add('hidden');
-	document.body.style.overflow = '';
-}
-
-function openCodecInstructions() {
-	if (gmodAvailable('openUrl')) {
-		gmod.openUrl('https://www.solsticegamestudios.com/fixmedia/');
-	} else {
-		showToast(MP_I18N.t('request.overlay_unavailable'), 'error');
-	}
-	closeCodecPopup();
-}
-
 function selectService(service) {
 	playUISound(true);
 
@@ -250,7 +230,7 @@ function renderServices() {
 	const grid = getElement('#services-grid');
 	grid.innerHTML = '';
 
-	services.filter(service => !(window.MP_LEGACY_GMOD === true && service.requiresCodec)).forEach(service => {
+	services.forEach(service => {
 		const disabled = service.requiresCodec && !hasCodecSupport;
 		const card = document.createElement('button');
 		card.type = 'button';
@@ -275,16 +255,8 @@ function renderServices() {
 		name.textContent = service.name;
 		text.appendChild(name);
 
-		if (disabled) {
-			const sub = document.createElement('span');
-			sub.className = 'service-sub';
-			sub.textContent = MP_I18N.t('request.codec_overlay');
-			text.appendChild(sub);
-		}
-
 		const action = document.createElement('span');
-		action.className = disabled ? 'badge' : 'service-arrow';
-		action.textContent = disabled ? MP_I18N.t('request.codec_overlay') : '';
+		action.className = 'service-arrow';
 		if (!disabled) {
 			const arrow = document.createElement('i');
 			arrow.className = 'fa-solid fa-arrow-up-right-from-square';
@@ -297,39 +269,14 @@ function renderServices() {
 
 		card.addEventListener('mouseenter', () => playUISound(false));
 		card.addEventListener('click', () => {
-			if (disabled) {
-				showCodecPopup(service);
-				return;
-			}
-			selectService(service);
+			if (!disabled) selectService(service);
 		});
 
 		grid.appendChild(card);
 	});
 }
 
-async function bindSupportButton() {
-	const button = document.getElementById('support-info-btn');
-	if (button) {
-		button.addEventListener('click', () => {
-			if (typeof window.showSupportPopup === 'function') {
-				window.showSupportPopup();
-			}
-		});
-	}
-
-	const backdrop = document.querySelector('[data-action="close-support"]');
-	if (backdrop) {
-		backdrop.addEventListener('click', () => {
-			if (typeof window.closeSupportPopup === 'function') {
-				window.closeSupportPopup();
-			}
-		});
-	}
-}
-
 async function initialize() {
-	bindSupportButton();
 	bindRequestUI();
 	checkCodecSupport();
 	renderServices();
@@ -342,7 +289,6 @@ async function initialize() {
 		console.warn('Media Player translations unavailable:', error);
 	}
 
-	checkCodecSupport();
 	renderServices();
 	renderSupportContent();
 }
@@ -368,15 +314,9 @@ function bindRequestUI() {
 	document.querySelectorAll('[data-action="close-support"]').forEach(el => {
 		el.addEventListener('click', closeSupportPopup);
 	});
-	document.querySelectorAll('[data-action="close-codec"]').forEach(el => {
-		el.addEventListener('click', closeCodecPopup);
-	});
-	const instructions = getElement('[data-action="codec-instructions"]');
-	if (instructions) instructions.addEventListener('click', openCodecInstructions);
 
 	document.addEventListener('keydown', event => {
 		if (event.key === 'Escape') {
-			closeCodecPopup();
 			closeSupportPopup();
 			return;
 		}
@@ -395,9 +335,6 @@ document.addEventListener('DOMContentLoaded', initialize);
 window.requestUrl = requestUrl;
 window.showSupportPopup = showSupportPopup;
 window.closeSupportPopup = closeSupportPopup;
-window.showCodecPopup = showCodecPopup;
-window.closeCodecPopup = closeCodecPopup;
-window.openCodecInstructions = openCodecInstructions;
 window.selectService = selectService;
 window.openService = openService;
 window.hoverService = playUISound;

@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('uk', {
-	"request.codec_required_title":  "Потрібен GModPatchTool",
-	"request.codec_required_body":   "потребує GModPatchTool для коректної роботи.",
-	"request.codec_steps_title":     "Щоб увімкнути цей сервіс:",
-	"request.codec_step1":           "Завантажити та застосувати GModPatchTool",
-	"request.codec_step2":           "Повністю перезапустити Garry's Mod",
-	"request.codec_step3":           "Повернутися до Media Player і спробувати знову",
-	"request.codec_cancel":          "Скасувати",
-	"request.codec_get":             "Отримати GModPatchTool",
-	"request.codec_overlay":         "Потрібен кодек",
-	"request.url_title":             "Або вставте URL напряму",
 	"request.url_placeholder":       "Вставте URL відео тут...",
 	"request.url_submit":            "Запитати",
-	"request.url_formats":           "Підтримує посилання з підтримуваних сервісів, зображення (JPG, PNG, GIF), відеофайли (MP4, MOV, MKV, WebM), аудіофайли (MP3, WAV, OGG) та посилання Google Drive",
-	"request.status_checking":       "Перевірка URL...",
 	"request.status_sent":           "Запит надіслано!",
-	"request.kicker": "МЕДІАПЛЕЄР",
 	"request.hero_title": "Що ви хочете відтворити?",
 	"request.hero_body": "Вставте URL медіа або виберіть сервіс нижче.",
 	"request.services_kicker": "СЕРВІСИ",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('uk', {
 	"request.url_empty": "Спочатку вставте URL медіа.",
 	"request.url_invalid": "Введіть коректний HTTP(S)-URL.",
 	"request.bridge_unavailable": "Міст запитів Media Player недоступний.",
-	"request.overlay_unavailable": "Steam Overlay недоступний.",
 	"request.support_images": "Зображення",
 	"request.support_images_note": "Підтримуються прямі URL зображень.",
 	"request.support_video": "Відео",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('uk', {
 	"request.support_services": "URL підтримуваних сервісів",
 	"request.support_services_note": "Ці URL відповідають сервісам, доступним у Media Player.",
 	"request.copy_example": "Копіювати приклад"
-
 });

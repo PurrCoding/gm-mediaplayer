@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('ja', {
-	"request.codec_required_title":  "GModPatchToolが必要です",
-	"request.codec_required_body":   "正しく動作するにはGModPatchToolが必要です。",
-	"request.codec_steps_title":     "このサービスを有効にするには：",
-	"request.codec_step1":           "GModPatchToolをダウンロードして適用する",
-	"request.codec_step2":           "Garry's Modを完全に再起動する",
-	"request.codec_step3":           "Media Playerに戻って再試行する",
-	"request.codec_cancel":          "キャンセル",
-	"request.codec_get":             "GModPatchToolを入手",
-	"request.codec_overlay":         "コーデックが必要",
-	"request.url_title":             "またはURLを直接貼り付け",
 	"request.url_placeholder":       "動画のURLをここに貼り付け...",
 	"request.url_submit":            "リクエスト",
-	"request.url_formats":           "対応サービスのリンク、画像 (JPG, PNG, GIF)、動画ファイル (MP4, MOV, MKV, WebM)、音声ファイル (MP3, WAV, OGG)、Google Driveリンクに対応",
-	"request.status_checking":       "URLを確認中...",
 	"request.status_sent":           "リクエスト送信済み！",
-	"request.kicker": "メディアプレーヤー",
 	"request.hero_title": "何を再生しますか？",
 	"request.hero_body": "メディアURLを貼り付けるか、下からサービスを選択してください。",
 	"request.services_kicker": "サービス",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('ja', {
 	"request.url_empty": "先にメディアURLを貼り付けてください。",
 	"request.url_invalid": "有効なHTTP(S) URLを入力してください。",
 	"request.bridge_unavailable": "Media Playerのリクエストブリッジを利用できません。",
-	"request.overlay_unavailable": "Steamオーバーレイを利用できません。",
 	"request.support_images": "画像",
 	"request.support_images_note": "画像の直接URLに対応しています。",
 	"request.support_video": "動画",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('ja', {
 	"request.support_services": "対応サービスのURL",
 	"request.support_services_note": "これらのURLはMedia Playerで利用できるサービスに対応しています。",
 	"request.copy_example": "例をコピー"
-
 });

@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('zh-cn', {
-	"request.codec_required_title":  "需要 GModPatchTool",
-	"request.codec_required_body":   "需要 GModPatchTool 才能正常运行。",
-	"request.codec_steps_title":     "要启用此服务：",
-	"request.codec_step1":           "下载并应用 GModPatchTool",
-	"request.codec_step2":           "完全重启 Garry's Mod",
-	"request.codec_step3":           "返回 Media Player 并重试",
-	"request.codec_cancel":          "取消",
-	"request.codec_get":             "获取 GModPatchTool",
-	"request.codec_overlay":         "需要编解码器",
-	"request.url_title":             "或直接粘贴URL",
 	"request.url_placeholder":       "在此粘贴视频URL...",
 	"request.url_submit":            "请求",
-	"request.url_formats":           "支持来自已支持服务的分享链接、图片 (JPG, PNG, GIF)、视频文件 (MP4, MOV, MKV, WebM)、音频文件 (MP3, WAV, OGG) 以及 Google Drive 链接",
-	"request.status_checking":       "正在检查URL...",
 	"request.status_sent":           "请求已发送！",
-	"request.kicker": "媒体播放器",
 	"request.hero_title": "你想播放什么？",
 	"request.hero_body": "粘贴媒体 URL，或从下方选择服务。",
 	"request.services_kicker": "服务",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('zh-cn', {
 	"request.url_empty": "请先粘贴媒体 URL。",
 	"request.url_invalid": "请输入有效的 HTTP(S) URL。",
 	"request.bridge_unavailable": "Media Player 请求桥不可用。",
-	"request.overlay_unavailable": "Steam Overlay 不可用。",
 	"request.support_images": "图片",
 	"request.support_images_note": "支持图片的直接 URL。",
 	"request.support_video": "视频",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('zh-cn', {
 	"request.support_services": "支持的服务 URL",
 	"request.support_services_note": "这些 URL 对应 Media Player 中可用的服务。",
 	"request.copy_example": "复制示例"
-
 });

@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('fr', {
-	"request.codec_required_title":  "GModPatchTool requis",
-	"request.codec_required_body":   "nécessite GModPatchTool pour fonctionner correctement.",
-	"request.codec_steps_title":     "Pour activer ce service :",
-	"request.codec_step1":           "Télécharger et appliquer GModPatchTool",
-	"request.codec_step2":           "Redémarrer complètement Garry's Mod",
-	"request.codec_step3":           "Revenir au Media Player et réessayer",
-	"request.codec_cancel":          "Annuler",
-	"request.codec_get":             "Obtenir GModPatchTool",
-	"request.codec_overlay":         "Codec requis",
-	"request.url_title":             "Ou collez une URL directement",
 	"request.url_placeholder":       "Collez une URL vidéo ici...",
 	"request.url_submit":            "Demander",
-	"request.url_formats":           "Prend en charge les liens de services supportés, images (JPG, PNG, GIF), fichiers vidéo (MP4, MOV, MKV, WebM), fichiers audio (MP3, WAV, OGG) et liens Google Drive",
-	"request.status_checking":       "Vérification de l'URL...",
 	"request.status_sent":           "Demande envoyée !",
-	"request.kicker": "LECTEUR MULTIMÉDIA",
 	"request.hero_title": "Que souhaitez-vous lire ?",
 	"request.hero_body": "Collez une URL multimédia ou choisissez un service ci-dessous.",
 	"request.services_kicker": "SERVICES",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('fr', {
 	"request.url_empty": "Collez d’abord une URL multimédia.",
 	"request.url_invalid": "Veuillez saisir une URL HTTP(S) valide.",
 	"request.bridge_unavailable": "La connexion de requête de Media Player est indisponible.",
-	"request.overlay_unavailable": "Le Steam Overlay est indisponible.",
 	"request.support_images": "Images",
 	"request.support_images_note": "Les URL directes d’images sont prises en charge.",
 	"request.support_video": "Vidéo",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('fr', {
 	"request.support_services": "URL de services pris en charge",
 	"request.support_services_note": "Ces URL correspondent aux services disponibles dans Media Player.",
 	"request.copy_example": "Copier l’exemple"
-
 });

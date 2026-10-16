@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('sv-se', {
-	"request.codec_required_title":  "GModPatchTool krävs",
-	"request.codec_required_body":   "kräver GModPatchTool för att fungera korrekt.",
-	"request.codec_steps_title":     "För att aktivera denna tjänst:",
-	"request.codec_step1":           "Ladda ner och tillämpa GModPatchTool",
-	"request.codec_step2":           "Starta om Garry's Mod helt",
-	"request.codec_step3":           "Gå tillbaka till Media Player och försök igen",
-	"request.codec_cancel":          "Avbryt",
-	"request.codec_get":             "Hämta GModPatchTool",
-	"request.codec_overlay":         "Codec krävs",
-	"request.url_title":             "Eller klistra in en URL direkt",
 	"request.url_placeholder":       "Klistra in en video-URL här...",
 	"request.url_submit":            "Begär",
-	"request.url_formats":           "Stöder länkar från stödda tjänster, bilder (JPG, PNG, GIF), videofiler (MP4, MOV, MKV, WebM), ljudfiler (MP3, WAV, OGG) och Google Drive-länkar",
-	"request.status_checking":       "Kontrollerar URL...",
 	"request.status_sent":           "Begäran skickad!",
-	"request.kicker": "MEDIASPELARE",
 	"request.hero_title": "Vad vill du spela upp?",
 	"request.hero_body": "Klistra in en medie-URL eller välj en tjänst nedan.",
 	"request.services_kicker": "TJÄNSTER",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('sv-se', {
 	"request.url_empty": "Klistra först in en medie-URL.",
 	"request.url_invalid": "Ange en giltig HTTP(S)-URL.",
 	"request.bridge_unavailable": "Media Players begäransbrygga är inte tillgänglig.",
-	"request.overlay_unavailable": "Steam Overlay är inte tillgängligt.",
 	"request.support_images": "Bilder",
 	"request.support_images_note": "Direkta bild-URL:er stöds.",
 	"request.support_video": "Video",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('sv-se', {
 	"request.support_services": "URL:er till tjänster som stöds",
 	"request.support_services_note": "Dessa URL:er motsvarar tjänster som finns i Media Player.",
 	"request.copy_example": "Kopiera exempel"
-
 });

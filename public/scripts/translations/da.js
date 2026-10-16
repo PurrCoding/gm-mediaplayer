@@ -1,22 +1,9 @@
 'use strict';
 
 MP_I18N.registerLanguage('da', {
-	"request.codec_required_title":  "GModPatchTool påkrævet",
-	"request.codec_required_body":   "kræver GModPatchTool for at fungere korrekt.",
-	"request.codec_steps_title":     "For at aktivere denne tjeneste:",
-	"request.codec_step1":           "Download og anvend GModPatchTool",
-	"request.codec_step2":           "Genstart Garry's Mod fuldstændigt",
-	"request.codec_step3":           "Gå tilbage til Media Player og prøv igen",
-	"request.codec_cancel":          "Annuller",
-	"request.codec_get":             "Hent GModPatchTool",
-	"request.codec_overlay":         "Codec påkrævet",
-	"request.url_title":             "Eller indsæt en URL direkte",
 	"request.url_placeholder":       "Indsæt en video-URL her...",
 	"request.url_submit":            "Anmod",
-	"request.url_formats":           "Understøtter links fra understøttede tjenester, billeder (JPG, PNG, GIF), videofiler (MP4, MOV, MKV, WebM), lydfiler (MP3, WAV, OGG) og Google Drive-links",
-	"request.status_checking":       "Kontrollerer URL...",
 	"request.status_sent":           "Anmodning sendt!",
-	"request.kicker": "MEDIEAFSPILLER",
 	"request.hero_title": "Hvad vil du afspille?",
 	"request.hero_body": "Indsæt en medie-URL, eller vælg en tjeneste nedenfor.",
 	"request.services_kicker": "TJENESTER",
@@ -30,7 +17,6 @@ MP_I18N.registerLanguage('da', {
 	"request.url_empty": "Indsæt først en medie-URL.",
 	"request.url_invalid": "Indtast en gyldig HTTP(S)-URL.",
 	"request.bridge_unavailable": "Media Players anmodningsforbindelse er ikke tilgængelig.",
-	"request.overlay_unavailable": "Steam Overlay er ikke tilgængelig.",
 	"request.support_images": "Billeder",
 	"request.support_images_note": "Direkte billed-URL’er understøttes.",
 	"request.support_video": "Video",
@@ -42,5 +28,4 @@ MP_I18N.registerLanguage('da', {
 	"request.support_services": "URL’er til understøttede tjenester",
 	"request.support_services_note": "Disse URL’er svarer til tjenester, der er tilgængelige i Media Player.",
 	"request.copy_example": "Kopiér eksempel"
-
 });

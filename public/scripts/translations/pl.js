@@ -5,7 +5,6 @@ MP_I18N.registerLanguage('pl', {
 	"request.url_placeholder":       "Wklej URL filmu tutaj...",
 	"request.url_submit":            "Wyślij",
 	"request.status_sent":           "Żądanie wysłane!",
-	"request.kicker": "ODTWARZACZ MULTIMEDIÓW",
 	"request.hero_title": "Co chcesz odtworzyć?",
 	"request.hero_body": "Wklej adres URL multimediów lub wybierz usługę poniżej.",
 	"request.services_kicker": "USŁUGI",

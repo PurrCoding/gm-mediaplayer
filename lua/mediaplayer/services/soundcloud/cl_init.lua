@@ -31,7 +31,7 @@ local EMBED_HTML = [[
 				const audioTrack = "https://soundcloud.com/{@audioPath}"
 				const shouldPlay = {@shouldPlay}
 
-				const response = await fetch(`https://soundcloud.com/oembed?format=json&url=${audioTrack}`)
+				const response = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(audioTrack)}`)
 				const json = await response.json()
 
 				if (!!json && !!json.html) {
@@ -139,4 +139,119 @@ end
 
 function SERVICE:IsMouseInputEnabled()
 	return IsValid( self.Browser )
+end
+
+-- Client-side, multi-stage metadata probe.
+-- Stage 1: unofficial SoundCloud resolve endpoint.
+-- Stage 2: oEmbed title and the official widget API.
+-- Stage 3: direct widget URL if oEmbed is unavailable.
+-- The server-side HTML parser remains the final fallback.
+local METADATA_HTML = [[
+<!doctype html><html><head><meta charset="utf-8">
+<script src="https://w.soundcloud.com/player/api.js"></script></head><body>
+<script>
+(async function() {
+  const trackUrl = "https://soundcloud.com/{@audioPath}";
+  const emit = function(title, duration) {
+    if (!title) return false;
+    console.log("METADATA:" + JSON.stringify({
+      title: title,
+      duration: Math.floor(Math.max(0, Number(duration) || 0) / 1000)
+    }));
+    return true;
+  };
+  const debug = function(message) { console.log("DEBUG:SoundCloud probe: " + message); };
+
+  // Stage 1: API resolve. This endpoint is undocumented and may stop working.
+  try {
+    const resolveUrl = "https://api-widget.soundcloud.com/resolve?url="
+      + encodeURIComponent(trackUrl)
+      + "&format=json&client_id=nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic&app_version=1792051948";
+    const response = await fetch(resolveUrl);
+    if (!response.ok) throw new Error("resolve HTTP " + response.status);
+    const data = await response.json();
+    if (data && data.title) {
+      emit(data.title, data.full_duration || data.duration || 0);
+      return;
+    }
+    debug("resolve response did not contain a title");
+  } catch (error) { debug("resolve failed: " + error); }
+
+  // Stage 2: oEmbed. Prefer its title, but ask the official widget for duration.
+  let embedUrl = null;
+  let embedTitle = null;
+  try {
+    const response = await fetch("https://soundcloud.com/oembed?format=json&url="
+      + encodeURIComponent(trackUrl));
+    if (!response.ok) throw new Error("oEmbed HTTP " + response.status);
+    const data = await response.json();
+    embedTitle = data && data.title;
+    const match = data && data.html && data.html.match(/src=["']([^"']+)["']/i);
+    if (match) embedUrl = match[1].replace(/&amp;/g, "&");
+    if (embedTitle && !embedUrl) {
+      // Title alone is still useful if widget initialization is blocked.
+      if (emit(embedTitle, 0)) return;
+    }
+  } catch (error) { debug("oEmbed failed: " + error); }
+
+  // Stage 3: use either oEmbed's iframe URL or a direct permalink widget.
+  try {
+    const playerUrl = embedUrl || ("https://w.soundcloud.com/player/?url="
+      + encodeURIComponent(trackUrl) + "&auto_play=false&hide_related=true&show_comments=false");
+    const frame = document.createElement("iframe");
+    frame.setAttribute("allow", "autoplay");
+    frame.setAttribute("width", "100%");
+    frame.setAttribute("height", "166");
+    frame.src = playerUrl;
+    document.body.appendChild(frame);
+    const player = SC.Widget(frame);
+    let finished = false;
+    const finish = function(title, duration) {
+      if (finished) return;
+      finished = true;
+      if (!emit(title || embedTitle, duration || 0))
+        console.log("ERROR:SoundCloud widget returned no title");
+    };
+    player.bind(SC.Widget.Events.READY, function() {
+      player.getCurrentSound(function(sound) {
+        player.getDuration(function(duration) {
+          finish(sound && sound.title, duration || (sound && sound.duration) || 0);
+        });
+      });
+    });
+    player.bind(SC.Widget.Events.ERROR, function() {
+      debug("widget emitted an error");
+      if (embedTitle) finish(embedTitle, 0);
+    });
+  } catch (error) {
+    debug("widget fallback failed: " + error);
+    if (embedTitle && emit(embedTitle, 0)) return;
+    console.log("ERROR:SoundCloud client metadata probe exhausted");
+  }
+})();
+</script></body></html>
+]];
+
+function SERVICE:PreRequest(callback)
+	local html = METADATA_HTML:Replace("{@audioPath}", self:GetSoundCloudTrackId() or "")
+	self:DHTMLPrefetch(callback, { html = html, timeout = 12 })
+end
+
+function SERVICE:OnPrefetchMetadata(metadata, callback)
+	self._metaTitle = metadata.title
+	self._metaDuration = tonumber(metadata.duration) or 0
+	if not self._metaTitle or self._metaTitle == "" or self._metaTitle == "Unknown" then
+		self._metaTitle = nil
+	end
+	callback()
+end
+
+function SERVICE:OnPrefetchError(errmsg, callback)
+	-- Let server-side HTML parsing try next.
+	callback()
+end
+
+function SERVICE:NetWriteRequest()
+	net.WriteString(self._metaTitle or "Unknown")
+	net.WriteUInt(math.max(0, math.min(65535, self._metaDuration or 0)), 16)
 end

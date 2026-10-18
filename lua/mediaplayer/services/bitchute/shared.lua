@@ -51,9 +51,10 @@ function SERVICE:GetBitChuteVideoId()
 	return videoId
 end
 
+-- Livestreams report duration 0 → not timed (no seek / end-of-media)
 function SERVICE:IsTimed()
-	if self._metadata and self._metadata.duration then
-		return self._metadata.duration > 0
+	if self._metadata ~= nil and self._metadata.duration ~= nil then
+		return tonumber( self._metadata.duration ) > 0
 	end
 	return true
 end

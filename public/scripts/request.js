@@ -1,34 +1,34 @@
 'use strict';
 
 var ua = navigator.userAgent || '';
-  var legacyGmod = /GMod\/13/i.test(ua) && /Chrome\/86\./i.test(ua);
+var legacyGmod = /GMod\/13/i.test(ua) && /Chrome\/86\./i.test(ua);
 
-  window.MP_LEGACY_GMOD = legacyGmod;
+window.MP_LEGACY_GMOD = legacyGmod;
 
-  if (legacyGmod) {
-    var root = document.documentElement;
-    root.className += (root.className ? ' ' : '') + 'legacy-gmod';
-  }
+if (legacyGmod) {
+	var root = document.documentElement;
+	root.className += (root.className ? ' ' : '') + 'legacy-gmod';
+}
 
-  var fa = document.createElement('link');
-  fa.rel = 'stylesheet';
-  fa.href = legacyGmod
-    ? 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css'
-    : 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css';
-  document.head.appendChild(fa);
+var fa = document.createElement('link');
+fa.rel = 'stylesheet';
+fa.href = legacyGmod
+	? 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css'
+	: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css';
+document.head.appendChild(fa);
 
 const services = [
-  { name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', requiresCodec: false, group: 'Video' },
-  { name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', requiresCodec: true, group: 'Audio' },
-  { name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', requiresCodec: true, group: 'Video' },
-  { name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', requiresCodec: true, group: 'Live' },
-  { name: 'Rumble', icon: 'fa-solid fa-play', url: 'https://rumble.com/', requiresCodec: true, group: 'Video' },
-  { name: 'Kick', icon: 'fa-brands fa-kickstarter', url: 'https://kick.com/', requiresCodec: true, group: 'Live' },
-  { name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', requiresCodec: true, group: 'Video', action: 'steam-overlay' },
-  { name: 'Odysee', icon: 'fa-solid fa-circle-play', url: 'https://odysee.com/', requiresCodec: true, group: 'Video' },
-  { name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', requiresCodec: true, group: 'Archive' },
-  { name: 'VK Видео', icon: 'fa-brands fa-vk', url: 'https://vkvideo.ru/', requiresCodec: true, group: 'Video' },
-  { name: 'Одноклассники', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', requiresCodec: true, group: 'Video' },
+	{ name: 'YouTube', icon: 'fa-brands fa-youtube', url: 'https://youtube.com/', requiresCodec: false, group: 'Video' },
+	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', requiresCodec: true, group: 'Audio' },
+	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', requiresCodec: true, group: 'Video' },
+	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', requiresCodec: true, group: 'Live' },
+	{ name: 'Rumble', icon: 'fa-solid fa-play', url: 'https://rumble.com/', requiresCodec: true, group: 'Video' },
+	{ name: 'Kick', icon: 'fa-brands fa-kickstarter', url: 'https://kick.com/', requiresCodec: true, group: 'Live' },
+	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', requiresCodec: true, group: 'Video', action: 'steam-overlay' },
+	{ name: 'Odysee', icon: 'fa-solid fa-circle-play', url: 'https://odysee.com/', requiresCodec: true, group: 'Video' },
+	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', requiresCodec: true, group: 'Archive' },
+	{ name: 'VK Видео', icon: 'fa-brands fa-vk', url: 'https://vkvideo.ru/', requiresCodec: true, group: 'Video' },
+	{ name: 'Одноклассники', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', requiresCodec: true, group: 'Video' },
 ];
 
 let hasCodecSupport = false;
@@ -92,18 +92,17 @@ const supportGroups = [
 			['Twitch', 'https://www.twitch.tv/CHANNEL'],
 			['SoundCloud', 'https://soundcloud.com/artist/track'],
 			['Dailymotion', 'https://www.dailymotion.com/video/VIDEO_ID'],
+			['Rumble', 'https://rumble.com/VIDEO_PATH.html'],
+			['Kick', 'https://kick.com/CHANNEL'],
+			['Kick VOD', 'https://kick.com/CHANNEL/videos/UUID'],
 			['Bilibili', 'https://www.bilibili.com/video/VIDEO_ID'],
 			['Odysee', 'https://odysee.com/@channel:1/video:1'],
 			['Archive.org', 'https://archive.org/details/ITEM_ID'],
-<<<<<<< Updated upstream
-			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view']
-=======
 			['VK Video', 'https://vkvideo.ru/video-VIDEO_ID'],
 			['VK Live', 'https://vkvideo.ru/live-OWNER_ID'],
 			['Одноклассники', 'https://ok.ru/video/VIDEO_ID'],
 			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view'],
 			['MEGA', 'https://mega.nz/file/FILE_ID#KEY']
->>>>>>> Stashed changes
 		]
 	}
 ];

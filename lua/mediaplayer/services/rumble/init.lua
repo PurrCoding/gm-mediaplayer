@@ -16,7 +16,6 @@ local function OnReceiveMetadata( self, callback, body )
 
 	local metadata = {}
 	metadata.title = data.title or "Rumble Video"
-	metadata.thumbnail = data.thumbnail_url
 
 	local duration = tonumber( data.duration ) or 0
 	metadata.duration = duration

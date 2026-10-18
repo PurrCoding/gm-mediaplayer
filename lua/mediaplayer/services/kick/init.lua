@@ -21,11 +21,10 @@ local function MsToSeconds( ms )
 	return math.floor( ms )
 end
 
-local function ApplyVodMetadata( self, callback, title, duration, thumbnail )
+local function ApplyVodMetadata( self, callback, title, duration )
 	local metadata = {
 		title = title or ( "Kick VOD: " .. ( self:GetKickVodId() or "" ) ),
 		duration = tonumber( duration ) or 0,
-		thumbnail = thumbnail or "",
 	}
 
 	self:SetMetadata( metadata, true )
@@ -77,13 +76,7 @@ local function ResolveVodFromChannelList( self, channel, vodId, callback )
 							if istable( live ) and live.vod_id == vodId then
 								local title = live.session_title or item.session_title
 								local duration = MsToSeconds( live.duration or item.duration )
-								local thumb = ""
-								if isstring( live.thumbnail ) then
-									thumb = live.thumbnail
-								elseif istable( item.thumbnail ) and isstring( item.thumbnail.src ) then
-									thumb = item.thumbnail.src
-								end
-								return ApplyVodMetadata( self, callback, title, duration, thumb )
+								return ApplyVodMetadata( self, callback, title, duration )
 							end
 						end
 						tryNext()
@@ -117,18 +110,14 @@ local function OnReceivePlaybackMetadata( self, callback, body, code, channel, v
 
 	local title = session.video_title
 	local duration = tonumber( session.video_duration ) or 0
-	local thumb = ""
 
 	local playback = data.playback_url or {}
-	if isstring( playback.thumbnail ) and playback.thumbnail ~= "" then
-		thumb = playback.thumbnail:gsub( "%{index%}", "0" )
-	end
 
 	if ( not title or title == "" ) or duration <= 0 then
 		return ResolveVodFromChannelList( self, channel, vodId, callback )
 	end
 
-	ApplyVodMetadata( self, callback, title, duration, thumb )
+	ApplyVodMetadata( self, callback, title, duration )
 end
 
 local function OnReceiveLiveMetadata( self, callback, body, code, channel )
@@ -149,10 +138,6 @@ local function OnReceiveLiveMetadata( self, callback, body, code, channel )
 	local metadata = {}
 	metadata.title = live.session_title or ( "Kick: " .. channel )
 	metadata.duration = 0
-
-	if istable( live.thumbnail ) and isstring( live.thumbnail.url ) then
-		metadata.thumbnail = live.thumbnail.url
-	end
 
 	self:SetMetadata( metadata, true )
 	callback( self._metadata )

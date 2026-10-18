@@ -115,15 +115,8 @@ local METADATA_JS = [[
 				if (window.metaevent_set) return;
 				window.metaevent_set = true;
 
-				var thumb = "";
-				var thumbEl = document.querySelector(".videoplayer_thumb");
-				if (thumbEl && thumbEl.style && thumbEl.style.backgroundImage) {
-					thumb = thumbEl.style.backgroundImage.slice(4, -1).replace(/["']/g, "");
-				}
-
 				console.log("METADATA:" + JSON.stringify({
 					title: pageTitle(),
-					thumbnail: thumb,
 					duration: player.duration || 0
 				}));
 			};

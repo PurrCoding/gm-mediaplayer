@@ -5,7 +5,6 @@ local API_URL = "https://ok.ru/web-api/videoyandexfeed/%s"
 
 local patterns = {
 	title = "<ovs:title>(.+)</ovs:title>",
-	thumb = "<ovs:thumbnail>(.+)</ovs:thumbnail>",
 	duration = "<ovs:duration>(.+)</ovs:duration>",
 }
 
@@ -19,11 +18,6 @@ local function ParseMetaDataFromHTML( html )
 		metadata.title = metadata.title:gsub( "&quot;", '"' )
 		metadata.title = metadata.title:gsub( "&lt;", "<" )
 		metadata.title = metadata.title:gsub( "&gt;", ">" )
-	end
-
-	local thumb = html:match( patterns.thumb )
-	if thumb then
-		metadata.thumbnail = thumb:gsub( "&amp;", "&" )
 	end
 
 	metadata.duration = tonumber( html:match( patterns.duration ) ) or 0

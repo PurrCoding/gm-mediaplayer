@@ -67,10 +67,6 @@ function SERVICE:ParseOdyseeHTML( html )
 		metadata.embedUrl = embed
 	end
 
-	if videoData.thumbnailUrl then
-		metadata.thumbnail = videoData.thumbnailUrl
-	end
-
 	return metadata
 end
 
@@ -104,10 +100,6 @@ function SERVICE:ParseOEmbedMetadata( body )
 	local metadata = {}
 	metadata.title = response.title or "Odysee Livestream"
 	metadata.duration = 0
-
-	if response.thumbnail_url then
-		metadata.thumbnail = response.thumbnail_url
-	end
 
 	-- Extract embed src from oEmbed html iframe when present
 	if response.html then

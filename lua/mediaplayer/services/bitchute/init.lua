@@ -39,14 +39,20 @@ local function OnReceiveMetadata( self, callback, body )
 		return callback( false, "This BitChute video is not available (" .. tostring( data.state_id ) .. ")." )
 	end
 
+	local duration = ParseDuration( data.duration )
+	local isLive = ( data.state_id == "live" )
+		or ( data.state_id == "live" and duration == 0 )
+		or ( data.duration == "0:00" and data.state_id == "live" )
+
+	-- Live streams: no fixed duration (IsTimed returns false when duration is 0)
+	if isLive or ( data.state_id == "live" ) then
+		duration = 0
+	end
+
 	local metadata = {}
 	metadata.title = data.video_name or "BitChute Video"
 	metadata.thumbnail = data.thumbnail_url or ""
-	metadata.duration = ParseDuration( data.duration )
-
-	if data.state_id == "live" then
-		metadata.duration = 0
-	end
+	metadata.duration = duration
 
 	self:SetMetadata( metadata, true )
 

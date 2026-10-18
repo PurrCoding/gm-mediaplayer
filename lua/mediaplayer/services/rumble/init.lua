@@ -1,8 +1,6 @@
 AddCSLuaFile "shared.lua"
 include "shared.lua"
 
--- Cinema: API_URL = "https://rumble.com/api/Media/oembed.json?url=https://rumble.com/%s"
--- then appends ".html" for watch-page slugs. Shorts keep path without extra .html.
 local function BuildOEmbedUrl( videoId, isShort )
 	if isShort then
 		return "https://rumble.com/api/Media/oembed.json?url=https://rumble.com/" .. videoId
@@ -23,7 +21,7 @@ local function OnReceiveMetadata( self, callback, body )
 	local duration = tonumber( data.duration ) or 0
 	metadata.duration = duration
 
-	-- Cinema extracts embed from oEmbed html field
+	-- extracts embed from oEmbed html field
 	if data.html then
 		local embed = string.match( data.html, "(https://rumble%.com/embed/[%a%d-_]+/)" )
 		if embed then

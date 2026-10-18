@@ -5,7 +5,7 @@ SERVICE.Id 		= "odysee"
 SERVICE.Base 	= "browser"
 
 --[[
-	Valid video URL shapes (same idea as Cinema GetURLInfo):
+	Valid video URL shapes:
 	  https://odysee.com/@channel:1/video-title:a
 	  https://odysee.com/video-title:a
 

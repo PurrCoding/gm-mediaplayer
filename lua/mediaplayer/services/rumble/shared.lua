@@ -15,7 +15,7 @@ function SERVICE:Match( url )
 		return false
 	end
 
-	-- Watch page: /vXXXX-title.html (same slug Cinema stores as Data)
+	-- Watch page: /vXXXX-title.html
 	if string.match( url, "rumble%.com/[^%s?#]+%.html" ) then
 		return true
 	end
@@ -29,7 +29,7 @@ function SERVICE:Match( url )
 end
 
 --[[
-	Extract the path slug used for oEmbed, matching Cinema GetURLInfo:
+	Extract the path slug used for oEmbed
 	- https://rumble.com/v7gwi6a-title....html  →  v7gwi6a-title....
 	- https://rumble.com/shorts/v7gycdc         →  shorts/v7gycdc
 	  (oEmbed accepts the path without forcing .html for shorts)
@@ -47,7 +47,6 @@ function SERVICE:GetRumbleVideoId()
 		return nil
 	end
 
-	-- Cinema: url.path:match("/([%a%d%p-_]+).html")
 	local slug = string.match( path, "/([%w%p%-_]+)%.html" )
 	if slug then
 		self.videoId = slug

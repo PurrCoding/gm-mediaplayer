@@ -22,9 +22,13 @@ const services = [
 	{ name: 'SoundCloud', icon: 'fa-brands fa-soundcloud', url: 'https://soundcloud.com/discover', action: 'select', requiresCodec: true, group: 'Audio' },
 	{ name: 'Dailymotion', icon: 'fa-brands fa-dailymotion', url: 'https://www.dailymotion.com/', action: 'select', requiresCodec: true, group: 'Video' },
 	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true, group: 'Live' },
+	{ name: 'Rumble', icon: 'fa-solid fa-play', url: 'https://rumble.com/', action: 'select', requiresCodec: true, group: 'Video' },
+	{ name: 'Kick', icon: 'fa-brands fa-kickstarter', url: 'https://kick.com/', action: 'select', requiresCodec: true, group: 'Live' },
 	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true, group: 'Video' },
+	{ name: 'Odysee', icon: 'fa-solid fa-circle-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' },
 	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true, group: 'Archive' },
-	{ name: 'Odysee', icon: 'fa-solid fa-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' }
+	{ name: 'VK Video', icon: 'fa-brands fa-vk', url: 'https://vkvideo.ru/', action: 'select', requiresCodec: true, group: 'Video' },
+	{ name: 'Однокла́ссники', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', action: 'select', requiresCodec: true, group: 'Video' },
 ];
 
 let hasCodecSupport = false;
@@ -88,10 +92,17 @@ const supportGroups = [
 			['Twitch', 'https://www.twitch.tv/CHANNEL'],
 			['SoundCloud', 'https://soundcloud.com/artist/track'],
 			['Dailymotion', 'https://www.dailymotion.com/video/VIDEO_ID'],
+			['Rumble', 'https://rumble.com/VIDEO_PATH.html'],
+			['Kick', 'https://kick.com/CHANNEL'],
+			['Kick VOD', 'https://kick.com/CHANNEL/videos/UUID'],
 			['Bilibili', 'https://www.bilibili.com/video/VIDEO_ID'],
 			['Odysee', 'https://odysee.com/@channel:1/video:1'],
 			['Archive.org', 'https://archive.org/details/ITEM_ID'],
-			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view']
+			['VK Video', 'https://vkvideo.ru/video-VIDEO_ID'],
+			['VK Live', 'https://vkvideo.ru/live-OWNER_ID'],
+			['OK', 'https://ok.ru/video/VIDEO_ID'],
+			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view'],
+			['MEGA', 'https://mega.nz/file/FILE_ID#KEY']
 		]
 	}
 ];

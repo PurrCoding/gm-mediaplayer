@@ -6,7 +6,7 @@ SERVICE.Base 	= "browser"
 
 function SERVICE:New( url )
 	local obj = BaseClass.New(self, url)
-	obj._data = obj:GetOdyseeVideoId()
+	obj._data = obj:GetOdyseeEmbedPath()
 	return obj
 end
 
@@ -14,23 +14,35 @@ function SERVICE:Match( url )
 	return string.match( url, "odysee%.com" ) ~= nil
 end
 
-function SERVICE:GetOdyseeVideoId()
-	local path = self.urlinfo.path or ""
+-- Returns the path segment used in embed URLs.
+-- Prefer "@channel:x/claim:y" when a channel is present (official oEmbed style).
+-- Fallback: bare claim name for legacy / claim-only links.
+function SERVICE:GetOdyseeEmbedPath()
+	local path = self.urlinfo and self.urlinfo.path or ""
 
-	-- Extract claim name from URL patterns like:
 	-- https://odysee.com/@channel:1/video-title:a
-	-- https://odysee.com/video-title:a
-	local claimName = string.match(path, "/([^/]+)$")
+	local channel, claim = string.match(path, "/(@[^/]+)/([^/]+)$")
+	if channel and claim then
+		return channel .. "/" .. claim
+	end
 
-	if claimName then
-		return claimName
+	-- https://odysee.com/video-title:a  (no channel)
+	local claimOnly = string.match(path, "/([^/]+)$")
+	if claimOnly and claimOnly ~= "" and not string.StartWith(claimOnly, "$") then
+		return claimOnly
 	end
 
 	return ""
 end
 
+-- Backwards-compatible alias used by older call sites
+function SERVICE:GetOdyseeVideoId()
+	return self:GetOdyseeEmbedPath()
+end
+
 function SERVICE:GetOdyseeChannel()
-	return string.match( self.url, "odysee%.com/@([^/]+)/" )
+	local path = self.urlinfo and self.urlinfo.path or ""
+	return string.match(path, "/(@[^/]+)/")
 end
 
 function SERVICE:IsTimed()

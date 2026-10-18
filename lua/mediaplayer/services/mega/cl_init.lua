@@ -5,8 +5,8 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
 --[[
-	MEGA ignores or immediately undoes native video.pause().
-	Drive play/pause through their UI (button / video click) instead.
+	MEGA ignores native pause — use UI click after bind.
+	Autoplay still needs play() on the <video> during startup.
 ]]
 local JS_Pause = [[
 	(function() {
@@ -15,12 +15,10 @@ local JS_Pause = [[
 		if (!p) return;
 
 		var playBtn = document.querySelector(".play-video-button");
-		// If the play overlay is visible, we are already paused
 		if (playBtn && p.paused) return;
 
 		try { p.click(); } catch (e) {}
 
-		// Short watchdog: MEGA sometimes resumes after our click
 		var ticks = 0;
 		if (window.__mpPauseWatch) clearInterval(window.__mpPauseWatch);
 		window.__mpPauseWatch = setInterval(function() {
@@ -54,7 +52,6 @@ local JS_Play = [[
 		var playBtn = document.querySelector(".play-video-button");
 		if (playBtn) {
 			try { playBtn.click(); } catch (e) {}
-			return;
 		}
 
 		try { p.click(); } catch (e) {}
@@ -81,6 +78,8 @@ local JS_Interface = [[
 		window.__mpWantPlay = true;
 
 		var checkerInterval = setInterval(function() {
+			if (!window.__mpWantPlay) return;
+
 			var plybtn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
 
@@ -91,15 +90,18 @@ local JS_Interface = [[
 				return;
 			}
 
-			if (plybtn && player.paused && window.__mpWantPlay) {
+			// Startup: keep trying until MEGA actually plays
+			if (player.paused) {
 				try {
 					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					plybtn.click();
+					if (plybtn) plybtn.click();
+					var req = player.play();
+					if (req && req.catch) req.catch(function() {});
 				} catch (e) {}
 				return;
 			}
 
-			if (player.paused || Number.isNaN(player.duration)) return;
+			if (Number.isNaN(player.duration)) return;
 
 			clearInterval(checkerInterval);
 			window.MediaPlayer = player;
@@ -121,22 +123,22 @@ local METADATA_JS = [[
 				return;
 			}
 
-			if (plybtn && player.paused) {
+			if (player.paused) {
 				try {
 					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					plybtn.click();
+					if (plybtn) plybtn.click();
+					var req = player.play();
+					if (req && req.catch) req.catch(function() {});
 				} catch (e) {}
 				return;
 			}
 
-			if (player.paused || Number.isNaN(player.duration)) return;
+			if (Number.isNaN(player.duration)) return;
 			if (done) return;
 
 			clearInterval(checkerInterval);
 			done = true;
 			player.volume = 0;
-
-			// Pause via UI click for metadata scrape
 			try { player.click(); } catch (e) {}
 
 			var title = document.title.replace("MEGA - ", "");

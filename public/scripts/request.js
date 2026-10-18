@@ -28,9 +28,7 @@ const services = [
 	{ name: 'Odysee', icon: 'fa-solid fa-circle-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' },
 	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true, group: 'Archive' },
 	{ name: 'VK Video', icon: 'fa-brands fa-vk', url: 'https://vkvideo.ru/', action: 'select', requiresCodec: true, group: 'Video' },
-	{ name: 'OK', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', action: 'select', requiresCodec: true, group: 'Video' },
-	{ name: 'Google Drive', icon: 'fa-brands fa-google-drive', url: 'https://drive.google.com/', action: 'select', requiresCodec: true, group: 'Video' },
-	{ name: 'MEGA', icon: 'fa-solid fa-cloud', url: 'https://mega.nz/', action: 'select', requiresCodec: true, group: 'Video' }
+	{ name: 'Однокла́ссники', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', action: 'select', requiresCodec: true, group: 'Video' },
 ];
 
 let hasCodecSupport = false;

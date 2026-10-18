@@ -29,6 +29,7 @@ const services = [
 	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', requiresCodec: true, group: 'Archive' },
 	{ name: 'VK Видео', icon: 'fa-brands fa-vk', url: 'https://vkvideo.ru/', requiresCodec: true, group: 'Video' },
 	{ name: 'Одноклассники', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', requiresCodec: true, group: 'Video' },
+	{ name: 'Bitchute', icon: 'fa-brands fa-flag-usa', url: 'https://bitchute.com/', requiresCodec: true, group: 'Video' },
 ];
 
 let hasCodecSupport = false;
@@ -83,6 +84,16 @@ const supportGroups = [
 		]
 	},
 	{
+		title: 'Direct URL sources',
+		icon: 'fa-solid fa-link',
+		note: 'These are example URLs only. Other public HTTPS URLs can work too, as long as they provide direct media playback without requiring a web page. Local files, localhost/private hosts and IP-address URLs are not supported.',
+		items: [
+			['Own domain', 'https://media.example.com/video.mp4'],
+			['Discord CDN', 'https://cdn.discordapp.com/attachments/CHANNEL_ID/MESSAGE_ID/video.mp4'],
+			['Bunny CDN', 'https://your-zone.b-cdn.net/video.mp4']
+		]
+	},
+	{
 		key: 'services',
 		title: 'Supported service URLs',
 		icon: 'fa-solid fa-globe',
@@ -101,6 +112,7 @@ const supportGroups = [
 			['VK Video', 'https://vkvideo.ru/video-VIDEO_ID'],
 			['VK Live', 'https://vkvideo.ru/live-OWNER_ID'],
 			['Одноклассники', 'https://ok.ru/video/VIDEO_ID'],
+			['Bitchute', 'https://bitchute.com/video/VIDEO_ID'],
 			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view'],
 			['MEGA', 'https://mega.nz/file/FILE_ID#KEY']
 		]

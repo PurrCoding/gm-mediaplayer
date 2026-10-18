@@ -5,27 +5,61 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
 --[[
-	HTML5 rejects play() with AbortError if pause() runs while the
-	play promise is still pending. Always catch and serialize control.
+	MEGA ignores or immediately undoes native video.pause().
+	Drive play/pause through their UI (button / video click) instead.
 ]]
 local JS_Pause = [[
 	(function() {
+		window.__mpWantPlay = false;
 		var p = window.MediaPlayer;
 		if (!p) return;
-		window.__mpWantPlay = false;
-		try { p.pause(); } catch (e) {}
+
+		var playBtn = document.querySelector(".play-video-button");
+		// If the play overlay is visible, we are already paused
+		if (playBtn && p.paused) return;
+
+		try { p.click(); } catch (e) {}
+
+		// Short watchdog: MEGA sometimes resumes after our click
+		var ticks = 0;
+		if (window.__mpPauseWatch) clearInterval(window.__mpPauseWatch);
+		window.__mpPauseWatch = setInterval(function() {
+			if (window.__mpWantPlay) {
+				clearInterval(window.__mpPauseWatch);
+				return;
+			}
+			var ply = window.MediaPlayer;
+			if (!ply || ply.paused) {
+				clearInterval(window.__mpPauseWatch);
+				return;
+			}
+			try { ply.click(); } catch (e) {}
+			if (++ticks >= 15) clearInterval(window.__mpPauseWatch);
+		}, 120);
 	})();
 ]]
 
 local JS_Play = [[
 	(function() {
+		window.__mpWantPlay = true;
+		if (window.__mpPauseWatch) {
+			clearInterval(window.__mpPauseWatch);
+			window.__mpPauseWatch = null;
+		}
+
 		var p = window.MediaPlayer;
 		if (!p) return;
-		window.__mpWantPlay = true;
-		var req = p.play();
-		if (req && req.catch) {
-			req.catch(function() {});
+		if (!p.paused) return;
+
+		var playBtn = document.querySelector(".play-video-button");
+		if (playBtn) {
+			try { playBtn.click(); } catch (e) {}
+			return;
 		}
+
+		try { p.click(); } catch (e) {}
+		var req = p.play();
+		if (req && req.catch) req.catch(function() {});
 	})();
 ]]
 
@@ -52,13 +86,11 @@ local JS_Interface = [[
 
 			if (!player) return;
 
-			// Skip ads / wrong video nodes
 			if (!player.id || player.id !== "video") {
 				try { player.currentTime = 9999; } catch (e) {}
 				return;
 			}
 
-			// Start once via MEGA UI (do not also call play() here — races)
 			if (plybtn && player.paused && window.__mpWantPlay) {
 				try {
 					player.setAttribute("webkit-playsinline", "webkit-playsinline");
@@ -71,14 +103,6 @@ local JS_Interface = [[
 
 			clearInterval(checkerInterval);
 			window.MediaPlayer = player;
-
-			// Safe play helper used after bind
-			window.__mpSafePlay = function() {
-				var p = window.MediaPlayer;
-				if (!p || !window.__mpWantPlay) return;
-				var req = p.play();
-				if (req && req.catch) req.catch(function() {});
-			};
 		}, 50);
 	})();
 ]]
@@ -111,7 +135,9 @@ local METADATA_JS = [[
 			clearInterval(checkerInterval);
 			done = true;
 			player.volume = 0;
-			try { player.pause(); } catch (e) {}
+
+			// Pause via UI click for metadata scrape
+			try { player.click(); } catch (e) {}
 
 			var title = document.title.replace("MEGA - ", "");
 			console.log("METADATA:" + JSON.stringify({

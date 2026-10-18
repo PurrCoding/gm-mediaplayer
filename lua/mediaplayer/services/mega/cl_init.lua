@@ -5,20 +5,21 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
 --[[
-	MEGA ignores native pause — use UI click after bind.
-	Autoplay still needs play() on the <video> during startup.
+	MEGA play/pause is driven only by .play-video-button (toggle).
+	Native video.paused is the source of truth afterwards.
 ]]
 local JS_Pause = [[
 	(function() {
 		window.__mpWantPlay = false;
 		var p = window.MediaPlayer;
-		if (!p) return;
+		if (!p || p.paused) return;
 
-		var playBtn = document.querySelector(".play-video-button");
-		if (playBtn && p.paused) return;
+		var btn = document.querySelector(".play-video-button");
+		if (btn) {
+			try { btn.click(); } catch (e) {}
+		}
 
-		try { p.click(); } catch (e) {}
-
+		// Retry a few times until video.paused is true
 		var ticks = 0;
 		if (window.__mpPauseWatch) clearInterval(window.__mpPauseWatch);
 		window.__mpPauseWatch = setInterval(function() {
@@ -31,9 +32,10 @@ local JS_Pause = [[
 				clearInterval(window.__mpPauseWatch);
 				return;
 			}
-			try { ply.click(); } catch (e) {}
-			if (++ticks >= 15) clearInterval(window.__mpPauseWatch);
-		}, 120);
+			var b = document.querySelector(".play-video-button");
+			if (b) { try { b.click(); } catch (e) {} }
+			if (++ticks >= 20) clearInterval(window.__mpPauseWatch);
+		}, 100);
 	})();
 ]]
 
@@ -46,17 +48,29 @@ local JS_Play = [[
 		}
 
 		var p = window.MediaPlayer;
-		if (!p) return;
-		if (!p.paused) return;
+		if (!p || !p.paused) return;
 
-		var playBtn = document.querySelector(".play-video-button");
-		if (playBtn) {
-			try { playBtn.click(); } catch (e) {}
+		var btn = document.querySelector(".play-video-button");
+		if (btn) {
+			try { btn.click(); } catch (e) {}
 		}
 
-		try { p.click(); } catch (e) {}
-		var req = p.play();
-		if (req && req.catch) req.catch(function() {});
+		var ticks = 0;
+		if (window.__mpPlayWatch) clearInterval(window.__mpPlayWatch);
+		window.__mpPlayWatch = setInterval(function() {
+			if (!window.__mpWantPlay) {
+				clearInterval(window.__mpPlayWatch);
+				return;
+			}
+			var ply = window.MediaPlayer;
+			if (!ply || !ply.paused) {
+				clearInterval(window.__mpPlayWatch);
+				return;
+			}
+			var b = document.querySelector(".play-video-button");
+			if (b) { try { b.click(); } catch (e) {} }
+			if (++ticks >= 20) clearInterval(window.__mpPlayWatch);
+		}, 100);
 	})();
 ]]
 
@@ -80,7 +94,7 @@ local JS_Interface = [[
 		var checkerInterval = setInterval(function() {
 			if (!window.__mpWantPlay) return;
 
-			var plybtn = document.querySelector(".play-video-button");
+			var btn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
 
 			if (!player) return;
@@ -90,14 +104,14 @@ local JS_Interface = [[
 				return;
 			}
 
-			// Startup: keep trying until MEGA actually plays
+			// Autoplay: click MEGA play button until video.paused === false
 			if (player.paused) {
-				try {
-					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					if (plybtn) plybtn.click();
-					var req = player.play();
-					if (req && req.catch) req.catch(function() {});
-				} catch (e) {}
+				if (btn) {
+					try {
+						player.setAttribute("webkit-playsinline", "webkit-playsinline");
+						btn.click();
+					} catch (e) {}
+				}
 				return;
 			}
 
@@ -113,7 +127,7 @@ local METADATA_JS = [[
 	(function() {
 		var done = false;
 		var checkerInterval = setInterval(function() {
-			var plybtn = document.querySelector(".play-video-button");
+			var btn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
 
 			if (!player) return;
@@ -124,12 +138,12 @@ local METADATA_JS = [[
 			}
 
 			if (player.paused) {
-				try {
-					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					if (plybtn) plybtn.click();
-					var req = player.play();
-					if (req && req.catch) req.catch(function() {});
-				} catch (e) {}
+				if (btn) {
+					try {
+						player.setAttribute("webkit-playsinline", "webkit-playsinline");
+						btn.click();
+					} catch (e) {}
+				}
 				return;
 			}
 
@@ -139,7 +153,11 @@ local METADATA_JS = [[
 			clearInterval(checkerInterval);
 			done = true;
 			player.volume = 0;
-			try { player.click(); } catch (e) {}
+
+			// Pause for metadata scrape via same toggle button
+			if (btn) {
+				try { btn.click(); } catch (e) {}
+			}
 
 			var title = document.title.replace("MEGA - ", "");
 			console.log("METADATA:" + JSON.stringify({

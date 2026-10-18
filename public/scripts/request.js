@@ -24,7 +24,12 @@ const services = [
 	{ name: 'Twitch', icon: 'fa-brands fa-twitch', url: 'https://www.twitch.tv/', action: 'select', requiresCodec: true, group: 'Live' },
 	{ name: 'Bilibili', icon: 'fa-brands fa-bilibili', url: 'https://www.bilibili.com/', action: 'open', requiresCodec: true, group: 'Video' },
 	{ name: 'Internet Archive', icon: 'fa-brands fa-internet-archive', url: 'https://archive.org/details/movies', action: 'select', requiresCodec: true, group: 'Archive' },
+<<<<<<< Updated upstream
 	{ name: 'Odysee', icon: 'fa-solid fa-play', url: 'https://odysee.com/', action: 'select', requiresCodec: true, group: 'Video' }
+=======
+	{ name: 'VK Видео', icon: 'fa-brands fa-vk', url: 'https://vkvideo.ru/', action: 'select', requiresCodec: true, group: 'Video' },
+	{ name: 'Одноклассники', icon: 'fa-brands fa-odnoklassniki', url: 'https://ok.ru/video', action: 'select', requiresCodec: true, group: 'Video' },
+>>>>>>> Stashed changes
 ];
 
 let hasCodecSupport = false;
@@ -91,7 +96,15 @@ const supportGroups = [
 			['Bilibili', 'https://www.bilibili.com/video/VIDEO_ID'],
 			['Odysee', 'https://odysee.com/@channel:1/video:1'],
 			['Archive.org', 'https://archive.org/details/ITEM_ID'],
+<<<<<<< Updated upstream
 			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view']
+=======
+			['VK Video', 'https://vkvideo.ru/video-VIDEO_ID'],
+			['VK Live', 'https://vkvideo.ru/live-OWNER_ID'],
+			['Одноклассники', 'https://ok.ru/video/VIDEO_ID'],
+			['Google Drive', 'https://drive.google.com/file/d/FILE_ID/view'],
+			['MEGA', 'https://mega.nz/file/FILE_ID#KEY']
+>>>>>>> Stashed changes
 		]
 	}
 ];

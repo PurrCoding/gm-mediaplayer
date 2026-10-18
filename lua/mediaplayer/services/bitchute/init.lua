@@ -40,12 +40,13 @@ local function OnReceiveMetadata( self, callback, body )
 	end
 
 	local duration = ParseDuration( data.duration )
-	local isLive = ( data.state_id == "live" )
-		or ( data.state_id == "live" and duration == 0 )
-		or ( data.duration == "0:00" and data.state_id == "live" )
 
-	-- Live streams: no fixed duration (IsTimed returns false when duration is 0)
-	if isLive or ( data.state_id == "live" ) then
+	-- Livestream: state_id "live" and/or duration "0:00"
+	local isLive = ( data.state_id == "live" )
+		or ( data.duration == "0:00" )
+		or ( duration == 0 and data.state_id == "live" )
+
+	if isLive then
 		duration = 0
 	end
 
@@ -56,6 +57,7 @@ local function OnReceiveMetadata( self, callback, body )
 
 	self:SetMetadata( metadata, true )
 
+	-- Only cache VODs with a known duration
 	if metadata.duration > 0 then
 		MediaPlayer.Metadata:Save( self )
 	end

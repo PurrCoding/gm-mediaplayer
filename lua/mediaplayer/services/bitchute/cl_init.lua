@@ -2,6 +2,8 @@ include "shared.lua"
 
 DEFINE_BASECLASS( "mp_service_browser" )
 
+local EMBED_URL = "https://www.bitchute.com/api/beta9/embed/%s?startTime=%d&autoPlay=true"
+
 local JS_Pause = [[
 	(function() {
 		var p = window.MediaPlayer;
@@ -33,24 +35,12 @@ local JS_Seek = [[
 ]]
 
 --[[
-	Same approach as MEGA:
-	1. Use BitChute/Video.js UI only to start the stream once
-	2. Detach <video>, wipe the rest of the page (kills Video.js controls/scripts)
-	3. Own play/pause/volume/seek via native HTMLMediaElement APIs
+	Embed API already supports autoPlay + startTime.
+	Once the <video> is playing, isolate it (MEGA-style) so Video.js
+	cannot fight play/pause/seek.
 ]]
 local JS_Interface = [[
 	(function() {
-		function tryClickPlay() {
-			var btn = document.querySelector(".vjs-big-play-button")
-				|| document.querySelector("button.vjs-play-control")
-				|| document.querySelector(".vjs-play-control");
-			if (btn) {
-				try { btn.click(); } catch (e) {}
-				return true;
-			}
-			return false;
-		}
-
 		function isolate(player) {
 			document.documentElement.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
 			document.body.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
@@ -91,14 +81,9 @@ local JS_Interface = [[
 			window.MediaPlayer = player;
 		}
 
-		// Click as soon as the button exists (before video is ready)
-		tryClickPlay();
-
 		var checkerInterval = setInterval(function() {
-			// Keep poking the play button until playback starts
-			tryClickPlay();
-
-			var player = document.getElementsByTagName("video")[0];
+			var player = document.getElementById("player_one")
+				|| document.querySelector("video");
 			if (!player) return;
 
 			if (player.paused) {
@@ -110,20 +95,29 @@ local JS_Interface = [[
 				return;
 			}
 
-			if (Number.isNaN(player.duration) && player.readyState < 2) return;
+			if (player.readyState < 2) return;
 
 			clearInterval(checkerInterval);
 			isolate(player);
 
 			var req = player.play();
 			if (req && req.catch) req.catch(function() {});
-		}, 20);
+		}, 50);
 	})();
 ]]
 
 function SERVICE:GetURL()
-	local videoId = self:GetBitChuteVideoId()
-	return ("https://www.bitchute.com/embed/%s"):format( videoId or "" )
+	local videoId = self:GetBitChuteVideoId() or ""
+	local startTime = 0
+
+	if self:IsTimed() then
+		local cur = math.floor( self:CurrentTime() or 0 )
+		if cur > 0 then
+			startTime = cur
+		end
+	end
+
+	return EMBED_URL:format( videoId, startTime )
 end
 
 function SERVICE:OnBrowserReady( browser )

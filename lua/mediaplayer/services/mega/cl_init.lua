@@ -4,62 +4,20 @@ DEFINE_BASECLASS( "mp_service_browser" )
 
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
---[[
-	.play-video-button is a toggle — click at most once per intent,
-	then verify native video.paused. Never spam-click.
-]]
 local JS_Pause = [[
 	(function() {
-		window.__mpWantPlay = false;
 		var p = window.MediaPlayer;
-		if (!p || p.paused) return;
-		if (window.__mpToggleBusy) return;
-
-		var btn = document.querySelector(".play-video-button");
-		if (!btn) return;
-
-		window.__mpToggleBusy = true;
-		try { btn.click(); } catch (e) {}
-
-		// One delayed retry only if still playing
-		setTimeout(function() {
-			window.__mpToggleBusy = false;
-			if (window.__mpWantPlay) return;
-			var ply = window.MediaPlayer;
-			if (!ply || ply.paused) return;
-			var b = document.querySelector(".play-video-button");
-			if (!b) return;
-			window.__mpToggleBusy = true;
-			try { b.click(); } catch (e) {}
-			setTimeout(function() { window.__mpToggleBusy = false; }, 400);
-		}, 400);
+		if (!p) return;
+		try { p.pause(); } catch (e) {}
 	})();
 ]]
 
 local JS_Play = [[
 	(function() {
-		window.__mpWantPlay = true;
 		var p = window.MediaPlayer;
-		if (!p || !p.paused) return;
-		if (window.__mpToggleBusy) return;
-
-		var btn = document.querySelector(".play-video-button");
-		if (!btn) return;
-
-		window.__mpToggleBusy = true;
-		try { btn.click(); } catch (e) {}
-
-		setTimeout(function() {
-			window.__mpToggleBusy = false;
-			if (!window.__mpWantPlay) return;
-			var ply = window.MediaPlayer;
-			if (!ply || !ply.paused) return;
-			var b = document.querySelector(".play-video-button");
-			if (!b) return;
-			window.__mpToggleBusy = true;
-			try { b.click(); } catch (e) {}
-			setTimeout(function() { window.__mpToggleBusy = false; }, 400);
-		}, 400);
+		if (!p) return;
+		var req = p.play();
+		if (req && req.catch) req.catch(function() {});
 	})();
 ]]
 
@@ -76,14 +34,57 @@ local JS_Seek = [[
 	}
 ]]
 
+--[[
+	1. Use MEGA UI only to start the stream once
+	2. Detach <video>, wipe the rest of the page (kills MEGA controls)
+	3. Own play/pause/volume/seek via native HTMLMediaElement APIs
+]]
 local JS_Interface = [[
 	(function() {
-		window.__mpWantPlay = true;
-		window.__mpToggleBusy = false;
+		var started = false;
+
+		function isolate(player) {
+			document.documentElement.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
+			document.body.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
+
+			document.body.appendChild(player);
+
+			var nodes = Array.prototype.slice.call(document.body.childNodes);
+			for (var i = 0; i < nodes.length; i++) {
+				if (nodes[i] !== player) {
+					try { document.body.removeChild(nodes[i]); } catch (e) {}
+				}
+			}
+
+			// Drop MEGA scripts so they cannot re-attach listeners
+			var scripts = document.querySelectorAll("script");
+			for (var s = 0; s < scripts.length; s++) {
+				try { scripts[s].remove(); } catch (e) {}
+			}
+
+			player.style.cssText = [
+				"position:fixed",
+				"top:0",
+				"left:0",
+				"width:100%",
+				"height:100%",
+				"max-width:100%",
+				"max-height:100%",
+				"object-fit:contain",
+				"background:#000",
+				"z-index:9999",
+				"margin:0",
+				"padding:0",
+				"border:none"
+			].join(";");
+
+			player.removeAttribute("controls");
+			player.controls = false;
+
+			window.MediaPlayer = player;
+		}
 
 		var checkerInterval = setInterval(function() {
-			if (!window.__mpWantPlay) return;
-
 			var btn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
 
@@ -94,22 +95,31 @@ local JS_Interface = [[
 				return;
 			}
 
-			// Already playing → bind once
-			if (!player.paused && !Number.isNaN(player.duration)) {
-				clearInterval(checkerInterval);
-				window.MediaPlayer = player;
+			// First kick: one MEGA button click to start the stream
+			if (player.paused && !started) {
+				started = true;
+				try {
+					player.setAttribute("webkit-playsinline", "webkit-playsinline");
+					if (btn) btn.click();
+				} catch (e) {}
+				// Allow a second attempt after 600ms if still paused
+				setTimeout(function() {
+					if (player.paused) {
+						var b = document.querySelector(".play-video-button");
+						if (b) { try { b.click(); } catch (e) {} }
+					}
+				}, 600);
 				return;
 			}
 
-			// Autoplay: single click, wait for video.paused === false
-			if (player.paused && btn && !window.__mpToggleBusy) {
-				window.__mpToggleBusy = true;
-				try {
-					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					btn.click();
-				} catch (e) {}
-				setTimeout(function() { window.__mpToggleBusy = false; }, 500);
-			}
+			if (player.paused || Number.isNaN(player.duration)) return;
+
+			clearInterval(checkerInterval);
+			isolate(player);
+
+			// Ensure playback continues after isolation
+			var req = player.play();
+			if (req && req.catch) req.catch(function() {});
 		}, 50);
 	})();
 ]]
@@ -117,7 +127,7 @@ local JS_Interface = [[
 local METADATA_JS = [[
 	(function() {
 		var done = false;
-		var busy = false;
+		var started = false;
 		var checkerInterval = setInterval(function() {
 			var btn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
@@ -129,33 +139,28 @@ local METADATA_JS = [[
 				return;
 			}
 
-			if (!player.paused && !Number.isNaN(player.duration)) {
-				if (done) return;
-				clearInterval(checkerInterval);
-				done = true;
-				player.volume = 0;
-
-				// Single pause click for quiet metadata scrape
-				if (btn) {
-					try { btn.click(); } catch (e) {}
-				}
-
-				var title = document.title.replace("MEGA - ", "");
-				console.log("METADATA:" + JSON.stringify({
-					duration: player.duration,
-					title: title
-				}));
+			if (player.paused && !started) {
+				started = true;
+				try {
+					player.setAttribute("webkit-playsinline", "webkit-playsinline");
+					if (btn) btn.click();
+				} catch (e) {}
 				return;
 			}
 
-			if (player.paused && btn && !busy) {
-				busy = true;
-				try {
-					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					btn.click();
-				} catch (e) {}
-				setTimeout(function() { busy = false; }, 500);
-			}
+			if (player.paused || Number.isNaN(player.duration)) return;
+			if (done) return;
+
+			clearInterval(checkerInterval);
+			done = true;
+			player.volume = 0;
+			try { player.pause(); } catch (e) {}
+
+			var title = document.title.replace("MEGA - ", "");
+			console.log("METADATA:" + JSON.stringify({
+				duration: player.duration,
+				title: title
+			}));
 		}, 50);
 	})();
 ]]

@@ -40,7 +40,16 @@ local JS_Seek = [[
 ]]
 local JS_Interface = [[
 	(function() {
-		var started = false;
+		function tryClickPlay() {
+			var btn = document.querySelector(".vjs-big-play-button")
+				|| document.querySelector("button.vjs-play-control")
+				|| document.querySelector(".vjs-play-control");
+			if (btn) {
+				try { btn.click(); } catch (e) {}
+				return true;
+			}
+			return false;
+		}
 
 		function isolate(player) {
 			document.documentElement.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
@@ -55,7 +64,6 @@ local JS_Interface = [[
 				}
 			}
 
-			// Drop page scripts so Video.js cannot re-attach listeners
 			var scripts = document.querySelectorAll("script");
 			for (var s = 0; s < scripts.length; s++) {
 				try { scripts[s].remove(); } catch (e) {}
@@ -83,44 +91,33 @@ local JS_Interface = [[
 			window.MediaPlayer = player;
 		}
 
-		var checkerInterval = setInterval(function() {
-			var btn = document.querySelector(".vjs-big-play-button")
-				|| document.querySelector("button.vjs-play-control")
-				|| document.querySelector(".vjs-play-control");
-			var player = document.getElementsByTagName("video")[0];
+		// Click as soon as the button exists (before video is ready)
+		tryClickPlay();
 
+		var checkerInterval = setInterval(function() {
+			// Keep poking the play button until playback starts
+			tryClickPlay();
+
+			var player = document.getElementsByTagName("video")[0];
 			if (!player) return;
 
-			// First kick: one Video.js play click to start the stream
-			if (player.paused && !started) {
-				started = true;
+			if (player.paused) {
 				try {
 					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					if (btn) btn.click();
 					var req = player.play();
 					if (req && req.catch) req.catch(function() {});
 				} catch (e) {}
-				setTimeout(function() {
-					if (player.paused) {
-						var b = document.querySelector(".vjs-big-play-button")
-							|| document.querySelector("button.vjs-play-control");
-						if (b) { try { b.click(); } catch (e) {} }
-						var r = player.play();
-						if (r && r.catch) r.catch(function() {});
-					}
-				}, 600);
 				return;
 			}
 
-			if (player.paused || Number.isNaN(player.duration)) return;
+			if (Number.isNaN(player.duration) && player.readyState < 2) return;
 
 			clearInterval(checkerInterval);
 			isolate(player);
 
-			// Ensure playback continues after isolation
 			var req = player.play();
 			if (req && req.catch) req.catch(function() {});
-		}, 50);
+		}, 20);
 	})();
 ]]
 

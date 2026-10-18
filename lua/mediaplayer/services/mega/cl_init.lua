@@ -5,72 +5,61 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
 --[[
-	MEGA play/pause is driven only by .play-video-button (toggle).
-	Native video.paused is the source of truth afterwards.
+	.play-video-button is a toggle — click at most once per intent,
+	then verify native video.paused. Never spam-click.
 ]]
 local JS_Pause = [[
 	(function() {
 		window.__mpWantPlay = false;
 		var p = window.MediaPlayer;
 		if (!p || p.paused) return;
+		if (window.__mpToggleBusy) return;
 
 		var btn = document.querySelector(".play-video-button");
-		if (btn) {
-			try { btn.click(); } catch (e) {}
-		}
+		if (!btn) return;
 
-		// Retry a few times until video.paused is true
-		var ticks = 0;
-		if (window.__mpPauseWatch) clearInterval(window.__mpPauseWatch);
-		window.__mpPauseWatch = setInterval(function() {
-			if (window.__mpWantPlay) {
-				clearInterval(window.__mpPauseWatch);
-				return;
-			}
+		window.__mpToggleBusy = true;
+		try { btn.click(); } catch (e) {}
+
+		// One delayed retry only if still playing
+		setTimeout(function() {
+			window.__mpToggleBusy = false;
+			if (window.__mpWantPlay) return;
 			var ply = window.MediaPlayer;
-			if (!ply || ply.paused) {
-				clearInterval(window.__mpPauseWatch);
-				return;
-			}
+			if (!ply || ply.paused) return;
 			var b = document.querySelector(".play-video-button");
-			if (b) { try { b.click(); } catch (e) {} }
-			if (++ticks >= 20) clearInterval(window.__mpPauseWatch);
-		}, 100);
+			if (!b) return;
+			window.__mpToggleBusy = true;
+			try { b.click(); } catch (e) {}
+			setTimeout(function() { window.__mpToggleBusy = false; }, 400);
+		}, 400);
 	})();
 ]]
 
 local JS_Play = [[
 	(function() {
 		window.__mpWantPlay = true;
-		if (window.__mpPauseWatch) {
-			clearInterval(window.__mpPauseWatch);
-			window.__mpPauseWatch = null;
-		}
-
 		var p = window.MediaPlayer;
 		if (!p || !p.paused) return;
+		if (window.__mpToggleBusy) return;
 
 		var btn = document.querySelector(".play-video-button");
-		if (btn) {
-			try { btn.click(); } catch (e) {}
-		}
+		if (!btn) return;
 
-		var ticks = 0;
-		if (window.__mpPlayWatch) clearInterval(window.__mpPlayWatch);
-		window.__mpPlayWatch = setInterval(function() {
-			if (!window.__mpWantPlay) {
-				clearInterval(window.__mpPlayWatch);
-				return;
-			}
+		window.__mpToggleBusy = true;
+		try { btn.click(); } catch (e) {}
+
+		setTimeout(function() {
+			window.__mpToggleBusy = false;
+			if (!window.__mpWantPlay) return;
 			var ply = window.MediaPlayer;
-			if (!ply || !ply.paused) {
-				clearInterval(window.__mpPlayWatch);
-				return;
-			}
+			if (!ply || !ply.paused) return;
 			var b = document.querySelector(".play-video-button");
-			if (b) { try { b.click(); } catch (e) {} }
-			if (++ticks >= 20) clearInterval(window.__mpPlayWatch);
-		}, 100);
+			if (!b) return;
+			window.__mpToggleBusy = true;
+			try { b.click(); } catch (e) {}
+			setTimeout(function() { window.__mpToggleBusy = false; }, 400);
+		}, 400);
 	})();
 ]]
 
@@ -90,6 +79,7 @@ local JS_Seek = [[
 local JS_Interface = [[
 	(function() {
 		window.__mpWantPlay = true;
+		window.__mpToggleBusy = false;
 
 		var checkerInterval = setInterval(function() {
 			if (!window.__mpWantPlay) return;
@@ -104,21 +94,22 @@ local JS_Interface = [[
 				return;
 			}
 
-			// Autoplay: click MEGA play button until video.paused === false
-			if (player.paused) {
-				if (btn) {
-					try {
-						player.setAttribute("webkit-playsinline", "webkit-playsinline");
-						btn.click();
-					} catch (e) {}
-				}
+			// Already playing → bind once
+			if (!player.paused && !Number.isNaN(player.duration)) {
+				clearInterval(checkerInterval);
+				window.MediaPlayer = player;
 				return;
 			}
 
-			if (Number.isNaN(player.duration)) return;
-
-			clearInterval(checkerInterval);
-			window.MediaPlayer = player;
+			// Autoplay: single click, wait for video.paused === false
+			if (player.paused && btn && !window.__mpToggleBusy) {
+				window.__mpToggleBusy = true;
+				try {
+					player.setAttribute("webkit-playsinline", "webkit-playsinline");
+					btn.click();
+				} catch (e) {}
+				setTimeout(function() { window.__mpToggleBusy = false; }, 500);
+			}
 		}, 50);
 	})();
 ]]
@@ -126,6 +117,7 @@ local JS_Interface = [[
 local METADATA_JS = [[
 	(function() {
 		var done = false;
+		var busy = false;
 		var checkerInterval = setInterval(function() {
 			var btn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
@@ -137,33 +129,33 @@ local METADATA_JS = [[
 				return;
 			}
 
-			if (player.paused) {
+			if (!player.paused && !Number.isNaN(player.duration)) {
+				if (done) return;
+				clearInterval(checkerInterval);
+				done = true;
+				player.volume = 0;
+
+				// Single pause click for quiet metadata scrape
 				if (btn) {
-					try {
-						player.setAttribute("webkit-playsinline", "webkit-playsinline");
-						btn.click();
-					} catch (e) {}
+					try { btn.click(); } catch (e) {}
 				}
+
+				var title = document.title.replace("MEGA - ", "");
+				console.log("METADATA:" + JSON.stringify({
+					duration: player.duration,
+					title: title
+				}));
 				return;
 			}
 
-			if (Number.isNaN(player.duration)) return;
-			if (done) return;
-
-			clearInterval(checkerInterval);
-			done = true;
-			player.volume = 0;
-
-			// Pause for metadata scrape via same toggle button
-			if (btn) {
-				try { btn.click(); } catch (e) {}
+			if (player.paused && btn && !busy) {
+				busy = true;
+				try {
+					player.setAttribute("webkit-playsinline", "webkit-playsinline");
+					btn.click();
+				} catch (e) {}
+				setTimeout(function() { busy = false; }, 500);
 			}
-
-			var title = document.title.replace("MEGA - ", "");
-			console.log("METADATA:" + JSON.stringify({
-				duration: player.duration,
-				title: title
-			}));
 		}, 50);
 	})();
 ]]

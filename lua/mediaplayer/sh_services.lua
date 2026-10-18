@@ -136,7 +136,6 @@ do
 		"ok",
 		"vk",
 		"mega",
-		"jellyfin",
 
 		-- HTML Resources
 		"resource", -- base

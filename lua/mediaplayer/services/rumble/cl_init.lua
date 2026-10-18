@@ -5,10 +5,6 @@ DEFINE_BASECLASS( "mp_service_browser" )
 local JS_Pause = "if(window.MediaPlayer) MediaPlayer.pause();"
 local JS_Play = "if(window.MediaPlayer) MediaPlayer.play();"
 
---[[
-	Desired volume lives in window.__mpVolume so the embed can re-mute
-	without us losing the user's slider value. Apply never forces 1.0.
-]]
 local JS_Volume = [[
 	(function() {
 		var v = %s;
@@ -32,9 +28,7 @@ local JS_Seek = [[
 ]]
 
 --[[
-	1. Wait until video is actually playing
-	2. Bind MediaPlayer and install __mpApplyVolume
-	3. Apply desired volume once, then defend against re-mute for a few seconds
+	Like Kick: detach <video>, strip the rest of the page, full-bleed black.
 	{@volume} → initial MediaPlayer volume (0–1)
 ]]
 local JS_Interface = [[
@@ -48,7 +42,6 @@ local JS_Interface = [[
 			try {
 				if (v > 0) {
 					p.muted = false;
-					// Some embeds set defaultMuted / attribute mute
 					if (p.hasAttribute && p.hasAttribute("muted")) {
 						p.removeAttribute("muted");
 					}
@@ -57,11 +50,44 @@ local JS_Interface = [[
 			} catch (e) {}
 		};
 
+		function isolateVideo(player) {
+			// Full-bleed layout
+			document.documentElement.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
+			document.body.style.cssText = "margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden;";
+
+			// Move <video> onto body and drop every other node
+			document.body.appendChild(player);
+			var children = Array.prototype.slice.call(document.body.childNodes);
+			for (var i = 0; i < children.length; i++) {
+				if (children[i] !== player) {
+					try { document.body.removeChild(children[i]); } catch (e) {}
+				}
+			}
+
+			player.style.cssText = [
+				"position:fixed",
+				"top:0",
+				"left:0",
+				"width:100%",
+				"height:100%",
+				"max-width:100%",
+				"max-height:100%",
+				"object-fit:contain",
+				"background:#000",
+				"z-index:9999",
+				"margin:0",
+				"padding:0",
+				"border:none"
+			].join(";");
+
+			player.removeAttribute("controls");
+			player.controls = false;
+		}
+
 		var checkerInterval = setInterval(function() {
 			var player = document.getElementsByTagName("video")[0];
 			if (!player) return;
 
-			// Start playback if still paused (autoplay may have been blocked)
 			if (player.paused) {
 				try { player.play(); } catch (e) {}
 				return;
@@ -71,17 +97,15 @@ local JS_Interface = [[
 
 			clearInterval(checkerInterval);
 
-			document.body.style.backgroundColor = "black";
+			isolateVideo(player);
 			window.MediaPlayer = player;
 
-			// Apply as soon as we hear real playback
 			window.__mpApplyVolume();
 
 			player.addEventListener("play", function() {
 				window.__mpApplyVolume();
 			});
 
-			// If the player mutes itself (autoplay policy / embed UI), restore
 			player.addEventListener("volumechange", function() {
 				var v = window.__mpVolume;
 				if (v > 0 && player.muted) {
@@ -89,11 +113,10 @@ local JS_Interface = [[
 				}
 			});
 
-			// Short watchdog: Rumble often re-mutes in the first seconds
 			var ticks = 0;
 			var watchdog = setInterval(function() {
 				window.__mpApplyVolume();
-				if (++ticks >= 40) { // ~4s @ 100ms
+				if (++ticks >= 40) {
 					clearInterval(watchdog);
 				}
 			}, 100);
@@ -121,7 +144,6 @@ function SERVICE:OnBrowserReady( browser )
 	if self._Paused then
 		self.Browser:RunJavascript( JS_Play )
 		self._Paused = nil
-		-- Re-apply volume after resume
 		self:SetVolume( self:Volume() )
 		return
 	end

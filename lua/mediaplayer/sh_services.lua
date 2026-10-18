@@ -131,6 +131,11 @@ do
 		"archive",
 		"gdrive",
 		"odysee",
+		"rumble",
+		"kick",
+		"ok",
+		"vk",
+		"mega",
 
 		-- HTML Resources
 		"resource", -- base

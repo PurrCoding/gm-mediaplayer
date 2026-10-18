@@ -4,8 +4,16 @@ DEFINE_BASECLASS( "mp_service_browser" )
 
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
-local JS_Pause = "if(window.MediaPlayer) MediaPlayer.pause();"
-local JS_Play = "if(window.MediaPlayer) MediaPlayer.play();"
+local JS_Pause = [[
+	if (window.MediaPlayer) {
+		try { window.MediaPlayer.pause(); } catch (e) {}
+	}
+]]
+local JS_Play = [[
+	if (window.MediaPlayer) {
+		try { window.MediaPlayer.play(); } catch (e) {}
+	}
+]]
 local JS_Volume = "if(window.MediaPlayer) MediaPlayer.volume = %s;"
 local JS_Seek = [[
 	if (window.MediaPlayer) {
@@ -18,71 +26,87 @@ local JS_Seek = [[
 	}
 ]]
 
+--[[
+	Start playback via MEGA UI once, bind the real #video element, then
+	STOP the interval. Leaving it running re-clicks play while paused.
+]]
 local JS_Interface = [[
-	(async () => {
-		var done = false;
+	(function() {
 		var checkerInterval = setInterval(function() {
 			var plybtn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
 
-			if (!!player) {
-				if (!!plybtn && player.paused) {
-					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					player.click();
-					return;
-				}
+			if (!player) return;
 
-				if (player.id && player.id === "video") {
-					if (!player.paused && !Number.isNaN(player.duration)) {
-						if (done) return;
-						done = true;
-						window.MediaPlayer = player;
-					}
-				} else {
-					player.currentTime = 9999;
-				}
+			// Skip ads / wrong video nodes
+			if (!player.id || player.id !== "video") {
+				try { player.currentTime = 9999; } catch (e) {}
+				return;
 			}
+
+			// Kick MEGA's own play button once if still idle
+			if (plybtn && player.paused) {
+				try {
+					player.setAttribute("webkit-playsinline", "webkit-playsinline");
+					plybtn.click();
+					player.play();
+				} catch (e) {}
+				return;
+			}
+
+			if (player.paused || Number.isNaN(player.duration)) return;
+
+			// Bound — never auto-click again
+			clearInterval(checkerInterval);
+			window.MediaPlayer = player;
 		}, 50);
 	})();
 ]]
 
 local METADATA_JS = [[
-	(async () => {
+	(function() {
 		var done = false;
 		var checkerInterval = setInterval(function() {
 			var plybtn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
 
-			if (!!player) {
-				if (!!plybtn && player.paused) {
-					player.setAttribute("webkit-playsinline", "webkit-playsinline");
-					player.click();
-					return;
-				}
+			if (!player) return;
 
-				if (player.id && player.id === "video") {
-					if (!player.paused && !Number.isNaN(player.duration)) {
-						if (done) return;
-						clearInterval(checkerInterval);
-						done = true;
-						player.volume = 0;
-						var title = document.title.replace("MEGA - ", "");
-						console.log("METADATA:" + JSON.stringify({
-							duration: player.duration,
-							title: title
-						}));
-					}
-				} else {
-					player.currentTime = 9999;
-				}
+			if (!player.id || player.id !== "video") {
+				try { player.currentTime = 9999; } catch (e) {}
+				return;
 			}
+
+			if (plybtn && player.paused) {
+				try {
+					player.setAttribute("webkit-playsinline", "webkit-playsinline");
+					plybtn.click();
+					player.play();
+				} catch (e) {}
+				return;
+			}
+
+			if (player.paused || Number.isNaN(player.duration)) return;
+			if (done) return;
+
+			clearInterval(checkerInterval);
+			done = true;
+			player.volume = 0;
+
+			var title = document.title.replace("MEGA - ", "");
+			console.log("METADATA:" + JSON.stringify({
+				duration: player.duration,
+				title: title
+			}));
 		}, 50);
 	})();
 ]]
 
 function SERVICE:OnBrowserReady( browser )
 	if self._Paused then
-		self.Browser:RunJavascript( JS_Play )
+		if IsValid( self.Browser ) then
+			self.Browser:RunJavascript( JS_Play )
+		end
 		self._Paused = nil
 		return
 	end

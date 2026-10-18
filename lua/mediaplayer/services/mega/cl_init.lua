@@ -4,17 +4,33 @@ DEFINE_BASECLASS( "mp_service_browser" )
 
 local PREVIEW_URL = "https://mega.nz/embed/%s"
 
+--[[
+	HTML5 rejects play() with AbortError if pause() runs while the
+	play promise is still pending. Always catch and serialize control.
+]]
 local JS_Pause = [[
-	if (window.MediaPlayer) {
-		try { window.MediaPlayer.pause(); } catch (e) {}
-	}
+	(function() {
+		var p = window.MediaPlayer;
+		if (!p) return;
+		window.__mpWantPlay = false;
+		try { p.pause(); } catch (e) {}
+	})();
 ]]
+
 local JS_Play = [[
-	if (window.MediaPlayer) {
-		try { window.MediaPlayer.play(); } catch (e) {}
-	}
+	(function() {
+		var p = window.MediaPlayer;
+		if (!p) return;
+		window.__mpWantPlay = true;
+		var req = p.play();
+		if (req && req.catch) {
+			req.catch(function() {});
+		}
+	})();
 ]]
+
 local JS_Volume = "if(window.MediaPlayer) MediaPlayer.volume = %s;"
+
 local JS_Seek = [[
 	if (window.MediaPlayer) {
 		var seekTime = %s;
@@ -26,12 +42,10 @@ local JS_Seek = [[
 	}
 ]]
 
---[[
-	Start playback via MEGA UI once, bind the real #video element, then
-	STOP the interval. Leaving it running re-clicks play while paused.
-]]
 local JS_Interface = [[
 	(function() {
+		window.__mpWantPlay = true;
+
 		var checkerInterval = setInterval(function() {
 			var plybtn = document.querySelector(".play-video-button");
 			var player = document.getElementsByTagName("video")[0];
@@ -44,21 +58,27 @@ local JS_Interface = [[
 				return;
 			}
 
-			// Kick MEGA's own play button once if still idle
-			if (plybtn && player.paused) {
+			// Start once via MEGA UI (do not also call play() here — races)
+			if (plybtn && player.paused && window.__mpWantPlay) {
 				try {
 					player.setAttribute("webkit-playsinline", "webkit-playsinline");
 					plybtn.click();
-					player.play();
 				} catch (e) {}
 				return;
 			}
 
 			if (player.paused || Number.isNaN(player.duration)) return;
 
-			// Bound — never auto-click again
 			clearInterval(checkerInterval);
 			window.MediaPlayer = player;
+
+			// Safe play helper used after bind
+			window.__mpSafePlay = function() {
+				var p = window.MediaPlayer;
+				if (!p || !window.__mpWantPlay) return;
+				var req = p.play();
+				if (req && req.catch) req.catch(function() {});
+			};
 		}, 50);
 	})();
 ]]
@@ -81,7 +101,6 @@ local METADATA_JS = [[
 				try {
 					player.setAttribute("webkit-playsinline", "webkit-playsinline");
 					plybtn.click();
-					player.play();
 				} catch (e) {}
 				return;
 			}
@@ -92,6 +111,7 @@ local METADATA_JS = [[
 			clearInterval(checkerInterval);
 			done = true;
 			player.volume = 0;
+			try { player.pause(); } catch (e) {}
 
 			var title = document.title.replace("MEGA - ", "");
 			console.log("METADATA:" + JSON.stringify({

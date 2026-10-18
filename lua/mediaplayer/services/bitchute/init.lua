@@ -11,20 +11,27 @@ local HttpHeaders = {
 
 local function ParseDuration( str )
 	if not str or str == "" then return 0 end
+
 	local h, m, s = string.match( str, "^(%d+):(%d+):(%d+)$" )
 	if h then
 		return tonumber( h ) * 3600 + tonumber( m ) * 60 + tonumber( s )
 	end
+
 	m, s = string.match( str, "^(%d+):(%d+)$" )
 	if m then
 		return tonumber( m ) * 60 + tonumber( s )
 	end
+
 	return tonumber( str ) or 0
 end
 
 local function OnReceiveMetadata( self, callback, body )
 	local data = util.JSONToTable( body )
-	if not data or not data.video_id then
+	if not data then
+		return callback( false, "Failed to parse BitChute metadata." )
+	end
+
+	if not data.video_id then
 		return callback( false, "Failed to parse BitChute metadata." )
 	end
 
@@ -32,18 +39,17 @@ local function OnReceiveMetadata( self, callback, body )
 		return callback( false, "This BitChute video is not available (" .. tostring( data.state_id ) .. ")." )
 	end
 
-	local metadata = {
-		title = data.video_name or "BitChute Video",
-		thumbnail = data.thumbnail_url or "",
-		duration = ParseDuration( data.duration ),
-	}
+	local metadata = {}
+	metadata.title = data.video_name or "BitChute Video"
+	metadata.thumbnail = data.thumbnail_url or ""
+	metadata.duration = ParseDuration( data.duration )
 
-	-- Live streams have no fixed duration
 	if data.state_id == "live" then
 		metadata.duration = 0
 	end
 
 	self:SetMetadata( metadata, true )
+
 	if metadata.duration > 0 then
 		MediaPlayer.Metadata:Save( self )
 	end
@@ -73,9 +79,11 @@ function SERVICE:GetMetadata( callback )
 			if MediaPlayer.DEBUG then
 				print( "BitChute metadata HTTP[" .. tostring( code ) .. "]" )
 			end
+
 			if code ~= 200 then
 				return callback( false, "Failed to load BitChute [" .. tostring( code ) .. "]" )
 			end
+
 			OnReceiveMetadata( self, callback, body )
 		end,
 		failed = function( err )

@@ -10,8 +10,10 @@ function SERVICE:New( url )
 	return obj
 end
 
+-- Only accept concrete video/embed links, not the homepage or channel pages.
 function SERVICE:Match( url )
-	return url and string.find( url, "bitchute%.com" ) ~= nil
+	if not url then return false end
+	return string.find( url, "bitchute%.com/(?:video|embed)/[%w%-_]+" ) ~= nil
 end
 
 function SERVICE:GetBitChuteVideoId()
@@ -27,9 +29,10 @@ function SERVICE:GetBitChuteVideoId()
 		return nil
 	end
 
-	-- /video/ID or /embed/ID
-	local id = string.match( path, "^/(?:video|embed)/([%w%-_]+)" )
-	if id then
+	-- /video/ID or /embed/ID (optional trailing slash)
+	local id = string.match( path, "^/(?:video|embed)/([%w%-_]+)/?$" )
+		or string.match( path, "^/(?:video|embed)/([%w%-_]+)" )
+	if id and id ~= "" then
 		self.videoId = id
 		return id
 	end

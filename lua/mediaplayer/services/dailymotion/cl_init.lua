@@ -27,18 +27,19 @@ local JS_Interface = [[
 			document.querySelector(".consent_screen-button.consent_screen-accept").click();
 		}
 
-		var player = document.querySelector("video#video");
+		var player = document.querySelector(".video_view video");
 		if (!!player && player.paused == false && player.readyState == 4) {
 			clearInterval(checkerInterval);
 
 			window.MediaPlayer = player;
+			player.muted = false;
 		}
 	}, 50);
 ]]
 
 function SERVICE:GetURL()
 	local videoId = self:GetDailymotionVideoId()
-	return ("https://www.dailymotion.com/embed/video/%s?rel=0&autoplay=1"):format( videoId )
+	return ("https://geo.dailymotion.com/player/x1nqri.html?video=%s&rel=0&autoplay=1"):format( videoId )
 end
 
 function SERVICE:OnBrowserReady( browser )

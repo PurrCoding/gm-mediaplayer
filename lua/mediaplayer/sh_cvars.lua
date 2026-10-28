@@ -29,4 +29,8 @@ if CLIENT then
 	MediaPlayer.Cvars.ProximityMin = CreateClientConVar( "mediaplayer_proximity_min", "100", true, false )
 	MediaPlayer.Cvars.ProximityMax = CreateClientConVar( "mediaplayer_proximity_max", "1000", true, false )
 
+	-- Per-viewer YouTube caption language, passed to the player page.
+	-- Language code (e.g. "ko", "en"); "off" disables captions.
+	MediaPlayer.Cvars.CaptionLang	= CreateClientConVar( "mediaplayer_cc_lang", "off", true, false )
+
 end

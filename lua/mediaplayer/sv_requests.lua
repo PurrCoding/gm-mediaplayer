@@ -99,6 +99,11 @@ net.Receive( "MEDIAPLAYER.RequestMedia", RequestWrapper(function(mp, ply)
 		return
 	end
 
+	-- YouTube playlist link? Expand it into the whole playlist and stop here.
+	if MediaPlayer.TryQueuePlaylist and MediaPlayer.TryQueuePlaylist( mp, ply, sanitizedUrl ) then
+		return
+	end
+
 	-- Build the media object for the URL
 	local media = MediaPlayer.GetMediaForUrl( sanitizedUrl, allowWebpage )
 	if not media then

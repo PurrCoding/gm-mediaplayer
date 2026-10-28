@@ -62,6 +62,15 @@ function SERVICE:OnBrowserReady( browser )
 		hash = hash .. ("&t=%d"):format(curTime)
 	end
 
+	-- Per-viewer caption language. Sanitized to language-code characters, then
+	-- passed to the player page ("off" leaves captions disabled).
+	if MediaPlayer.Cvars.CaptionLang then
+		local ccLang = MediaPlayer.Cvars.CaptionLang:GetString():gsub( "[^%a%-]", "" )
+		if ccLang ~= "" then
+			hash = hash .. "&cc=" .. ccLang
+		end
+	end
+
 	local url = baseUrl .. "#" .. hash
 	browser:OpenURL( url )
 

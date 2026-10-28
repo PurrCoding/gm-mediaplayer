@@ -143,6 +143,29 @@ end
 -- }
 
 -- ─────────────────────────────────────────────
+-- YouTube caption languages: { code, display name }. Add or remove as needed.
+-- ─────────────────────────────────────────────
+
+local CAPTION_LANGS = {
+	{ "off",   "Off" },
+	{ "en",    "English" },
+	{ "ko",    "한국어" },
+	{ "ja",    "日本語" },
+	{ "zh-CN", "简体中文" },
+	{ "zh-TW", "繁體中文" },
+	{ "es-ES", "Español" },
+	{ "fr",    "Français" },
+	{ "de",    "Deutsch" },
+	{ "ru",    "Русский" },
+	{ "pt-BR", "Português" },
+	{ "it",    "Italiano" },
+	{ "id",    "Bahasa Indonesia" },
+	{ "th",    "ไทย" },
+	{ "vi",    "Tiếng Việt" },
+	{ "ar",    "العربية" },
+}
+
+-- ─────────────────────────────────────────────
 -- Control factory functions
 -- ─────────────────────────────────────────────
 
@@ -203,6 +226,54 @@ local function CreateDisabledDropdown(parent, text, options)
 	combo.OnSelect = function() combo:SetValue(options[1] or "Off") end
 
 	return combo
+end
+
+-- Language picker that stores the selected code in a convar. Implemented as a
+-- cycling button (left-click = next, right-click = previous) because DComboBox
+-- popups don't receive clicks inside this menu. list = { {code, name}, ... }
+local function CreateLangCycler(parent, labelText, convarName, list)
+	local label = vgui.Create("DLabel", parent)
+	label:SetText(labelText)
+	label:SetFont("DermaDefaultBold")
+	label:SetTextColor(Color(220, 220, 220))
+	label:Dock(TOP)
+	label:DockMargin(0, 15, 0, 4)
+	label:SizeToContents()
+
+	local convar = GetConVar(convarName)
+	local cur = convar and convar:GetString() or ""
+	local idx = 1
+	for i, pair in ipairs(list) do
+		if pair[1] == cur then idx = i break end
+	end
+
+	local btn = vgui.Create("DButton", parent)
+	btn:SetTall(26)
+	btn:Dock(TOP)
+	btn:DockMargin(0, 0, 0, 0)
+
+	local function refresh()
+		btn:SetText("◀   " .. list[idx][2] .. "   ▶")
+	end
+	refresh()
+
+	local function apply(delta)
+		idx = ((idx - 1 + delta) % #list) + 1
+		RunConsoleCommand(convarName, list[idx][1] or "")
+		refresh()
+	end
+
+	btn.DoClick      = function() apply(1) end
+	btn.DoRightClick = function() apply(-1) end
+
+	local hint = vgui.Create("DLabel", parent)
+	hint:SetText("Click: next  /  Right-click: prev")
+	hint:SetTextColor(Color(140, 140, 140))
+	hint:Dock(TOP)
+	hint:DockMargin(0, 2, 0, 0)
+	hint:SizeToContents()
+
+	return btn
 end
 
 -- ─────────────────────────────────────────────
@@ -278,14 +349,8 @@ function PANEL:BuildContent()
 	-- Set initial state
 	UpdateProximityControlsEnabled()
 
-	-- Subtitles (placeholder)
-	-- CreateDisabledDropdown(scroll, L("mp.settings.subtitles"), {
-	-- 	L("mp.settings.subtitles_off"),
-	-- 	"English",
-	-- 	"German",
-	-- 	"Japanese",
-	-- 	"Klingon",
-	-- })
+	-- Per-viewer YouTube caption language.
+	CreateLangCycler(scroll, "Subtitles", "mediaplayer_cc_lang", CAPTION_LANGS)
 end
 
 function PANEL:Paint(w, h)

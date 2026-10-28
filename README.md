@@ -163,7 +163,7 @@ Originally created by [Samuel Maddock](https://github.com/samuelmaddock).
 - [SheepyLord](https://github.com/SheepyLord) — Spatial Media Player and Bilibili integration
 - [Astralcircle](https://github.com/Astralcircle) — Spawn-menu icons and repository structure
 - [Veitikka](https://github.com/veitikka) — YouTube metadata improvements
-- [parkmawani](https://github.com/parkmawani) — Original work used for YouTube subtitle support
+- [parkmawani](https://github.com/parkmawani) — YouTube subtitle support
 - [All other contributors](https://github.com/PurrCoding/gm-mediaplayer/graphs/contributors)
 
 ## License

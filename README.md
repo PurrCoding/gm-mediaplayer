@@ -33,6 +33,8 @@ It is a community-maintained continuation of the original Media Player by [Samue
 
 YouTube, Bilibili, SoundCloud, Twitch, Dailymotion, Internet Archive, Google Drive, Odysee, direct audio URLs (such as `.mp3` and `.ogg`), HTML5 video, images, and optional unrestricted webpage playback.
 
+YouTube subtitles are supported when captions are available for a video; available subtitle languages can be selected in the player settings.
+
 Support varies by provider and URL type. Playback can also depend on the Chromium/CEF codecs available in the player's Garry's Mod installation. **SoundCloud requires GModPatchTool because the stock Garry's Mod CEF 86 browser is too old for reliable playback.** **SoundCloud requires a newer CEF than the stock GMod CEF 86; install GModPatchTool to update the embedded browser before using SoundCloud.**
 
 ### Spatial Media Player
@@ -161,6 +163,7 @@ Originally created by [Samuel Maddock](https://github.com/samuelmaddock).
 - [SheepyLord](https://github.com/SheepyLord) — Spatial Media Player and Bilibili integration
 - [Astralcircle](https://github.com/Astralcircle) — Spawn-menu icons and repository structure
 - [Veitikka](https://github.com/veitikka) — YouTube metadata improvements
+- [parkmawani](https://github.com/parkmawani) — Original work used for YouTube subtitle support
 - [All other contributors](https://github.com/PurrCoding/gm-mediaplayer/graphs/contributors)
 
 ## License

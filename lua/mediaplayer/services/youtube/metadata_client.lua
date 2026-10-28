@@ -107,7 +107,7 @@ local function InitDB()
         region TEXT PRIMARY KEY, visitor_data TEXT NOT NULL, updated_at INTEGER NOT NULL)]])
 end
 
-local metaMem, negMem, wins, fails, visitorMem = {}, {}, {}, {}, {}
+local metaMem, negMem, wins, fails = {}, {}, {}, {}
 InitDB()
 local pool = {}
 for _, c in ipairs(DEFAULT_POOL) do
@@ -152,30 +152,6 @@ local function CacheSet(id, meta)
     DBQuery("INSERT OR REPLACE INTO mp_yt_meta_cache (video_id,title,duration,live,source,updated_at) VALUES (" ..
         q(id) .. "," .. q(meta.title) .. "," .. math.max(0, math.floor(meta.duration)) .. "," ..
         (meta.live and 1 or 0) .. "," .. q(meta.source or "innertube") .. "," .. os.time() .. ")")
-end
-
-local function NegativeGet(id)
-    local e = negMem[id]
-    if e and e.expires > os.time() then return e.reason end
-    negMem[id] = nil
-    local rows = DBQuery("SELECT reason, updated_at FROM mp_yt_negative_cache WHERE video_id=" .. SQLStr(id) .. " LIMIT 1")
-    if not istable(rows) or not rows[1] then return nil end
-    local row = rows[1]
-    local updated = tonumber(row.updated_at) or 0
-    if os.time() - updated > NEG_TTL then
-        DBQuery("DELETE FROM mp_yt_negative_cache WHERE video_id=" .. SQLStr(id))
-        return nil
-    end
-    negMem[id] = { reason = row.reason, expires = updated + NEG_TTL }
-    return row.reason
-end
-
-local function NegativeSet(id, reason)
-    if reason ~= "private" and reason ~= "not_found" then return end
-    negMem[id] = { reason = reason, expires = os.time() + NEG_TTL }
-    if not sql or not sql.SQLStr then return end
-    DBQuery("INSERT OR REPLACE INTO mp_yt_negative_cache (video_id,reason,updated_at) VALUES (" ..
-        SQLStr(id) .. "," .. SQLStr(reason) .. "," .. os.time() .. ")")
 end
 
 local function Record(name, ok)
@@ -223,7 +199,6 @@ local function RequestJSON(url, body, headers, callback)
     local request = {
         url = url, method = "POST", headers = headers or {},
         body = util.TableToJSON(body or {}),
-        type = "application/json; charset=utf-8",
         success = function(code, response)
             if code ~= 200 or not isstring(response) then return done(false, nil, "HTTP " .. tostring(code)) end
             local ok, parsed = pcall(util.JSONToTable, response)
@@ -233,37 +208,8 @@ local function RequestJSON(url, body, headers, callback)
         failed = function(reason) done(false, nil, tostring(reason or "request failed")) end
     }
     -- GMod's HTTP implementation accepts a raw POST body on supported builds.
-    local queued = HTTP(request)
-    if queued == false then done(false, nil, "HTTP request could not be queued") end
+    HTTP(request)
     timer.Simple(REQUEST_TIMEOUT, function() done(false, nil, "timeout") end)
-end
-
-local function GetVisitorData(callback)
-    local cached = visitorMem.US
-    if cached and cached.expires > os.time() then return callback(cached.value) end
-    local rows = DBQuery("SELECT visitor_data, updated_at FROM mp_yt_visitor_data WHERE region='US' LIMIT 1")
-    if istable(rows) and rows[1] and os.time() - (tonumber(rows[1].updated_at) or 0) < 86400 then
-        local value = rows[1].visitor_data
-        visitorMem.US = { value = value, expires = os.time() + 2700 }
-        return callback(value)
-    end
-    RequestJSON(API_VISITOR, { context = { client = { clientName = "WEB", clientVersion = WEB_VERSION, hl = "en", gl = "US" } } }, {
-        ["Content-Type"] = "application/json", ["Accept"] = "application/json",
-        ["User-Agent"] = WEB_UA, ["X-YouTube-Client-Name"] = "1",
-        ["X-YouTube-Client-Version"] = WEB_VERSION
-    }, function(ok, data)
-        local value = ok and ((data.responseContext and data.responseContext.visitorData) or data.visitorData) or nil
-        if isstring(value) and value ~= "" then
-            visitorMem.US = { value = value, expires = os.time() + 2700 }
-            if sql and sql.SQLStr then
-                DBQuery("INSERT OR REPLACE INTO mp_yt_visitor_data (region,visitor_data,updated_at) VALUES ('US'," ..
-                    SQLStr(value) .. "," .. os.time() .. ")")
-            end
-            callback(value)
-        else
-            callback(nil)
-        end
-    end)
 end
 
 local function Classify(data)
@@ -298,27 +244,23 @@ local function ParsePlayer(data, id, source)
 end
 
 local function FetchOneClient(id, c, callback)
-    GetVisitorData(function(visitor)
-        local headers = {
-            ["Content-Type"] = "application/json", ["Accept"] = "application/json",
-            ["User-Agent"] = c.ua, ["Referer"] = "https://www.youtube.com/",
-            ["X-YouTube-Client-Name"] = c.id, ["X-YouTube-Client-Version"] = c.version,
-            ["Accept-Language"] = "en-US,en;q=0.9"
-        }
-        local payload = PlayerPayload(id, c)
-        if visitor then payload.context.client.visitorData = visitor end
-        RequestJSON(API_PLAYER, payload, headers, function(ok, data, err)
-            if not ok then Record(c.name, false) return callback(false, nil, err) end
-            local usable, reason = Classify(data)
-            if not usable then
-                Record(c.name, false)
-                return callback(false, nil, reason)
-            end
-            local meta = ParsePlayer(data, id, c.name)
-            if not meta then Record(c.name, false) return callback(false, nil, "no metadata") end
-            Record(c.name, true)
-            callback(true, meta)
-        end)
+    local headers = {
+        ["Content-Type"] = "application/json", ["Accept"] = "application/json",
+        ["User-Agent"] = c.ua, ["Origin"] = "https://www.youtube.com",
+        ["Referer"] = "https://www.youtube.com/", ["X-YouTube-Client-Name"] = c.id,
+        ["X-YouTube-Client-Version"] = c.version, ["Accept-Language"] = "en-US,en;q=0.9"
+    }
+    RequestJSON(API_PLAYER, PlayerPayload(id, c), headers, function(ok, data, err)
+        if not ok then Record(c.name, false) return callback(false, nil, err) end
+        local usable, reason = Classify(data)
+        if not usable then
+            Record(c.name, false)
+            return callback(false, nil, reason)
+        end
+        local meta = ParsePlayer(data, id, c.name)
+        if not meta then Record(c.name, false) return callback(false, nil, "no metadata") end
+        Record(c.name, true)
+        callback(true, meta)
     end)
 end
 
@@ -326,14 +268,11 @@ function YT:GetMetadata(id, callback)
     if not ValidVideoID(id) then callback(false, nil, "invalid YouTube video id") return end
     local cached = CacheGet(id)
     if cached then Debug("cache-hit", id) callback(true, cached) return end
-    local negative = NegativeGet(id)
-    if negative then Debug("negative-cache-hit", id .. " | " .. negative) callback(false, nil, negative) return end
     Debug("resolve", id)
     local attempted, best, hardError = {}, nil, nil
     local function attemptBatch(batch, retry)
         if #batch == 0 then
             if best then CacheSet(id, best) return callback(true, best) end
-            NegativeSet(id, hardError)
             return callback(false, nil, hardError or "all YouTube clients failed")
         end
         local left = #batch
@@ -365,7 +304,6 @@ function YT:GetMetadata(id, callback)
                     CacheSet(id, best)
                     callback(true, best)
                 else
-                    NegativeSet(id, hardError)
                     callback(false, nil, hardError or "YouTube metadata unavailable")
                 end
             end

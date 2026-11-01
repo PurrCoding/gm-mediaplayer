@@ -73,7 +73,7 @@ function MediaPlayer.History:GetRequestsByPlayer( ply, limit )
 	end
 
 	local query = string.format( [[
-SELECT H.*, M.title, M.thumbnail, M.duration
+SELECT H.*, M.title, COALESCE(M.thumbnail, '') AS thumbnail, M.duration
 FROM %s AS H
 JOIN mediaplayer_metadata AS M
 	ON (M.id = H.mediaid)

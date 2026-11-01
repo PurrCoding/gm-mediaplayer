@@ -141,14 +141,16 @@ function MediaPlayer.Metadata:Save( media )
 	else -- insert
 
 		local extra = (media._metadata and media._metadata.extra) or {}
-		query = string.format( "INSERT INTO `%s` ", TableName ) ..
-			"(id,title,duration,extra,last_request,last_updated) VALUES (" ..
-			string.format( "%s,", sql.SQLStr(id) ) ..
-			string.format( "%s,", sql.SQLStr( media:Title() ) ) ..
-			string.format( "%d,", media:Duration() or 0 ) ..
-			string.format( "%s,", sql.SQLStr( util.TableToJSON(extra) ) ) ..
-			string.format( "%d,", os.time() ) ..
-			string.format( "%d)", os.time() )
+		query = string.format(
+			"INSERT INTO `%s` (id,title,duration,extra,last_request,last_updated) VALUES (%s,%s,%d,%s,%d,%d)",
+			TableName,
+			sql.SQLStr(id),
+			sql.SQLStr(media:Title()),
+			media:Duration() or 0,
+			sql.SQLStr(util.TableToJSON(extra)),
+			os.time(),
+			os.time()
+		)
 
 	end
 
@@ -175,7 +177,7 @@ end
 
 -- Keep the legacy thumbnail column available for the original Media Player.
 -- Redux no longer stores thumbnails, but older versions still expect this column.
-local columns = sql.Query("PRAGMA table_info(" .. TableName .. ")")
+local columns = sql.Query(string.format("PRAGMA table_info(`%s`)", TableName))
 local hasThumbnail = false
 
 if istable(columns) then
@@ -188,7 +190,7 @@ if istable(columns) then
 end
 
 if not hasThumbnail then
-	local query = "ALTER TABLE `" .. TableName .. "` ADD COLUMN thumbnail VARCHAR(512) NOT NULL DEFAULT ''"
+	local query = string.format("ALTER TABLE `%s` ADD COLUMN thumbnail VARCHAR(512) NOT NULL DEFAULT ''", TableName)
 	local result = sql.Query(query)
 
 	if result == false then

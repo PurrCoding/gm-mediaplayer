@@ -4,7 +4,7 @@
 
 - Garry's Mod. The **x86-64 branch is recommended** for HTML/Chromium playback.
 - [GMod CEF Codec Fix](https://github.com/solsticegamestudios/GModCEFCodecFix) is recommended for broader H.264 and media codec compatibility.
-- SoundCloud may require an updated embedded Chromium/CEF browser; consult the project's current [GModPatchTool](https://github.com/PurrCoding/GModPatchTool) guidance.
+- SoundCloud may require an updated embedded Chromium/CEF browser; consult the project's current [GModPatchTool](https://github.com/solsticegamestudios/GModPatchTool) guidance.
 
 Media Player Redux is a regular addon, not a gamemode. It works with Sandbox and other gamemodes that allow its entities, tools, and UI interactions.
 

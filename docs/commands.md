@@ -18,7 +18,7 @@ The command clears cached titles, durations, thumbnails, and metadata. It does *
 
 ## Debug logging
 
-Set the server ConVar `mediaplayer_debug 1` to enable verbose diagnostic logging. Set it back to `0` to disable it. The setting is not archived by the addon.
+Set `mediaplayer_debug 1` in the server console to enable server-side diagnostics, or in the client console for client-side diagnostics. Set it back to `0` to disable logging in that realm. The setting is not archived by the addon.
 
 Debug output is written to the server console and may include request, listener, queue, state, and SQLite activity. Avoid leaving verbose logging enabled unnecessarily on busy servers.
 

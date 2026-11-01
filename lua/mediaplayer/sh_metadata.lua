@@ -192,7 +192,7 @@ if not hasThumbnail then
 	local result = sql.Query(query)
 
 	if result == false then
-		ErrorNoHalt("MediaPlayer.Metadata: Failed to add legacy thumbnail column: " .. tostring(sql.LastError()) .. "\\n")
+		ErrorNoHalt("MediaPlayer.Metadata: Failed to add legacy thumbnail column: " .. tostring(sql.LastError()) .. "\n")
 	end
 end
 

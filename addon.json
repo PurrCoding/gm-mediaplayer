@@ -5,6 +5,7 @@
 	"ignore"	:   [
 		".git/*",
 		".github/*",
+		"docs/*",
 		"public/*",
 		".gluarc.json",
 		"*.bat",

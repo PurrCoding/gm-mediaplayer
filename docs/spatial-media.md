@@ -1,51 +1,60 @@
 # Spatial Media
 
-Spatial media attaches a **MediaPlayer** instance to a prop (or a world position via an anchor entity). Nearby players become **listeners**; audio is attenuated by distance.
-
----
+Spatial Media attaches a media player to a prop or a world-positioned anchor. Nearby human players become listeners and hear the audio source. The client can attenuate volume based on distance.
 
 ## Tool: Spatial Media Player
 
-Category: **Media Player** in the tool menu.
+Find **Media Player → Spatial Media Player** in the tool menu.
 
 | Action | Effect |
-|--------|--------|
-| **Left click** | Place a spatial source on the traced entity (or create a world-positioned anchor) |
-| **Right click** | Remove an existing spatial source you control |
-| **Reload** | Reopen the request UI for an existing source |
+|---|---|
+| Left click | Create a spatial source on a supported traced entity or at a world position |
+| Right click | Remove a spatial source you are allowed to control |
+| Reload | Reopen the request UI for an existing spatial source |
 
-Valid targets: props and similar entities. Players, NPCs, ragdolls, and existing media player screen entities are rejected.
+The tool validates targets and uses an anchor entity to represent the source. A prop-attached anchor follows its parent; a world placement remains at its placed position. Tool-created entities participate in undo and cleanup.
 
-When a prop is targeted, an `mediaplayer_spatial_anchor` is parented to it and removed with the prop. World placements use a free-standing anchor within a match radius.
+Players and unsupported entity types are rejected. Existing media-player screens are not valid spatial targets.
 
-Controls and undo/cleanup are registered for the creating player.
+## Listener radius
 
----
+Server ConVar: `mediaplayer_spatial_hear_radius` (default `1800` Source units).
 
-## Hear radius
+The server periodically checks connected human players and adds those within the radius to the spatial player's listener set. Players outside the radius stop receiving that source's stream.
 
-ConVar: `mediaplayer_spatial_hear_radius` (default **1800**).
+This is separate from the client-side proximity-volume settings:
+- `mediaplayer_3daudio` enables distance-based volume.
+- `mediaplayer_proximity_min` sets the distance where volume is at full strength.
+- `mediaplayer_proximity_max` sets the distance where volume reaches zero.
 
-Each think, the spatial media player gathers human players within that distance of the anchor and sets them as listeners. Outside the radius, players stop receiving that stream.
+A player can be within the server listener radius but hear reduced volume due to client-side attenuation.
 
-Client proximity volume still applies via `mediaplayer_proximity_min` / `mediaplayer_proximity_max` when 3D audio is enabled.
+## Supported services
 
----
+Spatial players use a service whitelist. The current built-in whitelist is:
 
-## Service whitelist
+| Service ID | Provider |
+|---|---|
+| `yt` | YouTube |
+| `bili` | Bilibili |
+| `sc` | SoundCloud |
+| `twl` | Twitch live streams |
+| `dm` | Dailymotion |
+| `ia` | Internet Archive |
+| `odysee` | Odysee |
+| `tt` | HTML5 video/resource service |
+| `gd` | Google Drive |
+| `h5v` | Direct media/resource service |
+| `af` | Audio files |
 
-Spatial players use a reduced service whitelist (see `players/spatial/shared.lua`), including YouTube, Bilibili, SoundCloud, Twitch, Dailymotion, Internet Archive, Odysee, Google Drive, HTML5 video, and audio files. This keeps spatial sources focused on media that works well without a large screen.
-
----
+The whitelist is defined in `lua/mediaplayer/players/spatial/shared.lua`. Administrators with `MediaPlayer_BypassWhitelist` can bypass it.
 
 ## Permissions
 
-Requesting and controlling spatial media requires privilege on that player instance (`IsPlayerPrivileged`). Typically the creator/owner (and admins via CAMI) can control the anchor.
-
----
+The spatial player checks ownership/privileges before accepting requests. The creator/owner can control their source; administrators can be granted the relevant CAMI privileges. See [Permissions](permissions.md).
 
 ## Related
 
-- [Usage](usage)
-- [Permissions](permissions)
-- [Configuration](configuration)
+- [Configuration](configuration.md)
+- [Usage](usage.md)
+- [Permissions](permissions.md)

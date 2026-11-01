@@ -17,8 +17,8 @@ local TableName = "mediaplayer_metadata"
 -- SQLite table struct
 -- @type String
 --
-local TableStruct = string.format([[
-CREATE TABLE %s (
+local TableStruct = [[
+CREATE TABLE IF NOT EXISTS mediaplayer_metadata (
 	id              VARCHAR(48) PRIMARY KEY,
 	title           VARCHAR(128),
 	duration        INTEGER NOT NULL DEFAULT 0,
@@ -28,7 +28,7 @@ CREATE TABLE %s (
 	last_request    INTEGER NOT NULL DEFAULT 0,
 	last_updated    INTEGER NOT NULL DEFAULT 0,
 	expired         BOOLEAN NOT NULL DEFAULT 0
-)]], TableName)
+)]]
 
 ---
 -- Maximum cache age before it expires; currently one week in seconds.
@@ -48,50 +48,46 @@ function MediaPlayer.Metadata:Query( media )
 	local id = media:UniqueID()
 	if not id then return end
 
-	local query = ("SELECT * FROM `%s` WHERE id=%s"):format(TableName, sql.SQLStr(id))
+	local query = "SELECT * FROM mediaplayer_metadata WHERE id = ?"
+	local results = sql.QueryTyped(query, id)
 
 	if MediaPlayer.DEBUG then
 		print("MediaPlayer.Metadata.Query")
 		print(query)
 	end
 
-	local results = sql.QueryRow(query)
-
-	if results then
-		local expired = ( tonumber(results.expired) == 1 )
-
-		-- Media metadata has been marked as out-of-date
-		if expired then
-			return nil
-		end
-
-		local lastupdated = tonumber( results.last_updated )
-		local timediff = os.time() - lastupdated
-
-		if timediff > MaxCacheAge then
-
-			-- Set metadata entry as expired
-			query = "UPDATE `%s` SET expired=1 WHERE id=%s"
-			query = query:format( TableName, sql.SQLStr(id) )
-
-			if MediaPlayer.DEBUG then
-				print("MediaPlayer.Metadata.Query: Setting entry as expired")
-				print(query)
-			end
-
-			sql.Query( query )
-
-			return nil
-
-		else
-			return results
-		end
-	elseif results == false then
-		ErrorNoHalt("MediaPlayer.Metadata.Query: There was an error executing the SQL query\n")
-		print(query)
+	if results == false then
+		ErrorNoHalt("MediaPlayer.Metadata.Query: SQL error: " .. tostring(sql.LastError()) .. "\n")
+		return nil
 	end
 
-	return nil
+	local result = results[1]
+	if not result then return nil end
+
+	-- Media metadata has been marked as out-of-date
+	if tonumber(result.expired) == 1 then
+		return nil
+	end
+
+	local lastUpdated = tonumber(result.last_updated) or 0
+	if os.time() - lastUpdated > MaxCacheAge then
+		-- Set metadata entry as expired
+		query = "UPDATE mediaplayer_metadata SET expired = 1 WHERE id = ?"
+		local updateResult = sql.QueryTyped(query, id)
+
+		if updateResult == false then
+			ErrorNoHalt("MediaPlayer.Metadata.Query: Failed to mark entry as expired: " .. tostring(sql.LastError()) .. "\n")
+		end
+
+		if MediaPlayer.DEBUG then
+			print("MediaPlayer.Metadata.Query: Setting entry as expired")
+			print(query)
+		end
+
+		return nil
+	end
+
+	return result
 end
 
 ---
@@ -104,83 +100,101 @@ function MediaPlayer.Metadata:Save( media )
 	local id = media:UniqueID()
 	if not id then return end
 
-	local query = ("SELECT expired FROM `%s` WHERE id=%s"):format(TableName, sql.SQLStr(id))
-	local results = sql.Query(query)
+	local query = "SELECT expired FROM mediaplayer_metadata WHERE id = ?"
+	local results = sql.QueryTyped(query, id)
 
-	if istable(results) then -- update
+	if results == false then
+		ErrorNoHalt("MediaPlayer.Metadata.Save: Failed to check existing entry: " .. tostring(sql.LastError()) .. "\n")
+		return false
+	end
 
+	local now = os.time()
+	local existing = results[1]
+
+	if existing then
 		if MediaPlayer.DEBUG then
 			print("MediaPlayer.Metadata.Save Results:")
 			PrintTable(results)
 		end
 
-		results = results[1]
-
-		local expired = ( tonumber(results.expired) == 1 )
-
-		if expired then
-
+		if tonumber(existing.expired) == 1 then
 			-- Update possible new metadata
 			local extra = (media._metadata and media._metadata.extra) or {}
-			query = "UPDATE `%s` SET request_count=request_count+1, title=%s, duration=%d, extra=%s, last_request=%s, last_updated=%s, expired=0 WHERE id=%s"
-			query = query:format( TableName,
-						sql.SQLStr( media:Title() ),
-						media:Duration() or 0,
-						sql.SQLStr( util.TableToJSON(extra) ),
-						os.time(),
-						os.time(),
-						sql.SQLStr(id) )
-
+			query = [[
+UPDATE mediaplayer_metadata
+SET request_count = request_count + 1,
+	title = ?,
+	duration = ?,
+	extra = ?,
+	last_request = ?,
+	last_updated = ?,
+	expired = 0
+WHERE id = ?]]
+			results = sql.QueryTyped(
+				query,
+				media:Title(),
+				media:Duration() or 0,
+				util.TableToJSON(extra),
+				now,
+				now,
+				id
+			)
 		else
-
-			query = "UPDATE `%s` SET request_count=request_count+1, last_request=%s WHERE id=%s"
-			query = query:format( TableName, os.time(), sql.SQLStr(id) )
-
+			query = [[
+UPDATE mediaplayer_metadata
+SET request_count = request_count + 1, last_request = ?
+WHERE id = ?]]
+			results = sql.QueryTyped(query, now, id)
 		end
-
-	else -- insert
-
+	else
+		-- Insert a new metadata entry
 		local extra = (media._metadata and media._metadata.extra) or {}
-		query = string.format(
-			"INSERT INTO `%s` (id,title,duration,extra,last_request,last_updated) VALUES (%s,%s,%d,%s,%d,%d)",
-			TableName,
-			sql.SQLStr(id),
-			sql.SQLStr(media:Title()),
+		query = [[
+INSERT INTO mediaplayer_metadata
+	(id, title, duration, extra, last_request, last_updated)
+VALUES (?, ?, ?, ?, ?, ?)]]
+		results = sql.QueryTyped(
+			query,
+			id,
+			media:Title(),
 			media:Duration() or 0,
-			sql.SQLStr(util.TableToJSON(extra)),
-			os.time(),
-			os.time()
+			util.TableToJSON(extra),
+			now,
+			now
 		)
-
 	end
 
 	if MediaPlayer.DEBUG then
 		print("MediaPlayer.Metadata.Save")
 		print(query)
+		if istable(results) then
+			PrintTable(results)
+		else
+			print(results)
+		end
 	end
 
-	results = sql.Query(query)
-
 	if results == false then
-		ErrorNoHalt("MediaPlayer.Metadata.Save: There was an error executing the SQL query\n")
-		print(query)
+		ErrorNoHalt("MediaPlayer.Metadata.Save: There was an error executing the SQL query: " .. tostring(sql.LastError()) .. "\n")
 	end
 
 	return results
 end
 
--- Create the SQLite table if it doesn't exist
-if not sql.TableExists(TableName) then
-	Msg("MediaPlayer.Metadata: Creating `" .. TableName .. "` table...\n")
-	sql.Query(TableStruct)
+-- Create the SQLite table if it doesn't exist.
+local createResult = sql.QueryTyped(TableStruct)
+if createResult == false then
+	ErrorNoHalt("MediaPlayer.Metadata: Failed to create metadata table: " .. tostring(sql.LastError()) .. "\n")
 end
 
 -- Keep the legacy thumbnail column available for the original Media Player.
 -- Redux no longer stores thumbnails, but older versions still expect this column.
-local columns = sql.Query(string.format("PRAGMA table_info(`%s`)", TableName))
+local columns = sql.QueryTyped("PRAGMA table_info(mediaplayer_metadata)")
 local hasThumbnail = false
 
-if istable(columns) then
+if columns == false then
+	ErrorNoHalt("MediaPlayer.Metadata: Failed to inspect metadata table: " .. tostring(sql.LastError()) .. "\n")
+elseif istable(columns) then
 	for _, column in ipairs(columns) do
 		if column.name == "thumbnail" then
 			hasThumbnail = true
@@ -189,11 +203,12 @@ if istable(columns) then
 	end
 end
 
-if not hasThumbnail then
-	local query = string.format("ALTER TABLE `%s` ADD COLUMN thumbnail VARCHAR(512) NOT NULL DEFAULT ''", TableName)
-	local result = sql.Query(query)
+if columns ~= false and not hasThumbnail then
+	local migrationResult = sql.QueryTyped([[
+ALTER TABLE mediaplayer_metadata
+ADD COLUMN thumbnail VARCHAR(512) NOT NULL DEFAULT '']])
 
-	if result == false then
+	if migrationResult == false then
 		ErrorNoHalt("MediaPlayer.Metadata: Failed to add legacy thumbnail column: " .. tostring(sql.LastError()) .. "\n")
 	end
 end
@@ -206,15 +221,13 @@ if SERVER then
 	-- @return boolean  True on success, false on failure.
 	--
 	function MediaPlayer.Metadata:Truncate()
-		local query = ("DELETE FROM `%s`"):format(TableName)
-
+		local query = "DELETE FROM mediaplayer_metadata"
 		if MediaPlayer.DEBUG then
 			print("MediaPlayer.Metadata.Truncate")
 			print(query)
 		end
 
-		local result = sql.Query(query)
-
+		local result = sql.QueryTyped(query)
 		if result == false then
 			ErrorNoHalt("MediaPlayer.Metadata.Truncate: SQL error: " .. tostring(sql.LastError()) .. "\n")
 			return false

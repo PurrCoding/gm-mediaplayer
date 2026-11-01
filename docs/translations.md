@@ -1,42 +1,41 @@
 # Translations
 
-Locales live under:
+Lua-side translations live in:
 
-```
+```text
 lua/mediaplayer/i18n/
   sh_i18n.lua
   lang/
     en.lua
     de.lua
-    …
+    ...
 ```
 
-Missing keys fall back toward English.
+The request website has its own browser-side translation files under `public/scripts/translations/`. Keep both translation systems in mind when changing user-facing text.
 
----
+## Adding or updating a Lua language
 
-## Adding a language
+1. Copy the English source file `lua/mediaplayer/i18n/lang/en.lua` to the appropriate locale filename.
+2. Translate values while preserving every key and format placeholder.
+3. Follow the locale registration/loading pattern in `sh_i18n.lua`.
+4. Check the spatial tool strings and all UI/error messages affected by the change.
+5. Test the language in-game and verify that missing keys fall back as expected.
 
-1. Copy `lang/en.lua` to e.g. `lang/pt-br.lua` (follow existing naming).
-2. Translate string values; keep keys identical.
-3. Ensure the loader in `sh_i18n.lua` picks up the file (follow the same pattern as other languages).
-4. Restart the client and select the language if a UI selector is present.
+## Browser request UI translations
 
-Tool strings for the spatial stool are bridged into GMod’s `language.Add` system from i18n keys (`mp.tool.spatial.*`).
+Browser-side translations are maintained separately in `public/scripts/translations/` and loaded by `public/scripts/i18n.js`. Update the relevant locale file when adding text to the hosted request UI, and preserve the keys expected by `public/scripts/request.js`.
 
----
+The Lua and browser dictionaries are not automatically synchronized.
 
-## Usage in code
+## Usage in Lua
 
 ```lua
 MediaPlayer.L("some.key")
 MediaPlayer.L("some.key", formatArg)
 ```
 
-Prefer translation keys for any new player-facing text (errors, tooltips, tool help).
-
----
+Prefer translation keys for player-facing errors, labels, tooltips, and tool help. Do not change keys casually: they are referenced by Lua and browser UI code.
 
 ## Related
 
-- [Development](development)
+- [Development](development.md)

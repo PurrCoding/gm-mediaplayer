@@ -6,7 +6,7 @@ ConVars are defined primarily in `lua/mediaplayer/sh_cvars.lua`. The spatial hea
 
 | ConVar | Default | Flags / scope | Description |
 |---|---:|---|---|
-| `mediaplayer_debug` | `0` | Server | Enables verbose diagnostic logging |
+| `mediaplayer_debug` | `0` | Shared (server and client) | Enables verbose diagnostic logging in the realm where it is set |
 | `mediaplayer_allow_webpages` | `0` | Archived, replicated | Allows otherwise-unmatched URLs to use the generic webpage service |
 | `mediaplayer_queue_limit` | `64` | Replicated | Maximum number of queued items per media player |
 | `mediaplayer_spatial_hear_radius` | `1800` | Archived, notified, replicated | Maximum distance at which players are listeners of a spatial anchor (Source units) |

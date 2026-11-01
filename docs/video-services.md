@@ -2,7 +2,7 @@
 
 The service loader is defined in `lua/mediaplayer/sh_services.lua`. It registers the providers below and matches URLs against their service-specific rules. Matching is based on URL shape, not a guarantee that a provider will play every item.
 
-## Built-in providers
+## Registered providers
 
 | Provider | Service ID | Typical supported URL/content |
 |---|---|---|
@@ -22,15 +22,18 @@ The service loader is defined in `lua/mediaplayer/sh_services.lua`. It registers
 | BitChute | `bitchute` | Video and embed URLs |
 | Direct media | `dm5` | Direct video, image, HLS (`.m3u8`), and DASH (`.mpd`) URLs |
 | Audio file | `af` | Direct `.mp3`, `.wav`, and `.ogg` URLs |
-| SHOUTcast | `sh` | SHOUTcast stream URLs |
-| HTML resource | `res` | HTML5/resource playback helper |
+| SHOUTcast Radio | `scr` | SHOUTcast station URLs, `.pls`, and supported `.m3u` playlists |
 | Generic webpage | `www` | Arbitrary webpages, only when explicitly enabled |
 
-Some entries are specialized playback backends rather than public video platforms. The direct-media service supports a larger set of video and image extensions; actual playback depends on CEF codecs and, for adaptive streaming, the required browser-side libraries.
+The `browser` and `res` services are abstract base classes used by concrete providers; they are not standalone providers users should select.
 
 ## Spatial compatibility
 
-Not every built-in service is allowed on spatial players. The spatial whitelist currently includes YouTube, Bilibili, SoundCloud, Twitch live streams, Dailymotion, Internet Archive, Odysee, HTML resource, Google Drive, direct media/resource, and audio files. See [Spatial Media](spatial-media.md) for the exact service IDs.
+Spatial players use a whitelist in `lua/mediaplayer/players/spatial/shared.lua`. The currently registered service IDs that are actually present in that list are:
+
+`yt`, `bili`, `sc`, `twl`, `dm`, `ia`, `odysee`, `gd`, and `af`.
+
+The whitelist also contains legacy IDs `tt` and `h5v`, but no services with those IDs are registered by the current loader. Conversely, current direct media (`dm5`) and SHOUTcast (`scr`) services are not in the spatial whitelist. Do not assume every built-in service can be used on spatial anchors. Administrators with `MediaPlayer_BypassWhitelist` can bypass the whitelist.
 
 ## Provider limitations
 
@@ -38,7 +41,7 @@ Not every built-in service is allowed on spatial players. The spatial whitelist 
 - **Bilibili:** without a logged-in Bilibili account, the platform may limit video quality to 360p.
 - **SoundCloud:** the stock Garry's Mod CEF 86 browser may be too old; an updated embedded browser may be required.
 - **Live streams:** providers report different timing capabilities. Seeking and automatic end detection are unavailable for services marked as untimed.
-- **Direct media:** the file extension is used to choose a playback path; unsupported codecs or server-side access restrictions can still prevent playback.
+- **Direct media:** the file extension selects a playback path; unsupported codecs or access restrictions can still prevent playback.
 - **Generic webpages:** arbitrary webpage playback is disabled by default and should be treated as a security-sensitive server option.
 
 Provider behavior can change independently of the addon. A matching URL only means the addon recognizes the URL format; it does not guarantee that the provider is reachable, the content is public, or the installed CEF build supports its codecs.

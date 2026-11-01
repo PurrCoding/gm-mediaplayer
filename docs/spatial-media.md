@@ -29,25 +29,13 @@ This is separate from the client-side proximity-volume settings:
 
 A player can be within the server listener radius but hear reduced volume due to client-side attenuation.
 
-## Supported services
+## Service whitelist
 
-Spatial players use a service whitelist. The current built-in whitelist is:
+The whitelist is defined in `lua/mediaplayer/players/spatial/shared.lua`. Its current IDs include:
 
-| Service ID | Provider |
-|---|---|
-| `yt` | YouTube |
-| `bili` | Bilibili |
-| `sc` | SoundCloud |
-| `twl` | Twitch live streams |
-| `dm` | Dailymotion |
-| `ia` | Internet Archive |
-| `odysee` | Odysee |
-| `tt` | HTML5 video/resource service |
-| `gd` | Google Drive |
-| `h5v` | Direct media/resource service |
-| `af` | Audio files |
+`yt`, `bili`, `sc`, `twl`, `dm`, `ia`, `odysee`, `tt`, `gd`, `h5v`, and `af`.
 
-The whitelist is defined in `lua/mediaplayer/players/spatial/shared.lua`. Administrators with `MediaPlayer_BypassWhitelist` can bypass it.
+Two entries (`tt` and `h5v`) are legacy IDs that are not registered by the current service loader. Current direct media (`dm5`) and SHOUTcast (`scr`) are not listed. The effective supported set is therefore the intersection of the whitelist and registered services; see [Video services](video-services.md). Administrators with `MediaPlayer_BypassWhitelist` can bypass the restriction.
 
 ## Permissions
 

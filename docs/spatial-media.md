@@ -1,6 +1,6 @@
 # Spatial Media
 
-Spatial Media attaches a media player to a prop or a world-positioned anchor. Nearby human players become listeners and hear the audio source. The client can attenuate volume based on distance.
+Spatial Media attaches a media player to a supported prop. Nearby human players become listeners and hear the audio source. The client can attenuate volume based on distance.
 
 ## Tool: Spatial Media Player
 
@@ -8,13 +8,13 @@ Find **Media Player → Spatial Media Player** in the tool menu.
 
 | Action | Effect |
 |---|---|
-| Left click | Create a spatial source on a supported traced entity or at a world position |
+| Left click | Create a spatial source on a supported traced entity |
 | Right click | Remove a spatial source you are allowed to control |
-| Reload | Reopen the request UI for an existing spatial source |
+| Hold C | Open the player sidebar/request UI while looking at the anchor or its parent prop |
 
-The tool validates targets and uses an anchor entity to represent the source. A prop-attached anchor follows its parent; a world placement remains at its placed position. Tool-created entities participate in undo and cleanup.
+The tool validates targets and uses a `mediaplayer_spatial_anchor` entity parented to the selected prop. The anchor follows its parent and is removed with it. The tool does not support placing anchors directly on the world. Tool-created entities participate in undo and cleanup.
 
-Players and unsupported entity types are rejected. Existing media-player screens are not valid spatial targets.
+The world, players, NPCs, ragdolls, and existing media-player screens are rejected as targets. Use a supported prop or similar entity.
 
 ## Listener radius
 

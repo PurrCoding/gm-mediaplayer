@@ -22,6 +22,7 @@ CREATE TABLE %s (
 	id              VARCHAR(48) PRIMARY KEY,
 	title           VARCHAR(128),
 	duration        INTEGER NOT NULL DEFAULT 0,
+	thumbnail       VARCHAR(512) NOT NULL DEFAULT '',
 	extra           VARCHAR(2048),
 	request_count   INTEGER NOT NULL DEFAULT 1,
 	last_request    INTEGER NOT NULL DEFAULT 0,
@@ -170,6 +171,29 @@ end
 if not sql.TableExists(TableName) then
 	Msg("MediaPlayer.Metadata: Creating `" .. TableName .. "` table...\n")
 	sql.Query(TableStruct)
+end
+
+-- Keep the legacy thumbnail column available for the original Media Player.
+-- Redux no longer stores thumbnails, but older versions still expect this column.
+local columns = sql.Query("PRAGMA table_info(" .. TableName .. ")")
+local hasThumbnail = false
+
+if istable(columns) then
+	for _, column in ipairs(columns) do
+		if column.name == "thumbnail" then
+			hasThumbnail = true
+			break
+		end
+	end
+end
+
+if not hasThumbnail then
+	local query = "ALTER TABLE `" .. TableName .. "` ADD COLUMN thumbnail VARCHAR(512) NOT NULL DEFAULT ''"
+	local result = sql.Query(query)
+
+	if result == false then
+		ErrorNoHalt("MediaPlayer.Metadata: Failed to add legacy thumbnail column: " .. tostring(sql.LastError()) .. "\\n")
+	end
 end
 
 if SERVER then

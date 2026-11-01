@@ -11,6 +11,7 @@ This directory contains the versioned documentation for the addon. Start here ra
 | [Configuration](configuration.md) | Server/client ConVars and config table |
 | [Permissions](permissions.md) | Ownership, CAMI privileges, and admin controls |
 | [Spatial Media](spatial-media.md) | Spatial audio anchors, tool, and listener radius |
+| [Mimic tool](mimic.md) | Mirror one screen's playback on other screens |
 
 ## Media services and development
 
@@ -21,6 +22,7 @@ This directory contains the versioned documentation for the addon. Start here ra
 | [Architecture](architecture.md) | Players, services, networking, and persistence |
 | [Development](development.md) | Source layout, hooks, extension points, and checks |
 | [Translations](translations.md) | Adding and maintaining translations |
+| [Console commands](commands.md) | Admin command and diagnostics |
 
 ## Useful links
 

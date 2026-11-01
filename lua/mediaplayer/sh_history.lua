@@ -5,12 +5,6 @@
 MediaPlayer.History = {}
 
 ---
--- Default metadata table name
--- @type String
---
-local TableName = "mediaplayer_history"
-
----
 -- SQLite table struct
 -- @type String
 --

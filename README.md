@@ -35,7 +35,7 @@ Built-in services include YouTube, Bilibili, SoundCloud, Twitch, Dailymotion, In
 
 YouTube playlists can be queued from a playlist URL. YouTube subtitles can be selected when captions are available.
 
-Support varies by provider, URL type, region, account access, and the Chromium/CEF codecs available in the player's Garry's Mod installation. SoundCloud requires an updated embedded browser; install [GModPatchTool](https://github.com/BeepIsla/ gmodpatchtool) only from its official project page if needed. The [GMod CEF Codec Fix](https://github.com/solsticegamestudios/GModCEFCodecFix) can improve codec compatibility.
+Support varies by provider, URL type, region, account access, and the Chromium/CEF codecs available in the player's Garry's Mod installation. SoundCloud requires an updated embedded browser; install [GModPatchTool](https://github.com/PurrCoding/GModPatchTool) only from its official project page if needed. The [GMod CEF Codec Fix](https://github.com/solsticegamestudios/GModCEFCodecFix) can improve codec compatibility.
 
 ### Spatial Media Player
 

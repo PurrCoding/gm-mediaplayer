@@ -8,12 +8,6 @@
 MediaPlayer.Metadata = {}
 
 ---
--- Default metadata table name
--- @type String
---
-local TableName = "mediaplayer_metadata"
-
----
 -- SQLite table struct
 -- @type String
 --

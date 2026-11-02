@@ -24,15 +24,12 @@ The tool creates an anchor from a valid trace target. For entity targets, the an
 stateDiagram-v2
     [*] --> NoAnchor
     NoAnchor --> AnchorCreated: Valid left-click target
-    AnchorCreated --> ParentAttached: Target is an entity
-    AnchorCreated --> WorldPositioned: No valid parent entity
+    AnchorCreated --> ParentAttached: Anchor parented to target entity
     ParentAttached --> Listening: Human players enter hear radius
-    WorldPositioned --> Listening: Human players enter hear radius
     Listening --> Listening: Listener set periodically refreshed
     Listening --> OutsideRadius: Player leaves hear radius
     OutsideRadius --> Listening: Player re-enters hear radius
-    ParentAttached --> Removed: Parent removed / anchor removed
-    WorldPositioned --> Removed: Anchor removed
+    ParentAttached --> Removed: Parent or anchor removed
     Removed --> [*]
 ```
 

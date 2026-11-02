@@ -22,6 +22,33 @@ The media-player owner can normally control their own player. Privileges extend 
 
 When CAMI is unavailable, the helper falls back to `ply:IsAdmin()`. The cache-clear command has its own stricter authorization path: server console and single-player host are accepted; multiplayer players require superadmin-level access.
 
+## Permission decision flow
+
+The checks are performed server-side. Ownership and the general `MediaPlayer_Admin` privilege grant broad control; individual actions can also have their own granular privilege. Requesting media has additional listener, whitelist, queue-lock, capacity, and duplicate checks.
+
+```mermaid
+flowchart TD
+    A["Player action reaches server"] --> B{"Valid listener?"}
+    B -->|No| X["Reject / ignore request"]
+    B -->|Yes| C{"Action requires privilege?"}
+    C -->|No| D["Continue action-specific validation"]
+    C -->|Yes| E{"Owner or MediaPlayer_Admin?"}
+    E -->|Yes| D
+    E -->|No| F{"Has action-specific CAMI privilege?"}
+    F -->|Yes| D
+    F -->|No| X
+    D --> G{"Media request?"}
+    G -->|No| H["Apply action"]
+    G -->|Yes| I{"Service allowed or whitelist bypass?"}
+    I -->|No| X
+    I -->|Yes| J{"Queue locked for non-privileged user?"}
+    J -->|Yes| X
+    J -->|No| K["Check queue capacity, duplicates and hooks"]
+    K --> L["Resolve metadata and enqueue"]
+```
+
+CAMI's general helper falls back to `IsAdmin()` when CAMI is unavailable. The cache-clear command has a separate, stricter authorization path documented in [Console commands](commands.md).
+
 ## Request restrictions
 
 A request must come from a valid listener of the target media player. The server then checks:

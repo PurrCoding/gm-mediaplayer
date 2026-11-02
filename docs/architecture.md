@@ -12,6 +12,23 @@ Media Player Redux separates authoritative playback state on the server from bro
 | Browser/UI | DHTML panels, browser pool, request panel, sidebar, screen rendering |
 | Supporting systems | SQLite metadata/history, CAMI, events, translations, configuration |
 
+## Runtime flow
+
+The following overview shows how a request moves through the main runtime layers. The server owns request validation, queue state, and synchronization; clients handle local playback rendering.
+
+```mermaid
+flowchart TD
+    UI["Request UI / player controls"] --> NET["Client network request"]
+    NET --> SRV["Server request handler"]
+    SRV --> MP["MediaPlayer instance"]
+    MP --> SVC["Registered media service"]
+    SVC --> META["Metadata resolution"]
+    META --> Q["Server queue and playback state"]
+    Q --> SYNC["Network updates to listeners"]
+    SYNC --> CLIENT["Client media service"]
+    CLIENT --> RENDER["CEF / HTML5 / audio rendering"]
+```
+
 ## MediaPlayer types
 
 Types are registered through `MediaPlayer.Register` in `lua/mediaplayer/sh_mediaplayer.lua`.

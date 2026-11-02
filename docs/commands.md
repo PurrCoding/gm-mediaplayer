@@ -63,6 +63,17 @@ mediaplayer_mute_unfocused 0
 mediaplayer_cc_lang en
 ```
 
+## Browser console filtering (client)
+
+The HTML/DHTML control also creates the client ConVar `js_console_filter` (default `0`). It controls JavaScript console output forwarded from the embedded browser:
+
+| Value | Behavior |
+|---:|---|
+| `0` | Suppresses ordinary JavaScript console messages; JavaScript errors are still printed. |
+| `1` | Prints JavaScript console messages and URL-change diagnostics. |
+
+This is an internal browser-diagnostics setting, not a playback option. It is defined in `lua/mediaplayer/controls/dmediaplayerhtml.lua`.
+
 ## Debug logging
 
 `mediaplayer_debug` is a ConVar, not a separate command. Set it in the server console to log server-side activity, or in the client console to log client-side activity. The two realms have their own ConVar instances. Debug output can include request, listener, queue, state, and SQLite activity; avoid leaving verbose logging enabled unnecessarily on busy servers.

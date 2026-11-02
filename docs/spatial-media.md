@@ -1,51 +1,67 @@
 # Spatial Media
 
-Spatial media attaches a **MediaPlayer** instance to a prop (or a world position via an anchor entity). Nearby players become **listeners**; audio is attenuated by distance.
-
----
+Spatial Media attaches a media player to a supported prop. Nearby human players become listeners and hear the audio source. The client can attenuate volume based on distance.
 
 ## Tool: Spatial Media Player
 
-Category: **Media Player** in the tool menu.
+Find **Media Player → Spatial Media Player** in the tool menu.
 
 | Action | Effect |
-|--------|--------|
-| **Left click** | Place a spatial source on the traced entity (or create a world-positioned anchor) |
-| **Right click** | Remove an existing spatial source you control |
-| **Reload** | Reopen the request UI for an existing source |
+|---|---|
+| Left click | Create a spatial source on a supported traced entity |
+| Right click | Remove a spatial source you are allowed to control |
+| Hold C | Open the player sidebar/request UI while looking at the anchor or its parent prop |
 
-Valid targets: props and similar entities. Players, NPCs, ragdolls, and existing media player screen entities are rejected.
+The tool validates targets and uses a `mediaplayer_spatial_anchor` entity parented to the selected prop. The anchor follows its parent and is removed with it. The tool does not support placing anchors directly on the world. Tool-created entities participate in undo and cleanup.
 
-When a prop is targeted, an `mediaplayer_spatial_anchor` is parented to it and removed with the prop. World placements use a free-standing anchor within a match radius.
+The world, players, NPCs, ragdolls, and existing media-player screens are rejected as targets. Use a supported prop or similar entity.
 
-Controls and undo/cleanup are registered for the creating player.
+## Spatial anchor lifecycle
 
----
+The tool creates an anchor from a valid trace target. For entity targets, the anchor is parented to that entity and is removed with it. Media playback is a separate lifecycle from anchor creation.
 
-## Hear radius
+```mermaid
+stateDiagram-v2
+    [*] --> NoAnchor
+    NoAnchor --> AnchorCreated: Valid left-click target
+    AnchorCreated --> ParentAttached: Anchor parented to target entity
+    ParentAttached --> Listening: Human players enter hear radius
+    Listening --> Listening: Listener set periodically refreshed
+    Listening --> OutsideRadius: Player leaves hear radius
+    OutsideRadius --> Listening: Player re-enters hear radius
+    ParentAttached --> Removed: Parent or anchor removed
+    Removed --> [*]
+```
 
-ConVar: `mediaplayer_spatial_hear_radius` (default **1800**).
+Right-click removes an existing anchor only when the tool user is allowed to control its media player. The tool's actual target validation rejects world brushes, players, NPCs, ragdolls, and media-player entities.
 
-Each think, the spatial media player gathers human players within that distance of the anchor and sets them as listeners. Outside the radius, players stop receiving that stream.
+## Listener radius
 
-Client proximity volume still applies via `mediaplayer_proximity_min` / `mediaplayer_proximity_max` when 3D audio is enabled.
+Server ConVar: `mediaplayer_spatial_hear_radius` (default `1800` Source units).
 
----
+The server periodically checks connected human players and adds those within the radius to the spatial player's listener set. Players outside the radius stop receiving that source's stream.
+
+This is separate from the client-side proximity-volume settings:
+- `mediaplayer_3daudio` enables distance-based volume.
+- `mediaplayer_proximity_min` sets the distance where volume is at full strength.
+- `mediaplayer_proximity_max` sets the distance where volume reaches zero.
+
+A player can be within the server listener radius but hear reduced volume due to client-side attenuation.
 
 ## Service whitelist
 
-Spatial players use a reduced service whitelist (see `players/spatial/shared.lua`), including YouTube, Bilibili, SoundCloud, Twitch, Dailymotion, Internet Archive, Odysee, Google Drive, HTML5 video, and audio files. This keeps spatial sources focused on media that works well without a large screen.
+The whitelist is defined in `lua/mediaplayer/players/spatial/shared.lua`. Its current IDs include:
 
----
+`yt`, `bili`, `sc`, `twl`, `dm`, `ia`, `odysee`, `tt`, `gd`, `h5v`, and `af`.
+
+Two entries (`tt` and `h5v`) are legacy IDs that are not registered by the current service loader. Current direct media (`dm5`) and SHOUTcast (`scr`) are not listed. The effective supported set is therefore the intersection of the whitelist and registered services; see [Video services](video-services.md). Administrators with `MediaPlayer_BypassWhitelist` can bypass the restriction.
 
 ## Permissions
 
-Requesting and controlling spatial media requires privilege on that player instance (`IsPlayerPrivileged`). Typically the creator/owner (and admins via CAMI) can control the anchor.
-
----
+The spatial player checks ownership/privileges before accepting requests. The creator/owner can control their source; administrators can be granted the relevant CAMI privileges. See [Permissions](permissions.md).
 
 ## Related
 
-- [Usage](usage)
-- [Permissions](permissions)
-- [Configuration](configuration)
+- [Configuration](configuration.md)
+- [Usage](usage.md)
+- [Permissions](permissions.md)

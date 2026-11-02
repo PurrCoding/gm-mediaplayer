@@ -1,197 +1,141 @@
-# Implementing a Custom Video Service
+# Implementing a custom media service
 
-Services live under `lua/mediaplayer/services/<name>/` with the usual GMod split:
+Media services live under `lua/mediaplayer/services/`. The service loader in `lua/mediaplayer/sh_services.lua` uses an explicit ordered list: creating a folder does **not** register it automatically.
 
+## Service loading sequence
+
+The loader uses an explicit ordered list. It includes each service's shared/server/client implementation and then registers the resulting `SERVICE` table; a directory by itself is not discovered automatically.
+
+```mermaid
+sequenceDiagram
+    participant Loader as sh_services.lua
+    participant Files as Service files
+    participant Registry as MediaPlayer.Services
+    participant Runtime as Request handler
+    Loader->>Loader: Iterate explicit service list
+    Loader->>Files: Include server or client implementation
+    Files-->>Loader: Populate SERVICE table
+    Loader->>Registry: MediaPlayer.RegisterService(SERVICE)
+    Registry->>Registry: Apply base inheritance and store by SERVICE.Id
+    Runtime->>Registry: Match submitted URL
+    Registry-->>Runtime: Return matching service
 ```
-shared.lua   — Id, Match, New, URL helpers
-init.lua     — SERVER metadata (HTTP APIs)
-cl_init.lua  — CLIENT playback (browser / HTML5)
+
+## Service file layout
+
+A typical provider has three files:
+
+```text
+services/<name>/
+  shared.lua   -- identity, URL matching, parsing, shared behavior
+  init.lua     -- server-side metadata / HTTP handling
+  cl_init.lua  -- client-side playback
 ```
 
-Registration happens automatically when the services loader includes your folder (see `sh_services.lua`). The service table must call into the registration path used by existing services (set `SERVICE.Id`, inherit base, and ensure the file is loaded).
+Single-file services are also possible (for example `directmedia.lua` and `webpage.lua`). Follow the structure of the closest existing provider.
 
----
+## Registration and load order
 
-## 1. Concepts
+The loader initializes `base` first, then browser/resource/audio abstractions, then concrete providers. A custom provider must be added to the appropriate position in the `services` list in `sh_services.lua`.
 
-| Piece | Role |
-|-------|------|
-| `SERVICE.Id` | Short unique id (`dm`, `yt`, …) stored with media |
-| `SERVICE.Base` | Usually `browser` for embeds, or omit for pure base |
-| `Match(url)` | Whether this service handles the URL |
-| `New(url)` | Construct instance; set `_data` / video id |
-| `GetMetadata(callback)` | Server (or client prefetch) title, duration, … |
-| `OnBrowserReady` / play JS | Client embed and `window.MediaPlayer` binding |
+The shared service table must define at least:
+- `SERVICE.Name`: human-readable provider name.
+- `SERVICE.Id`: short, unique identifier used in media IDs and networking.
+- `SERVICE.Base`: optional registered base service ID; browser providers usually use `"browser"`.
+- `SERVICE:Match(url)`: return true only for URL formats the service actually handles.
+- `SERVICE:New(url)`: usually inherit the base constructor and set a stable `_data` identifier.
 
-Base classes:
-
-- `mp_service_base` — metadata, owner, timing, volume API
-- `mp_service_browser` — DHTML browser pool, size, volume hooks
-
----
-
-## 2. Minimal browser service (shared.lua)
+Example:
 
 ```lua
-DEFINE_BASECLASS( "mp_service_base" )
+DEFINE_BASECLASS("mp_service_base")
 
 SERVICE.Name = "Example"
-SERVICE.Id   = "ex"
+SERVICE.Id = "example"
 SERVICE.Base = "browser"
 
-function SERVICE:New( url )
-	local obj = BaseClass.New( self, url )
-	obj._data = obj:GetExampleId()
-	return obj
+function SERVICE:New(url)
+    local obj = BaseClass.New(self, url)
+    obj._data = obj:GetExampleId()
+    return obj
 end
 
-function SERVICE:Match( url )
-	return string.find( url, "example%.com/watch/" )
-end
-
-function SERVICE:GetExampleId()
-	if self.videoId then return self.videoId end
-	if self.urlinfo and self.urlinfo.path then
-		self.videoId = string.match( self.urlinfo.path, "^/watch/([%w%-_]+)" )
-	end
-	return self.videoId
+function SERVICE:Match(url)
+    return string.find(url, "example%.com/watch/")
 end
 ```
 
-`BaseClass.New` parses `url` into `urlinfo` via the shared URL library.
+The base constructor parses the URL into `urlinfo`. Use a stable provider-specific ID for `_data` so metadata cache keys and history entries identify the same media consistently.
 
----
+## Server-side metadata
 
-## 3. Server metadata (init.lua)
+Implement `GetMetadata(callback)` in `init.lua` when the provider exposes metadata through an HTTP API. Use asynchronous HTTP requests; do not block the server.
 
-```lua
-AddCSLuaFile "shared.lua"
-include "shared.lua"
+Typical flow:
 
-local MetadataUrl = "https://api.example.com/videos/%s"
+1. Check `self:GetCachedMetadata()`.
+2. Fetch provider metadata asynchronously.
+3. Validate the response and parse JSON safely.
+4. Normalize title, duration, thumbnail, and any provider-specific metadata.
+5. Call `self:SetMetadata(metadata, true)`.
+6. Persist with `MediaPlayer.Metadata:Save(self)`.
+7. Invoke the callback with metadata, or `callback(false, reason)` on failure.
 
-function SERVICE:GetMetadata( callback )
-	local cached, found = self:GetCachedMetadata()
-	if found then
-		callback( cached )
-		return
-	end
+Use the base service's `Fetch` helper where appropriate so request/error handling stays consistent. Do not trust provider responses or assume every item has a duration.
 
-	local id = self:GetExampleId()
-	self:Fetch( MetadataUrl:format( id ),
-		function( body, length, headers, code )
-			local data = util.JSONToTable( body )
-			if not data then
-				return callback( false, "Failed to parse metadata." )
-			end
+Some providers use client-side metadata prefetch. For those, set `SERVICE.PrefetchMetadata = true` and implement the matching client `PreRequest` / `NetWriteRequest` and server `NetReadRequest` flow. Study YouTube or SoundCloud before adding a new variant.
 
-			local metadata = {
-				title    = data.title or "Unknown",
-				duration = tonumber( data.duration ) or 0,
-			}
+## Client playback
 
-			self:SetMetadata( metadata, true )
-			MediaPlayer.Metadata:Save( self )
-			callback( self._metadata )
-		end,
-		function( code )
-			callback( false, "Metadata request failed [" .. tostring( code ) .. "]" )
-		end
-	)
-end
-```
+Browser-backed services normally inherit from `mp_service_browser` and implement:
+- `GetURL()` or `OnBrowserReady(browser)` to load the embed/player page.
+- `SetVolume(volume)` to update the embedded player.
+- Pause, seek, and synchronization behavior when the provider supports them.
+- `IsTimed()` accurately for live streams and other non-seekable media.
 
-Use `self:Fetch` (from the base service) so headers / errors stay consistent. Cache via `GetCachedMetadata` / `MediaPlayer.Metadata:Save` when appropriate.
+The base browser implementation manages the shared DHTML browser pool. Release resources through the existing service lifecycle; do not create unmanaged panels or timers.
 
-For client-driven metadata (YouTube-style), set flags such as `PrefetchMetadata` on the service and implement the client prefetch path used by `youtube/`.
+Where possible, expose a consistent JavaScript adapter as `window.MediaPlayer` with `play()`, `pause()`, `currentTime`, and `volume`. Validate any values interpolated into JavaScript and avoid inserting user-controlled strings as executable code.
 
----
+## Spatial compatibility
 
-## 4. Client playback (cl_init.lua)
+Spatial players have a service whitelist in `lua/mediaplayer/players/spatial/shared.lua`. Adding a provider to the global service loader does not automatically make it available for spatial playback. Only add it to that whitelist after checking that the provider works as an audio-focused source.
 
-```lua
-include "shared.lua"
-DEFINE_BASECLASS( "mp_service_browser" )
+The current whitelist contains stale IDs that do not all map to registered services; verify the service ID against `sh_services.lua` before relying on it. See [Spatial Media](spatial-media.md).
 
-local JS_Interface = [[
-	var checkerInterval = setInterval(function() {
-		var player = document.querySelector("video");
-		if (player && player.readyState >= 3) {
-			clearInterval(checkerInterval);
-			window.MediaPlayer = player;
-		}
-	}, 50);
-]]
+## Reference implementations
 
-function SERVICE:GetURL()
-	return ("https://example.com/embed/%s?autoplay=1"):format( self:GetExampleId() )
-end
+| Service | Useful pattern |
+|---|---|
+| `youtube/` | Client metadata prefetch, live/timed distinction, playlist integration |
+| `dailymotion/` | Browser embed and metadata handling |
+| `soundcloud/` | Audio-focused browser playback |
+| `audiofile/` | Non-browser audio service |
+| `directmedia.lua` | HTML5 video, image, HLS, and DASH resources |
+| `webpage.lua` | Optional generic webpage fallback |
 
-function SERVICE:OnBrowserReady( browser )
-	BaseClass.OnBrowserReady( self, browser )
+## Testing checklist
 
-	local url = self:GetURL()
-	local curTime = self:CurrentTime()
-	if self:IsTimed() and curTime > 3 then
-		url = url .. "&start=" .. math.Round( curTime )
-	end
+1. Confirm the URL matcher accepts valid URLs and rejects unrelated pages.
+2. Confirm metadata success, malformed responses, unavailable/private content, and timeouts.
+3. Confirm the service has a stable unique ID and correct cache behavior.
+4. Test playback, pause, volume, synchronization, and seeking where supported.
+5. Test more than one screen and a late-joining listener.
+6. Verify the provider's spatial compatibility separately, if applicable.
+7. Confirm that browser panels, timers, and callbacks are cleaned up after stop/removal.
 
-	browser:OpenURL( url )
-	browser.OnDocumentReady = function()
-		browser:QueueJavascript( JS_Interface )
-	end
-end
+## Common pitfalls
 
-function SERVICE:SetVolume( volume )
-	if IsValid( self.Browser ) then
-		self.Browser:RunJavascript(
-			("if(window.MediaPlayer) MediaPlayer.volume = %s;"):format( volume )
-		)
-	end
-end
-```
-
-Implement `Pause` / seek JS similarly to `dailymotion/cl_init.lua` (run Javascript against `window.MediaPlayer`).
-
-**Contract:** the page should expose an element or adapter as `window.MediaPlayer` with `play`, `pause`, `currentTime`, and `volume` when possible so the base browser service can drive it.
-
----
-
-## 5. Reference implementations
-
-| Service | Study for |
-|---------|-----------|
-| `dailymotion/` | Clean API metadata + embed JS |
-| `youtube/` | Client metadata prefetch, live vs timed |
-| `soundcloud/` | Audio-focused browser service |
-| `audiofile/` | Non-browser / direct media |
-| `webpage.lua` | Generic www fallback |
-
----
-
-## 6. Testing checklist
-
-1. `MediaPlayer.ValidUrl` / request UI accepts your URL
-2. Title and duration appear in the queue
-3. Second player syncs start time
-4. Volume, pause, and seek (if timed)
-5. Works on entity screens and, if desired, add Id to the spatial whitelist
-6. Failure paths (private video, bad id) return clear callback errors
-
----
-
-## 7. Pitfalls
-
-- Forgetting `SERVICE.Id` or colliding with an existing Id
-- Not setting `_data` / unique id → metadata cache and history break
-- Blocking the server in `GetMetadata` — always async `Fetch`
-- Never assigning `window.MediaPlayer` → volume/seek do nothing
-- Assuming `mediaplayer_allow_webpages` — do not rely on www for first-class platforms
-
----
+- Adding a folder but forgetting the explicit loader entry in `sh_services.lua`.
+- Reusing an existing service ID or leaving `_data` unstable.
+- Treating live media as timed or seekable.
+- Calling synchronous/blocking HTTP code from metadata resolution.
+- Assuming every browser exposes the same JavaScript player API.
+- Adding a service to the spatial whitelist without verifying its actual ID and audio behavior.
+- Enabling generic webpage playback as a substitute for a first-class provider.
 
 ## Related
 
-- [Video services](video-services)
-- [Architecture](architecture)
-- [Development](development)
+- [Video services](video-services.md)
+- [Architecture](architecture.md)
+- [Development](development.md)

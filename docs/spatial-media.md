@@ -16,6 +16,28 @@ The tool validates targets and uses a `mediaplayer_spatial_anchor` entity parent
 
 The world, players, NPCs, ragdolls, and existing media-player screens are rejected as targets. Use a supported prop or similar entity.
 
+## Spatial anchor lifecycle
+
+The tool creates an anchor from a valid trace target. For entity targets, the anchor is parented to that entity and is removed with it. Media playback is a separate lifecycle from anchor creation.
+
+```mermaid
+stateDiagram-v2
+    [*] --> NoAnchor
+    NoAnchor --> AnchorCreated: Valid left-click target
+    AnchorCreated --> ParentAttached: Target is an entity
+    AnchorCreated --> WorldPositioned: No valid parent entity
+    ParentAttached --> Listening: Human players enter hear radius
+    WorldPositioned --> Listening: Human players enter hear radius
+    Listening --> Listening: Listener set periodically refreshed
+    Listening --> OutsideRadius: Player leaves hear radius
+    OutsideRadius --> Listening: Player re-enters hear radius
+    ParentAttached --> Removed: Parent removed / anchor removed
+    WorldPositioned --> Removed: Anchor removed
+    Removed --> [*]
+```
+
+Right-click removes an existing anchor only when the tool user is allowed to control its media player. The tool's actual target validation rejects world brushes, players, NPCs, ragdolls, and media-player entities.
+
 ## Listener radius
 
 Server ConVar: `mediaplayer_spatial_hear_radius` (default `1800` Source units).

@@ -29,6 +29,35 @@ The spawnable configurations and their screen transforms are defined in `lua/aut
 
 A URL must match a built-in service unless the server has enabled `mediaplayer_allow_webpages`. See [Video services](video-services.md).
 
+## Media request lifecycle
+
+A normal URL request follows this server-side path. Playlist URLs are detected before a single media object is created; successful playlist handling queues its entries through the playlist implementation.
+
+```mermaid
+flowchart TD
+    A["Player submits URL"] --> B["Server validates length and whitespace"]
+    B --> C{"URL matches a registered service?"}
+    C -->|No| D{"Generic webpages enabled?"}
+    D -->|No| X["Reject invalid URL"]
+    D -->|Yes| E["Create webpage media object"]
+    C -->|Yes| F["Try YouTube playlist handling"]
+    E --> G["Read service-specific request data"]
+    F -->|Not a playlist request| H["Create matching media object"]
+    F -->|Handled as playlist| Z["Playlist handler processes entries"]
+    H --> G
+    G --> I["MediaPlayer checks listener and request rules"]
+    I --> J{"Allowed, queue has space, not duplicate?"}
+    J -->|No| X
+    J -->|Yes| K["Run pre-request hook"]
+    K --> L["Fetch metadata asynchronously"]
+    L --> M{"Metadata and queue policy succeed?"}
+    M -->|No| X
+    M -->|Yes| N["Add item and update queue"]
+    N --> O["Broadcast state to listeners"]
+```
+
+The server also applies a per-player request rate limit to incoming network messages. Spatial players perform their own service-whitelist check before the base queue-lock check. See [Permissions](permissions.md) for the permission model.
+
 ### YouTube playlists
 
 A YouTube playlist URL can queue multiple videos. The server loads playlist entries and enqueues them in order, subject to these implementation limits:

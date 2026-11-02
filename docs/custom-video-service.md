@@ -2,6 +2,25 @@
 
 Media services live under `lua/mediaplayer/services/`. The service loader in `lua/mediaplayer/sh_services.lua` uses an explicit ordered list: creating a folder does **not** register it automatically.
 
+## Service loading sequence
+
+The loader uses an explicit ordered list. It includes each service's shared/server/client implementation and then registers the resulting `SERVICE` table; a directory by itself is not discovered automatically.
+
+```mermaid
+sequenceDiagram
+    participant Loader as sh_services.lua
+    participant Files as Service files
+    participant Registry as MediaPlayer.Services
+    participant Runtime as Request handler
+    Loader->>Loader: Iterate explicit service list
+    Loader->>Files: Include server or client implementation
+    Files-->>Loader: Populate SERVICE table
+    Loader->>Registry: MediaPlayer.RegisterService(SERVICE)
+    Registry->>Registry: Apply base inheritance and store by SERVICE.Id
+    Runtime->>Registry: Match submitted URL
+    Registry-->>Runtime: Return matching service
+```
+
 ## Service file layout
 
 A typical provider has three files:

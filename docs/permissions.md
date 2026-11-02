@@ -28,23 +28,21 @@ The checks are performed server-side. Ownership and the general `MediaPlayer_Adm
 
 ```mermaid
 flowchart TD
-    A["Player action reaches server"] --> B{"Valid listener?"}
-    B -->|No| X["Reject / ignore request"]
-    B -->|Yes| C{"Action requires privilege?"}
-    C -->|No| D["Continue action-specific validation"]
-    C -->|Yes| E{"Owner or MediaPlayer_Admin?"}
-    E -->|Yes| D
-    E -->|No| F{"Has action-specific CAMI privilege?"}
-    F -->|Yes| D
-    F -->|No| X
-    D --> G{"Media request?"}
-    G -->|No| H["Apply action"]
-    G -->|Yes| I{"Service allowed or whitelist bypass?"}
-    I -->|No| X
-    I -->|Yes| J{"Queue locked for non-privileged user?"}
-    J -->|Yes| X
-    J -->|No| K["Check queue capacity, duplicates and hooks"]
-    K --> L["Resolve metadata and enqueue"]
+    A["Incoming player action"] --> B{"Valid listener?"}
+    B -->|No| X["Reject / ignore"]
+    B -->|Yes| C{"Media request?"}
+    C -->|Yes| D{"Service on whitelist or bypass privilege?"}
+    D -->|No| X
+    D -->|Yes| E{"Queue locked and requester not privileged?"}
+    E -->|Yes| X
+    E -->|No| F["Check capacity, duplicates and pre-request hook"]
+    F --> G["Fetch metadata and apply queue policy"]
+    G --> H["Enqueue and broadcast update"]
+    C -->|No| I{"Owner or MediaPlayer_Admin?"}
+    I -->|Yes| J["Apply control action"]
+    I -->|No| K{"Has required granular privilege?"}
+    K -->|Yes| J
+    K -->|No| X
 ```
 
 CAMI's general helper falls back to `IsAdmin()` when CAMI is unavailable. The cache-clear command has a separate, stricter authorization path documented in [Console commands](commands.md).

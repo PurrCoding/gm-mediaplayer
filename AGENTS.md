@@ -6,6 +6,20 @@ This is a small set of engineering guidelines for the project, not a rigid style
 
 AI tools are welcome. Generated code still needs to fit the project, be understood by the contributor, and be checked for side effects before it is merged.
 
+## Copyright and license
+
+Media Player Redux is licensed under the **MIT License**. See `LICENSE.md` in the project root.
+
+- Originally created by Samuel Maddock (https://github.com/samuelmaddock/gm-mediaplayer).
+- Continued and maintained by PurrCoding and contributors.
+
+**Important for all contributions:**
+
+- Do **not** remove or alter the copyright header comments that appear at the top of source files.
+- Do **not** remove or rewrite `LICENSE.md`.
+- When adding new source files (especially `.lua`, `.js`, `.css`, `.html`), include the standard project copyright header.
+- The MIT notice and copyright lines must be retained in all copies or substantial portions of the Software.
+
 ## Project context
 
 Media Player Redux is a Garry's Mod addon. It is primarily Lua, with browser/CEF code for the playback UI and media rendering.

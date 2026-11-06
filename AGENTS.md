@@ -2,7 +2,16 @@
 
 Engineering guidelines for Media Player Redux. Follow existing code and architecture first. Use these notes when the existing code leaves a decision open.
 
-AI tools are welcome. Generated code must still fit the project, be understood by the contributor, and be checked for side effects before merge.
+## AI usage rules (strict)
+
+AI-generated code is a draft, not a finished contribution.
+
+- **Never apply AI output blindly.** Read it, understand it, and verify it against the existing codebase before committing.
+- **Always report back** to the person who gave the prompt or ticket: what was changed, why, what was assumed, and what still needs human review.
+- **No vibe-coding.** Do not produce large, speculative, or loosely related changes. Prefer small, deliberate edits that solve the stated problem.
+- **No monkey-patching.** Do not paper over problems with hacks, global overrides, or parallel systems. Fit the change into the existing architecture.
+- Every change must look like it belongs in this repository. Match style, patterns, naming, and layering already used in the surrounding code.
+- If the correct fix is unclear, stop and ask instead of inventing a workaround.
 
 ## Copyright and license
 
@@ -111,6 +120,8 @@ Do not add tests or abstractions only to satisfy this file. Add verification whe
 ## When unsure
 
 Prefer the existing project pattern over inventing a new one. If code relies on a Garry's Mod or Chromium/CEF quirk, verify against current documentation or known engine issues.
+
+If the right approach is unclear: **ask the person who assigned the work** instead of guessing.
 
 Priority order when goals conflict:
 

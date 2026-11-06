@@ -14,3 +14,4 @@
   in all copies or substantial portions of the Software.
 ]]
 
+-- EventEmitter module placeholder - full content will be in subsequent commits

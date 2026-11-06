@@ -1,120 +1,118 @@
 # AGENTS.md
 
-## What this file is for
+Engineering guidelines for Media Player Redux. Follow existing code and architecture first. Use these notes when the existing code leaves a decision open.
 
-This is a small set of engineering guidelines for the project, not a rigid style policy. Follow the existing code and architecture first, and use these notes when making changes or when the existing code leaves a decision open.
-
-AI tools are welcome. Generated code still needs to fit the project, be understood by the contributor, and be checked for side effects before it is merged.
+AI tools are welcome. Generated code must still fit the project, be understood by the contributor, and be checked for side effects before merge.
 
 ## Copyright and license
 
-Media Player Redux is licensed under the **MIT License**. See `LICENSE.md` in the project root.
+Licensed under the **MIT License** (`LICENSE.md`).
 
 - Originally created by Samuel Maddock (https://github.com/samuelmaddock/gm-mediaplayer).
-- Continued and maintained by PurrCoding and contributors.
+- Continued by PurrCoding and contributors.
 
-**Important for all contributions:**
+**Rules:**
 
-- Do **not** remove or alter the copyright header comments that appear at the top of source files.
-- Do **not** remove or rewrite `LICENSE.md`.
-- When adding new source files (especially `.lua`, `.js`, `.css`, `.html`), include the standard project copyright header.
-- The MIT notice and copyright lines must be retained in all copies or substantial portions of the Software.
+- Do not remove or alter copyright header comments at the top of source files.
+- Do not remove or rewrite `LICENSE.md`.
+- New `.lua`, `.js`, `.css`, and `.html` files must include the standard project copyright header.
+- The MIT notice must be retained in all copies or substantial portions of the Software.
 
 ## Project context
 
-Media Player Redux is a Garry's Mod addon. It is primarily Lua, with browser/CEF code for the playback UI and media rendering.
+Garry's Mod addon. Primarily Lua, with browser/CEF code for playback UI and media rendering.
 
-The important boundaries are:
+**Boundaries:**
 
-- **SERVER** owns media-player state, permissions, queues, persistence, and other authoritative decisions.
+- **SERVER** owns media-player state, permissions, queues, persistence, and authoritative decisions.
 - **CLIENT** owns playback presentation, input, and CEF/browser interaction.
-- **SHARED** is only for code that genuinely belongs on both realms.
-- Network messages are an API between client and server; keep them small and validate them on the server.
-- Reuse the existing media player, service, entity, tool, and UI abstractions instead of building parallel implementations.
+- **SHARED** only for code that genuinely belongs on both realms.
+- Network messages are an API; keep them small and validate on the server.
+- Reuse existing media player, service, entity, tool, and UI abstractions. Do not build parallel implementations.
 
-Media services are intentionally varied: some provide structured playback, while direct URLs and optional webpage playback involve less trusted external content. Do not assume every URL behaves like a normal video file.
+Media services vary: some are structured, others (direct URLs, optional webpage playback) involve less trusted content. Do not assume every URL behaves like a normal video file.
 
 ## Lua / Garry's Mod
 
-Prefer straightforward Lua that matches the surrounding code.
+Prefer straightforward Lua that matches surrounding code.
 
 - Keep CLIENT, SERVER, and SHARED responsibilities clear.
-- Use the existing hooks, timers, entities, media-player state, and service interfaces where possible.
-- Clean up timers, hooks, entities, listeners, and other temporary state when their owner goes away.
+- Use existing hooks, timers, entities, media-player state, and service interfaces.
+- Clean up timers, hooks, entities, listeners, and temporary state when their owner goes away.
 - Avoid global state unless the project already uses it intentionally.
-- Keep functions focused and avoid clever abstractions that make GMod behavior harder to follow.
-- Use tabs for indentation and keep formatting consistent with nearby files.
-- Comments should explain intent, engine quirks, or non-obvious decisions rather than restating the code.
+- Keep functions focused; avoid clever abstractions that obscure GMod behavior.
+- Use tabs for indentation; match nearby formatting.
+- Comments explain intent, engine quirks, or non-obvious decisions — not the obvious.
 
 ### Performance
 
-This addon can have many media players, viewers, and spatial-audio listeners at the same time. Avoid work that scales badly with players, entities, or playback frequency.
+Many media players, viewers, and spatial-audio listeners can exist at once. Avoid work that scales badly.
 
 - Be suspicious of expensive work in `Think`, frequent hooks, entity scans, and network handlers.
 - Avoid repeated table/string work and unnecessary allocations in hot paths.
-- Cache globals as locals when a function is actually hot; do not add blanket micro-optimisations.
-- Prefer event-driven state changes over polling when practical.
-- Keep network traffic limited to state that clients actually need.
-- Treat CEF rendering as real runtime work: avoid unnecessary DOM rebuilds, timers, layout work, and high-frequency Lua ↔ browser messages.
-- Be conscious of media resolution and rendering cost when changing playback/UI behavior.
+- Cache globals as locals only when a function is actually hot.
+- Prefer event-driven state changes over polling.
+- Limit network traffic to state clients actually need.
+- Treat CEF rendering as real work: avoid unnecessary DOM rebuilds, timers, layout thrashing, and high-frequency Lua ↔ browser messages.
+- Be conscious of media resolution and rendering cost.
 
-Optimize measured or obviously hot code. Readability is normally more valuable than tiny micro-optimisations.
+Optimize measured or obviously hot code. Readability usually beats micro-optimisations.
 
 ## HTML / CSS / JavaScript / CEF
 
-The browser side is part of the addon and must be treated as an untrusted boundary.
+The browser side is an untrusted boundary.
 
 - Keep HTML, CSS, and JavaScript valid, readable, and modular.
 - Prefer normal DOM APIs and event handlers over large inline scripts or fragile HTML injection.
-- Keep Lua ↔ CEF communication explicit: define what messages exist, what data they accept, and what they are allowed to do.
-- Treat anything coming from the browser as untrusted, even if it normally comes from our own UI.
-- Never turn browser input directly into Lua code, console commands, filesystem operations, or arbitrary event/function calls.
+- Keep Lua ↔ CEF communication explicit: define messages, accepted data, and allowed actions.
+- Treat everything from the browser as untrusted, even when it normally comes from our own UI.
+- Never turn browser input into Lua code, console commands, filesystem operations, or arbitrary calls.
 - Validate and constrain values crossing the CEF boundary.
-- Escape or safely insert user-controlled text; do not use `innerHTML` or equivalent injection paths when text/DOM APIs are sufficient.
+- Escape or safely insert user-controlled text; avoid `innerHTML` when text/DOM APIs suffice.
 - Keep browser assets and runtime work reasonably small.
 
-The addon supports an optional mode for unrestricted webpages. That feature is intentionally more dangerous than normal media playback; keep it behind its existing server-side configuration and do not silently make arbitrary webpages the default.
+Unrestricted webpage playback is intentionally more dangerous. Keep it behind the existing server-side configuration; do not make it the default.
 
-When a browser feature needs a new Lua bridge, prefer a narrow, named action with validated arguments over a generic "execute this" interface.
+New Lua bridges should be narrow, named actions with validated arguments — not a generic "execute this" interface.
 
 ## Security
 
-Security decisions belong primarily on the server.
+Security decisions belong on the server.
 
 - Never trust client-provided permissions, SteamIDs, entity ownership, queue state, or other authoritative values.
-- Validate every network message before using its contents. Check types, ranges, ownership, permissions, and state where relevant.
+- Validate every network message: types, ranges, ownership, permissions, state.
 - Privileged actions must be enforced server-side; client-side checks are only UX.
 - Treat media URLs, redirects, webpage content, and service responses as untrusted input.
-- Do not broaden an existing URL/webpage allowlist without considering the security impact. In particular, keep unrestricted webpage playback opt-in and server-controlled.
-- Avoid arbitrary code execution such as `RunString`, `CompileString`, or equivalent dynamic execution, especially when input can originate from clients or CEF.
-- Do not expose server-only implementation details or privileged functionality to the client.
-- Be deliberate with filesystem and database operations; user input should never become an uncontrolled path or SQL statement.
-- Rate-limit or otherwise constrain networked actions that can be spammed.
-- Keep browser integrations narrow, because external webpages increase the attack surface significantly.
+- Do not broaden URL/webpage allowlists without considering security impact. Keep unrestricted webpage playback opt-in and server-controlled.
+- Avoid arbitrary code execution (`RunString`, `CompileString`, etc.), especially with client or CEF input.
+- Do not expose server-only details or privileged functionality to the client.
+- Be deliberate with filesystem and database operations; user input must never become an uncontrolled path or SQL statement.
+- Rate-limit or constrain networked actions that can be spammed.
+- Keep browser integrations narrow; external webpages increase attack surface.
 
-If a change weakens a validation or permission boundary, stop and reconsider the design instead of treating the check as boilerplate.
+If a change weakens a validation or permission boundary, stop and reconsider.
 
 ## Changes and verification
 
-Before changing code, understand the path through the existing media-player/service architecture. Prefer a small change in the correct layer over a workaround elsewhere.
+Understand the path through the existing media-player/service architecture before changing code. Prefer a small change in the correct layer over a workaround elsewhere.
 
-After a meaningful change, check the relevant realms and failure paths:
+After meaningful changes, check relevant realms and failure paths:
 
-- multiple players watching the same screen;
-- invalid or unexpected client input and malformed network messages;
-- connect/disconnect and map cleanup;
-- timers, hooks, entities, listeners, and net receivers being created and removed correctly;
-- media service failures, missing metadata, redirects, and unsupported media;
-- CEF loading and Lua ↔ browser communication where applicable;
-- spatial audio behavior when entities or listeners move or disappear.
+- multiple players watching the same screen
+- invalid or unexpected client input and malformed network messages
+- connect/disconnect and map cleanup
+- timers, hooks, entities, listeners, and net receivers created and removed correctly
+- media service failures, missing metadata, redirects, unsupported media
+- CEF loading and Lua ↔ browser communication
+- spatial audio when entities or listeners move or disappear
 
 Do not add tests or abstractions only to satisfy this file. Add verification where it catches a realistic regression.
 
 ## When unsure
 
-Prefer the existing project pattern over inventing a new one. If the code relies on a Garry's Mod or Chromium/CEF quirk, verify the behavior against current documentation or known engine issues before building a new dependency on it.
+Prefer the existing project pattern over inventing a new one. If code relies on a Garry's Mod or Chromium/CEF quirk, verify against current documentation or known engine issues.
 
-For conflicting goals, use this order as a practical guide:
+Priority order when goals conflict:
 
 1. Correctness and player/server safety
 2. Security and authority boundaries

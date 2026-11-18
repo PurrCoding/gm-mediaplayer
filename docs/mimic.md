@@ -17,13 +17,19 @@ The tool is available in the tool menu under **Media Player**.
 
 After selecting a source, you can paste it onto multiple target screens without selecting the source again. The client highlights the selected source and nearby mimic screens while the tool is active.
 
+## Audio and display behavior
+
+A mimic is a visual copy only; it does not create another audio source. Audio continues to play from the original source screen, so listeners should join that source for sound.
+
+If the source screen stops playing media, mimic screens display a waiting message. They resume mirroring automatically when the source starts playing media again. Proximity-audio range indicators are not drawn around mimic screens.
+
 ## Restrictions
 
 - The source must be a valid screen media player.
 - Spatial anchors cannot be used as sources or targets.
 - A mimic cannot be used as a source for another mimic.
 - The source and target must be different entities.
-- A target that is already playing media or has queued items cannot be converted.
+- A target that is already playing media or has queued items cannot be converted; stop its playback and clear its queue first.
 - The tool does not copy media from the target; it snapshots the target's previous player type/state so it can be restored later.
 
 The mimic target does not accept independent media requests. Submit requests on the source screen instead.

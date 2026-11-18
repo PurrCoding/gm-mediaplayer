@@ -2,6 +2,9 @@
 
 Media Player Redux integrates with **CAMI** (Common Admin Mod Interface), allowing supported admin mods such as ULX, SAM, and ServerGuard to grant granular privileges.
 
+> [!IMPORTANT]
+> Permission checks are enforced on the server. Hiding a button in the client UI is not a security boundary; integrations should use the documented CAMI privileges and helper functions.
+
 Implementation: `lua/mediaplayer/sh_cami.lua`.
 
 ## Ownership and player controls
@@ -57,6 +60,25 @@ A request must come from a valid listener of the target media player. The server
 
 Spatial media requires the creator/owner or an appropriately privileged administrator to request/control its media. The spatial service whitelist can be bypassed by `MediaPlayer_BypassWhitelist`.
 
+## Service whitelist
+
+A media player can expose a `ServiceWhitelist` table containing the service IDs it accepts. The base request handler checks this table on the server before queuing media. A request is rejected when its service ID is not present, unless the requester has `MediaPlayer_BypassWhitelist` or `MediaPlayer_Admin`.
+
+The built-in spatial player initializes its own default whitelist. See [Spatial compatibility](video-services.md#spatial-compatibility) for the current list and service IDs.
+
+For custom player integrations, the whitelist is a list of service IDs, not display names:
+
+```lua
+-- Example for a custom media-player instance:
+mp.ServiceWhitelist = {
+    "yt",
+    "sc",
+    "af"
+}
+```
+
+Only set or change this table in trusted server-side code. An empty table allows no services; removing the table (`nil`) means the base player does not apply a service whitelist. Do not rely on client-side UI filtering for access control.
+
 ## Lua helper API
 
 ```lua
@@ -66,6 +88,8 @@ MediaPlayer.PlayerHasAnyMediaPrivilege(ply)
 ```
 
 Use these helpers instead of hard-coding admin-mod-specific checks. Server-side request handlers remain authoritative; client-side UI visibility is not a security boundary.
+
+---
 
 ## Related
 

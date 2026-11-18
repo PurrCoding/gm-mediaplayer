@@ -2,6 +2,9 @@
 
 ConVars are defined primarily in `lua/mediaplayer/sh_cvars.lua`. The spatial hear-radius ConVar is created by the server-side spatial player implementation.
 
+> [!IMPORTANT]
+> Server ConVars affect shared server behavior, while client ConVars change only the local player's experience. Changing a client setting does not change the server's listener or queue policy.
+
 ## Server ConVars
 
 | ConVar | Default | Flags / scope | Description |
@@ -54,6 +57,8 @@ local value = MediaPlayer.GetConfigValue("example.option")
 ```
 
 Client defaults and hosted HTML endpoints are configured in `lua/mediaplayer/config/client.lua`. The current configuration points to the project's hosted request and YouTube helper pages.
+
+---
 
 ## Related
 

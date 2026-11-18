@@ -2,6 +2,9 @@
 
 Lua-side translations live in:
 
+> [!IMPORTANT]
+> Lua translations and browser request-UI translations are separate systems. Updating one dictionary does not automatically update the other.
+
 ```text
 lua/mediaplayer/i18n/
   sh_i18n.lua
@@ -35,6 +38,8 @@ MediaPlayer.L("some.key", formatArg)
 ```
 
 Prefer translation keys for player-facing errors, labels, tooltips, and tool help. Do not change keys casually: they are referenced by Lua and browser UI code.
+
+---
 
 ## Related
 

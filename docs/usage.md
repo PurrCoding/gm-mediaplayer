@@ -15,13 +15,39 @@ Open **Q → Entities → Media Player**. The addon registers several screen con
 
 The spawnable configurations and their screen transforms are defined in `lua/autorun/mediaplayer_spawnables.lua`. The actual screen entity class is `mediaplayer_tv`.
 
-## Power and interaction
+## Keybindings and interaction
 
-- Press **E** on a screen to activate/use it.
-- Right-click and open the Sandbox properties for Media Player options.
-- Hold **C** while looking at an active player to open the player sidebar/request UI.
-- Use the sidebar to submit URLs and control playback/queue options.
-- Fullscreen is a local client display mode; it does not change the playback state for other viewers.
+| Key / action | Behavior |
+|---|---|
+| **E** (Use) | Activate or deactivate the media player screen; this adds or removes you as a listener. |
+| **C** (Context Menu) | Hold while looking at a screen to open the Media Player sidebar, including the queue, playback controls, and settings. The actual key follows your Garry's Mod context-menu binding. |
+| **F11** | Toggle fullscreen for the screen you are looking at. Fullscreen is local to your client and does not change playback for other viewers. |
+| **Right-click** | Open the Sandbox context/property menu for the screen and access the Media Player actions described below. |
+
+The screen's idle hint uses your current context-menu binding. If you have rebound **C**, use the key shown by the game rather than assuming the default.
+
+## Screen context-menu actions
+
+The Media Player properties are available from the Sandbox context menu when you look at a compatible screen. Actions are shown according to the entity, playback state, and your permissions.
+
+| Action | Behavior / access |
+|---|---|
+| **Pause / Resume** | Toggle playback for the screen. |
+| **Skip** | A player with skip privileges can skip immediately; other listeners can cast a vote to skip. |
+| **Seek** | Enter a playback time and seek. Requires ownership or the `MediaPlayer_Seek` privilege (or `MediaPlayer_Admin`). Only timed media can be seeked. |
+| **Request URL** | Open the media request browser. |
+| **Copy URL** | Copy the current media URL to the clipboard; available while media is playing. |
+| **Fullscreen** | Toggle fullscreen for that specific screen, equivalent to **F11** while looking at it. |
+| **Turn On / Turn Off** | Join or leave the screen as a listener, equivalent to **E**. |
+
+The Sandbox `CanProperty` gamemode hook can also prevent these property actions from being shown or used.
+
+## Top menu bar
+
+The Garry's Mod top menu bar includes a **Media Player** menu:
+
+- **Fullscreen** toggles fullscreen for the screen you are currently targeting (or exits the current fullscreen player).
+- **Turn Off All** leaves every active media player and closes the Media Player sidebar. This only disconnects your client as a listener; it does not stop playback for other viewers.
 
 ## Requesting media
 
@@ -87,7 +113,16 @@ The queue length is capped by `mediaplayer_queue_limit`. A locked queue blocks o
 
 ## Vote skip
 
-Listeners can vote to skip the current item. A privileged user with skip access can skip immediately. The vote requirement is calculated by the vote-skip component from the current listener count.
+Listeners without immediate skip privileges can vote to skip the currently playing item.
+
+- A skip passes when at least **two-thirds of the current listeners** have voted. The required count is rounded up: `ceil(listener_count × 2 / 3)`.
+- Each listener can have only one active vote for the current item.
+- Votes from players who disconnect or leave the media player are invalidated and no longer count.
+- The vote count and required threshold are recalculated against the current listener list.
+- Votes are cleared when the current media finishes and the next item is started.
+- A player with ownership or the `MediaPlayer_Skip` / `MediaPlayer_Admin` privilege can skip immediately without a vote.
+
+For example, 3 listeners require 2 votes; 4 listeners require 3 votes.
 
 ## Fullscreen
 

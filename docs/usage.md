@@ -1,5 +1,8 @@
 # Usage
 
+> [!TIP]
+> Quick start: spawn a screen from **Q → Entities → Media Player**, press **E** to activate it, then hold **C** while looking at it to open the player controls.
+
 ## Spawnable screens
 
 Open **Q → Entities → Media Player**. The addon registers several screen configurations, including:
@@ -93,6 +96,8 @@ The client ConVar `mediaplayer_fullscreen` and the player UI control local fulls
 ## Duplication
 
 Sandbox duplication is supported through `lua/autorun/sandbox/mediaplayer_dupe.lua`. The duplication module snapshots the media-player state and restores it when a duplicated screen is pasted. Behavior depends on the entity and snapshot data.
+
+---
 
 ## Related
 

@@ -16,6 +16,7 @@ This directory contains the versioned documentation for the addon. Start here ra
 | [Permissions](permissions.md) | Ownership, CAMI privileges, and admin controls |
 | [Spatial Media](spatial-media.md) | Spatial audio anchors, tool, and listener radius |
 | [Mimic tool](mimic.md) | Mirror one screen's playback on other screens |
+| [Compatibility](compatibility.md) | Historical third-party add-on compatibility reports and troubleshooting |
 
 ## Media services and development
 

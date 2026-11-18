@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Garry's Mod. The **x86-64 branch is recommended** for HTML/Chromium playback.
+- Garry's Mod. The **x64 mode** is recommended for broader HTML/Chromium compatibility; x86 mode is also available. Both modes can be selected in the main branch, so no separate x86-64 branch is required.
 - [GMod CEF Codec Fix](https://github.com/solsticegamestudios/GModCEFCodecFix) is recommended for broader H.264 and media codec compatibility.
 - SoundCloud may require an updated embedded Chromium/CEF browser; consult the project's current [GModPatchTool](https://github.com/solsticegamestudios/GModPatchTool) guidance.
 
@@ -48,7 +48,7 @@ Workshop releases may lag behind the repository. Use a source checkout when test
 ### General checks
 
 - **No Media Player category:** confirm the addon is mounted and check the server/client console for Lua errors.
-- **Black screen or codec error:** try the x86-64 branch and GMod CEF Codec Fix; the provider may use a codec unsupported by the installed CEF build.
+- **Black screen or codec error:** if you are using x86 mode, try switching to x64 mode and check whether the provider requires a codec unsupported by your CEF build. The GMod CEF Codec Fix may improve codec compatibility.
 - **SoundCloud does not load:** check the embedded browser version and the GModPatchTool requirement.
 - **URL rejected:** check [Video services](video-services.md); unsupported URLs require `mediaplayer_allow_webpages 1`, which should be enabled cautiously.
 - **Spatial audio is silent:** check the server hear radius, client 3D-audio setting, proximity distances, and whether the listener is within range.

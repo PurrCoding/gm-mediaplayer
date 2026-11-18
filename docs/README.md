@@ -2,6 +2,9 @@
 
 This directory contains the versioned documentation for the addon. Start here rather than using the old GitHub Wiki.
 
+> [!TIP]
+> New to Media Player Redux? Follow [Installation](installation.md), then [Usage](usage.md). If something does not work as expected, check the [FAQ](faq.md).
+
 ## Getting started
 
 | Guide | Description |
@@ -24,6 +27,8 @@ This directory contains the versioned documentation for the addon. Start here ra
 | [Development](development.md) | Source layout, hooks, extension points, and checks |
 | [Translations](translations.md) | Adding and maintaining translations |
 | [Console commands](commands.md) | Admin command and diagnostics |
+
+---
 
 ## Useful links
 

@@ -2,6 +2,9 @@
 
 Media Player Redux integrates with **CAMI** (Common Admin Mod Interface), allowing supported admin mods such as ULX, SAM, and ServerGuard to grant granular privileges.
 
+> [!IMPORTANT]
+> Permission checks are enforced on the server. Hiding a button in the client UI is not a security boundary; integrations should use the documented CAMI privileges and helper functions.
+
 Implementation: `lua/mediaplayer/sh_cami.lua`.
 
 ## Ownership and player controls
@@ -66,6 +69,8 @@ MediaPlayer.PlayerHasAnyMediaPrivilege(ply)
 ```
 
 Use these helpers instead of hard-coding admin-mod-specific checks. Server-side request handlers remain authoritative; client-side UI visibility is not a security boundary.
+
+---
 
 ## Related
 

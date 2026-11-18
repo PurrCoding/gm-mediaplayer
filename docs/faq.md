@@ -12,7 +12,7 @@ Quick answers to common questions about playback, browser compatibility, YouTube
 Work through these checks in order:
 
 1. **Check for addon conflicts.** Disable other Garry's Mod media-player addons temporarily. Two addons that modify similar browser or screen behavior may conflict.
-2. **Check the browser setup.** Use the Garry's Mod **x86-64** beta branch. Some providers also require **GModPatchTool**; see [Installation](installation.md).
+2. **Check the browser setup.** Garry's Mod offers both **x86 and x64 modes** in the main branch; no separate x86-64 branch is needed. The x64 mode may offer broader compatibility with some providers. Some providers also require **GModPatchTool**; see [Installation](installation.md).
 3. **Test more than one provider.** If one YouTube URL fails but a direct media URL works, the issue may be specific to YouTube rather than the player.
 4. **Check network filtering.** VPNs, DNS filters, antivirus web protection, firewalls, school/work networks, or ISP restrictions can prevent the embedded browser from reaching a provider.
 5. **Check the game console.** Look for browser, codec, or Lua errors. If you are reporting a bug, include the exact URL type/provider, your Garry's Mod branch, whether GModPatchTool is installed, and any relevant error text. Do not post passwords, cookies, or private access tokens.
@@ -38,16 +38,16 @@ This message does not necessarily mean the URL is broken. Close unused media-pla
 
 ### A service says “GModPatchTool Required”
 
-Some providers depend on browser features or codecs that are not available in the stock Garry's Mod browser. The Workshop FAQ specifically mentions YouTube Live, Bilibili, Twitch, direct video files, and Google Drive as cases that may require the x86-64 branch and GModPatchTool.
+Some providers depend on browser features or codecs that are not available in the stock Garry's Mod browser. The Workshop FAQ specifically mentions YouTube Live, Bilibili, Twitch, direct video files, and Google Drive as cases that may require x64 mode and GModPatchTool.
 
 Follow the current [installation guide](installation.md) and the tool's own setup instructions. Do not assume that installing a codec package and installing GModPatchTool are interchangeable steps: they address related but distinct browser compatibility issues.
 
-### Does Media Player work on the 32-bit branch?
+### Does Media Player work in x86 mode?
 
-Some basic content may work, including ordinary YouTube videos, SoundCloud, and images. Many other providers and direct video files need the x86-64 branch and additional browser compatibility fixes.
+Yes. Garry's Mod provides both x86 and x64 modes from the main branch, and Media Player can be used in either mode. However, browser features, codecs, and individual provider requirements can differ. If a provider fails in x86 mode, try x64 mode and check whether additional browser compatibility fixes are required.
 
 > [!TIP]
-> For the broadest provider compatibility, use the x86-64 branch and follow the current requirements in [Installation](installation.md).
+> For broader HTML/Chromium and provider compatibility, x64 mode is recommended. You can select it without switching to a separate beta branch; see [Installation](installation.md).
 
 ### Why does a video have low quality, or why can't I choose its quality?
 
@@ -216,7 +216,7 @@ A useful report helps distinguish addon bugs from provider or network failures. 
 
 - The provider and type of URL (do not include private or access-token URLs).
 - What happens: black screen, loading forever, browser error, missing audio, or another symptom.
-- Your Garry's Mod branch (x86-64 or 32-bit).
+- Your Garry's Mod architecture mode (x86 or x64).
 - Whether GModPatchTool and the recommended codec/browser fixes are installed.
 - Relevant game-console errors and the steps needed to reproduce the issue.
 

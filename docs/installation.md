@@ -84,6 +84,8 @@ For further platform-specific troubleshooting, see the [GModPatchTool FAQ](https
 > [!WARNING]
 > GModPatchTool and GMod CEF Codec Fix are related but distinct tool names/releases. Follow the instructions for the tool you actually installed; do not assume that running one automatically installs or updates the other.
 
+---
+
 ## Related
 
 - [Usage](usage.md)

@@ -33,7 +33,7 @@ The Media Player properties are available from the Sandbox context menu when you
 | Action | Behavior / access |
 |---|---|
 | **Pause / Resume** | Toggle playback for the screen. |
-| **Skip** | A player with skip privileges can skip immediately; other listeners can cast a vote to skip. |
+| **Skip** | This property action is shown to players with ownership or skip privileges and skips immediately. Ordinary listeners use the vote-skip control in the player UI, if available. |
 | **Seek** | Enter a playback time and seek. Requires ownership or the `MediaPlayer_Seek` privilege (or `MediaPlayer_Admin`). Only timed media can be seeked. |
 | **Request URL** | Open the media request browser. |
 | **Copy URL** | Copy the current media URL to the clipboard; available while media is playing. |

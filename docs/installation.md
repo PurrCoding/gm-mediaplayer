@@ -45,11 +45,44 @@ Workshop releases may lag behind the repository. Use a source checkout when test
 
 ## Troubleshooting
 
+### General checks
+
 - **No Media Player category:** confirm the addon is mounted and check the server/client console for Lua errors.
 - **Black screen or codec error:** try the x86-64 branch and GMod CEF Codec Fix; the provider may use a codec unsupported by the installed CEF build.
 - **SoundCloud does not load:** check the embedded browser version and the GModPatchTool requirement.
 - **URL rejected:** check [Video services](video-services.md); unsupported URLs require `mediaplayer_allow_webpages 1`, which should be enabled cautiously.
 - **Spatial audio is silent:** check the server hear radius, client 3D-audio setting, proximity distances, and whether the listener is within range.
+
+### Verify Garry's Mod game files
+
+If Garry's Mod or the addon behaves unexpectedly, files may be missing or corrupted. Verify the game's installation through Steam:
+
+1. Open **Steam** and go to your **Library**.
+2. Right-click **Garry's Mod** and select **Properties**.
+3. Open **Installed Files**.
+4. Select **Verify integrity of game files**.
+5. Wait for Steam to finish. Steam will check the installation and reacquire files that are missing or damaged.
+6. Once the process is complete, launch Garry's Mod again and test the issue.
+
+See [Steam Support: Verify Integrity of Game Files](https://help.steampowered.com/faqs/view/0C48-FCBD-DA71-93EB) for the official instructions.
+
+> [!NOTE]
+> Verifying the game files can restore files modified by third-party patching tools. If you use GModPatchTool, you may need to run it again afterward.
+
+### Garry's Mod crashes or the main menu does not load after an update
+
+A Garry's Mod update can occasionally change files that GModPatchTool patches. The existing patch may then need to be regenerated. If the game starts crashing, fails to launch, or gets stuck before the main menu after a GMod update:
+
+1. Download or open the **latest release** of [GModPatchTool](https://github.com/solsticegamestudios/GModPatchTool).
+2. Run the tool again, even if it reports that it is already up to date.
+3. Check the tool's output and make sure it reports **“applied successfully”**.
+4. Start Garry's Mod and check whether the problem is resolved.
+5. If the game still does not load, open **Steam → Library → Garry's Mod → Properties → General → Launch Options** and remove `-nochromium` if it is present. Then try launching the game again.
+
+For further platform-specific troubleshooting, see the [GModPatchTool FAQ](https://solsticegamestudios.com/fixmedia/faq/).
+
+> [!WARNING]
+> GModPatchTool and GMod CEF Codec Fix are related but distinct tool names/releases. Follow the instructions for the tool you actually installed; do not assume that running one automatically installs or updates the other.
 
 ## Related
 

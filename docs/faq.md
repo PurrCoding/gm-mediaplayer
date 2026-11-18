@@ -24,7 +24,7 @@ Changing DNS or trying another network can help identify a routing/filtering iss
 
 ### Can I play files stored on my computer?
 
-No. Media Player accepts web URLs using HTTP or HTTPS. Local paths such as `C:\\video.mp4` and `file://` URLs are blocked intentionally.
+No. Media Player accepts web URLs using HTTP or HTTPS. Local paths such as `C:\video.mp4` and `file://` URLs are blocked intentionally.
 
 A file on your computer is not hosted for the other players on the server. Even if your own client could open it, other players would not automatically have access to the same file.
 

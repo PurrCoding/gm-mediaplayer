@@ -2,6 +2,9 @@
 
 Spatial Media attaches a media player to a supported prop. Nearby human players become listeners and hear the audio source. The client can attenuate volume based on distance.
 
+> [!NOTE]
+> Spatial listener range and client-side volume falloff are separate settings. The server decides who receives the stream; each client controls how its volume changes with distance.
+
 ## Tool: Spatial Media Player
 
 Find **Media Player → Spatial Media Player** in the tool menu.
@@ -59,6 +62,8 @@ Two entries (`tt` and `h5v`) are legacy IDs that are not registered by the curre
 ## Permissions
 
 The spatial player checks ownership/privileges before accepting requests. The creator/owner can control their source; administrators can be granted the relevant CAMI privileges. See [Permissions](permissions.md).
+
+---
 
 ## Related
 

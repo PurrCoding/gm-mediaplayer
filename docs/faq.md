@@ -1,34 +1,25 @@
 # Frequently asked questions
 
-Quick answers to common questions about playback, browser compatibility, YouTube, networking, Mimic screens, and server administration.
+Quick answers to common playback, provider, and network questions. For setup instructions and detailed feature references, use the linked guides rather than repeating their full contents here.
 
 > [!TIP]
-> **Start here if playback is broken:** check the [installation requirements](installation.md), try a second supported media URL, and then use the troubleshooting steps below. A provider can fail even when the addon itself is working correctly.
+> **Playback not working?** Start with the [installation troubleshooting guide](installation.md). If only one provider fails, check the provider-specific notes below.
 
 ## Playback and browser issues
 
 ### Nothing plays, or the screen is black or white
 
-Work through these checks in order:
+First determine whether the problem affects every provider or only one:
 
-1. **Check for addon conflicts.** Disable other Garry's Mod media-player addons temporarily. Two addons that modify similar browser or screen behavior may conflict.
-2. **Check the browser setup.** Garry's Mod offers both **x86 and x64 modes** in the main branch; no separate x86-64 branch is needed. The x64 mode may offer broader compatibility with some providers. Some providers also require **GModPatchTool**; see [Installation](installation.md).
-3. **Test more than one provider.** If one YouTube URL fails but a direct media URL works, the issue may be specific to YouTube rather than the player.
-4. **Check network filtering.** VPNs, DNS filters, antivirus web protection, firewalls, school/work networks, or ISP restrictions can prevent the embedded browser from reaching a provider.
-5. **Check the game console.** Look for browser, codec, or Lua errors. If you are reporting a bug, include the exact URL type/provider, your Garry's Mod branch, whether GModPatchTool is installed, and any relevant error text. Do not post passwords, cookies, or private access tokens.
-
-> [!WARNING]
-> Do not permanently disable your firewall or antivirus to make playback work. If you briefly disable a protection feature to isolate a problem, do so only as a controlled test and turn it back on immediately.
-
-Changing DNS or trying another network can help identify a routing/filtering issue, but neither is a guaranteed fix. Cloudflare DNS uses `1.1.1.1` and `1.0.0.1`; Cloudflare WARP is a separate network-routing application. These are external tools, not Media Player features.
+- If multiple unrelated providers fail, follow the general checks in [Installation](installation.md).
+- If only one provider fails, check its [service-specific limitations](video-services.md).
+- If the game reports a browser or codec error, consult the browser requirements in [Installation](installation.md).
 
 ### Can I play files stored on my computer?
 
-No. Media Player accepts web URLs using HTTP or HTTPS. Local paths such as `C:\video.mp4` and `file://` URLs are blocked intentionally.
+No. Media Player accepts web URLs using HTTP or HTTPS. Local paths such as `C:\video.mp4` and `file://` URLs are intentionally blocked.
 
-A file on your computer is not hosted for the other players on the server. Even if your own client could open it, other players would not automatically have access to the same file.
-
-**What to do instead:** upload the media to a host that provides a link accessible to the people watching, then submit that URL. Check [Built-in media services](video-services.md) for supported providers and direct-media URL types. For cloud-drive links, make sure the file permissions allow the embedded player to access the media.
+A local file is not automatically accessible to the other players on the server. Upload it to a host that provides a link accessible to everyone watching, then submit that URL. See [Built-in media services](video-services.md) for supported providers and direct-media URL types.
 
 ### What does “Browser Limit Reached” mean?
 
@@ -36,50 +27,38 @@ Media Player has a limited number of embedded browser slots. If all available sl
 
 This message does not necessarily mean the URL is broken. Close unused media-player screens where possible and try again after a slot is freed.
 
-### A service says “GModPatchTool Required”
-
-Some providers depend on browser features or codecs that are not available in the stock Garry's Mod browser. The Workshop FAQ specifically mentions YouTube Live, Bilibili, Twitch, direct video files, and Google Drive as cases that may require x64 mode and GModPatchTool.
-
-Follow the current [installation guide](installation.md) and the tool's own setup instructions. Do not assume that installing a codec package and installing GModPatchTool are interchangeable steps: they address related but distinct browser compatibility issues.
-
-### Does Media Player work in x86 mode?
-
-Yes. Garry's Mod provides both x86 and x64 modes from the main branch, and Media Player can be used in either mode. However, browser features, codecs, and individual provider requirements can differ. If a provider fails in x86 mode, try x64 mode and check whether additional browser compatibility fixes are required.
-
-> [!TIP]
-> For broader HTML/Chromium and provider compatibility, x64 mode is recommended. You can select it without switching to a separate beta branch; see [Installation](installation.md).
-
 ### Why does a video have low quality, or why can't I choose its quality?
 
-Video quality is generally selected by the provider's embedded player, not by a universal Media Player quality selector. Available quality can depend on the provider, the media itself, account status, network conditions, and browser capabilities.
+Quality selection is generally handled by the provider's embedded player, not by a universal Media Player quality selector. Available quality depends on the provider, the media, account status, network conditions, and browser capabilities.
 
-For example, the Workshop FAQ notes that Bilibili may limit playback quality when no Bilibili account is logged in. The addon cannot guarantee that every provider exposes the same quality controls.
+For example, Bilibili may limit playback quality when no Bilibili account is logged in. See [provider limitations](video-services.md).
 
 ### Are subtitles supported?
 
-The current addon includes a client setting for YouTube captions: `mediaplayer_cc_lang`. Set it to a language code such as `en` or `ko`; use `off` to disable captions. Availability still depends on whether YouTube provides captions for that video.
+The current addon includes a client setting named `mediaplayer_cc_lang` for YouTube captions. Set it to a language code such as `en` or `ko`; use `off` to disable captions. Captions are only available when YouTube provides them for the video.
 
-> [!NOTE]
-> The older Workshop FAQ says subtitles are disabled. That statement does not match the current repository documentation, which includes the caption-language setting. The current addon behavior and this repository's [console/ConVar reference](commands.md) take precedence.
+See [Console commands and ConVars](commands.md) for the setting's default and details.
+
+### A service says “GModPatchTool Required”
+
+Some providers depend on browser features or codecs that are not available in the stock Garry's Mod browser. This requirement is provider- and browser-dependent; it does not mean every service needs the tool.
+
+Follow the current [installation guide](installation.md). GModPatchTool and GMod CEF Codec Fix are separate tools and are not interchangeable.
 
 ## YouTube
 
 ### YouTube asks me to sign in or “prove I'm not a robot”
 
-This is a verification challenge generated by YouTube. It can be triggered by VPN exit addresses, shared IP addresses, or network activity that YouTube considers unusual.
+This is a verification challenge generated by YouTube. It can be triggered by VPN exit addresses, shared IP addresses, or network activity that YouTube considers unusual. Shared ISP addresses (CGNAT), school/work networks, and heavily used IP addresses can contribute.
 
 > [!WARNING]
 > **Do not sign in to your Google account or enter your password in Garry's Mod's embedded browser.** Media Player cannot remove a verification challenge that YouTube itself is serving.
 
-If you are not using a VPN, YouTube may still flag your public IP address. Shared ISP addresses (CGNAT), school/work networks, and heavily used IP addresses can contribute. This is controlled by YouTube and your network provider, not by Media Player.
+This is controlled by YouTube and your network provider, not by Media Player.
 
 ### YouTube does not load while my VPN is enabled
 
-YouTube may challenge or block traffic from VPN exit addresses. As a diagnostic test, you can try:
-
-- Disconnecting the VPN while using Media Player, if that is safe and appropriate for your network.
-- Trying a different VPN server.
-- Using split tunneling so Garry's Mod uses your normal connection.
+YouTube may challenge or block traffic from VPN exit addresses. As a diagnostic test, you can try a different VPN server or split tunneling so Garry's Mod uses your normal connection, if that is safe and appropriate for your network.
 
 These are network workarounds, not addon settings. Follow your VPN provider's guidance and local rules.
 
@@ -113,7 +92,7 @@ Many subscription services rely on DRM systems such as Widevine and Verified Med
 
 This is a browser/platform compatibility limitation, not simply a missing Media Player provider. The addon cannot legitimately grant the embedded browser DRM capabilities or bypass a provider's protection.
 
-For services that are currently supported, see [Built-in media services](video-services.md).
+For the services and URL types the addon recognizes, see [Built-in media services](video-services.md).
 
 ## Network and regional issues
 
@@ -121,14 +100,7 @@ For services that are currently supported, see [Built-in media services](video-s
 
 Your regular browser and Garry's Mod may differ in browser engine, codecs, DNS configuration, VPN routing, certificates, extensions, or account state. A school/work firewall, ISP filter, or country-level restriction may also affect one connection but not the other.
 
-Try to determine whether the failure is provider-specific or network-wide:
-
-1. Test another supported provider.
-2. Test the same URL in your normal browser.
-3. Check whether Garry's Mod is routed through a VPN or proxy.
-4. Review the game console for the exact browser error.
-
-Media Player cannot change your operating system's network configuration.
+Check whether the issue is limited to one provider, then consult [Installation troubleshooting](installation.md) and the relevant [provider limitations](video-services.md). Media Player cannot change your operating system's network configuration.
 
 ### What does `ERR_CONNECTION_RESET` mean?
 
@@ -148,88 +120,34 @@ No. Network routing must be handled by your operating system, network, VPN provi
 
 ## Mimic screens
 
-### How do I create a Mimic screen?
-
-Use the **Mimic Media** tool under **Tools → Media Player**:
-
-1. Equip the Mimic Media tool.
-2. **Left-click** the screen whose playback should be mirrored (the source).
-3. **Right-click** each compatible screen that should mirror that source (the targets).
-4. Look at a mimic screen and press **R** (Reload) to remove its mimic link.
-
-You can use one selected source for multiple targets. See the [Mimic tool guide](mimic.md) for restrictions and restoration behavior.
-
 ### Why does a mimic screen say “Waiting for source”?
 
 The source screen is not currently playing media or has been turned off. The mimic should begin displaying the source again when playback resumes.
 
-### Can I turn a screen that is already playing into a mimic?
+For creating Mimic screens, supported targets, restrictions, and restoration behavior, see the [Mimic tool guide](mimic.md).
 
-No. The target screen must not already be playing media or have queued items. Stop playback and clear the target's queue before converting it. A mimic also cannot be used as the source for another mimic, and spatial anchors are not valid sources or targets.
-
-> [!NOTE]
-> A mimic mirrors another screen; it is not an independent player. Submit media requests on the source screen.
-
-## Controls and settings
-
-### How do I open the player controls or change the volume?
-
-Hold **C** while looking at a media-player screen to open the sidebar. Volume and other local playback options are available there.
-
-For client ConVars and their defaults, see [Console commands and ConVars](commands.md) and [Configuration](configuration.md).
-
-### How do I toggle fullscreen?
-
-Look at a screen and press **F11**, or use **Media Player → Fullscreen**. Fullscreen is a local display mode: it changes how the screen is presented on your client, not the shared playback state for other viewers.
-
-### How do I control who can skip, seek, or remove media?
-
-Media Player integrates with **CAMI** and supports common admin systems such as ULX, SAM, and ServerGuard. Permissions are checked server-side.
-
-See [Permissions](permissions.md) for the available privileges and [Console commands and ConVars](commands.md) for administrative commands and settings.
-
-## Server administration
-
-### Which ConVars are useful for server owners?
-
-| ConVar | Default | Purpose |
-|---|---:|---|
-| `mediaplayer_debug` | `0` | Enables diagnostic logging |
-| `mediaplayer_allow_webpages` | `0` | Allows otherwise-unmatched URLs to use the generic webpage service |
-| `mediaplayer_queue_limit` | `64` | Sets the maximum queue length |
-| `mediaplayer_spatial_hear_radius` | `1800` | Sets the spatial listener radius in Source units |
-
-See [Console commands and ConVars](commands.md) for the full list, including client settings.
-
-> [!WARNING]
-> Keep `mediaplayer_allow_webpages` disabled on public servers unless you deliberately want users to load arbitrary webpages and have considered the additional risk. Prefer the built-in provider list when possible.
-
-### Can I restrict which services players can use?
-
-Yes. Media Player entities support a service whitelist. Only services on the whitelist are allowed, except for users with the `MediaPlayer_BypassWhitelist` privilege.
-
-The spatial player has its own service whitelist. See [Permissions](permissions.md) and [Built-in media services](video-services.md) for details.
+## Reporting a problem
 
 ### What information should I include when reporting a problem?
 
-A useful report helps distinguish addon bugs from provider or network failures. Include:
+Include enough detail to distinguish an addon bug from a provider or network failure:
 
-- The provider and type of URL (do not include private or access-token URLs).
+- The provider and type of URL (never include private or access-token URLs).
 - What happens: black screen, loading forever, browser error, missing audio, or another symptom.
 - Your Garry's Mod architecture mode (x86 or x64).
-- Whether GModPatchTool and the recommended codec/browser fixes are installed.
+- Whether GModPatchTool or any recommended codec/browser fixes are installed.
 - Relevant game-console errors and the steps needed to reproduce the issue.
+
+For installation and browser setup details, see [Installation](installation.md). For server settings, permissions, and available services, use the relevant reference pages below.
 
 > [!WARNING]
 > Remove passwords, session cookies, private URLs, IP addresses, and other personal information before sharing logs or screenshots.
 
 ---
 
-## Source and related guides
+## Related guides
 
-This FAQ is based on the [pinned Media Player Redux Steam Workshop FAQ](https://steamcommunity.com/workshop/filedetails/discussion/3001397905/801220136404147904/) and reconciled with the current documentation in this repository.
-
-- [Installation](installation.md)
+- [Installation and troubleshooting](installation.md)
 - [Usage](usage.md)
 - [Built-in media services](video-services.md)
 - [Configuration](configuration.md)

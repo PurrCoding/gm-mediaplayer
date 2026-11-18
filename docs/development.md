@@ -41,18 +41,50 @@ docs/                        Versioned documentation
 
 ## Public hooks and events
 
-Useful integration hooks include:
+The following hooks are called by the current codebase. Hook names and argument order are case-sensitive.
 
-| Hook | Purpose |
-|---|---|
-| `CanPlayerListenToMediaPlayer(mp, ply)` | Return `false` to reject a listener request |
-| `MediaPlayerIsPlayerPrivileged(mp, ply)` | Extend player-specific privilege checks |
-| `PreMediaPlayerMediaRequest(mp, media, ply)` | Return `false` to reject a media request before metadata lookup |
-| `PostMediaPlayerMediaRequest(mp, media, ply)` | Observe a successfully queued request |
-| `MediaPlayerNotifyPlayer(mp, ply, message)` | Handle/suppress the default player notification |
-| `MediaPlayerAddListener(mp, ply)` | Observe a player becoming a listener |
-| `MediaPlayerRemoveListener(mp, ply)` | Observe a player leaving the listener set |
-| `MediaPlayerShouldMute(mp, media)` | Client hook; return true to force mute |
+| Hook | Realm | Arguments | Return behavior / purpose |
+|---|---|---|---|
+| `CanPlayerListenToMediaPlayer` | Server | `mp, ply` | Return exactly `false` to reject the player's request to become a listener. |
+| `MediaPlayerIsPlayerPrivileged` | Shared permission path | `mp, ply` | Return a truthy value to grant player-specific privileged control. Ownership and CAMI admin privileges are checked separately. |
+| `PreMediaPlayerMediaRequest` | Server | `mp, media, ply` | Return exactly `false` to reject a media request before metadata is fetched. |
+| `PostMediaPlayerMediaRequest` | Server | `mp, media, ply` | Called after metadata succeeds and the media has been added to the queue. Return values are ignored. |
+| `MediaPlayerAddListener` | Server | `mp, ply` | Called after a player is added to the listener list and the initial state is sent. Return values are ignored. |
+| `MediaPlayerRemoveListener` | Server | `mp, ply` | Called when a player is removed from the listener list. Return values are ignored. |
+| `MediaPlayerNotifyPlayer` | Server | `mp, ply, message` | Return a truthy value to suppress the default `ply:ChatPrint`; return nil/false to allow it. |
+| `MediaPlayerShouldMute` | Client | `mp, media` | Return a truthy value to force-mute this media player for the local client. |
+| `MediaPlayerSetupIdlescreen` | Client | `browser` | Set up the idle-screen browser yourself and return a truthy value to prevent the default HTML from being loaded. Return nil/false to use the default idle screen. |
+
+Example: reject requests from a player who is not in a custom allow-list, while leaving the addon's normal checks in place:
+
+```lua
+hook.Add("CanPlayerListenToMediaPlayer", "MyAddon_MediaPlayerAccess", function(mp, ply)
+    if not MyAddon.CanUseMediaPlayer(ply, mp) then
+        return false
+    end
+end)
+```
+
+Example: block a particular media request before metadata lookup:
+
+```lua
+hook.Add("PreMediaPlayerMediaRequest", "MyAddon_BlockMedia", function(mp, media, ply)
+    if string.find(media:Url(), "example.com", 1, true) then
+        return false
+    end
+end)
+```
+
+Example: customize the idle screen. The hook receives the DHTML browser; call `SetHTML` (or otherwise configure the browser) and return `true` to prevent the default idle page from overwriting it:
+
+```lua
+hook.Add("MediaPlayerSetupIdlescreen", "MyAddon_IdleScreen", function(browser)
+    browser:SetHTML("<html><body><h1>Welcome</h1></body></html>")
+    return true
+end)
+```
+
+These hooks are integration points, not a replacement for server-side validation. In particular, client hooks such as `MediaPlayerShouldMute` and `MediaPlayerSetupIdlescreen` only affect the local client.
 
 MediaPlayer events are emitted through the event emitter. Shared event names include `mediaChanged`, `mp.events.queueChanged`, and `mp.events.playerStateChanged`; client events also include volume and fullscreen state changes.
 

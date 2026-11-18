@@ -2,6 +2,9 @@
 
 The Mimic tool lets one screen mirror the media-player state of another screen. It is useful when multiple physical screens should show the same playback without independently managing queues.
 
+> [!NOTE]
+> A Mimic screen mirrors an existing screen; it is not a second independent player. Add requests and manage the queue on the source screen.
+
 ## Tool: Media Player → Mimic
 
 The tool is available in the tool menu under **Media Player**.
@@ -28,6 +31,8 @@ The mimic target does not accept independent media requests. Submit requests on 
 ## Undo and restoration
 
 Pasting a mimic registers an undo action. Reloading the target also restores its previous player type and saved snapshot. If the source player is removed, the mimic's source reference is cleared by the server.
+
+---
 
 ## Related
 

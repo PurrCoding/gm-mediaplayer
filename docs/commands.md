@@ -2,6 +2,9 @@
 
 This page covers the addon's registered console command and its ConVars. It does not list built-in Garry's Mod commands or Lua API methods.
 
+> [!TIP]
+> Most players do not need console commands for normal playback. Use the in-game player UI for everyday controls; the command and ConVar reference below is mainly for server owners and troubleshooting.
+
 ## Registered console command
 
 The addon currently registers one command with `concommand.Add`:
@@ -85,6 +88,8 @@ The addon also exposes playback controls through its UI, toolgun tools, entity i
 ## Source of truth
 
 The registered command is defined in `lua/mediaplayer/sv_requests.lua`. The shared and client ConVars are defined in `lua/mediaplayer/sh_cvars.lua`; the spatial hear-radius ConVar is defined in `lua/mediaplayer/players/spatial/init.lua`.
+
+---
 
 ## Related
 

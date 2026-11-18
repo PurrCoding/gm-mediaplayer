@@ -2,6 +2,9 @@
 
 Media Player Redux separates authoritative playback state on the server from browser rendering and input on each client.
 
+> [!NOTE]
+> This page describes the addon's internal runtime for contributors. For player setup and day-to-day controls, start with [Installation](installation.md) and [Usage](usage.md).
+
 ## Runtime layers
 
 | Layer | Responsibility |
@@ -79,6 +82,8 @@ The `mediaplayer_clearcache` command clears the metadata cache only; it does not
 | Add a tool | `lua/weapons/gmod_tool/stools/` |
 | Integrate admin permissions | CAMI and `MediaPlayer.PlayerHasPrivilege` |
 | Observe player lifecycle | MediaPlayer hooks and events — [Development](development.md) |
+
+---
 
 ## Related
 

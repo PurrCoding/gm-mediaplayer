@@ -1,5 +1,8 @@
 # Development
 
+> [!TIP]
+> Before changing code, read the repository's [contributor instructions](../AGENTS.md). They define the project's Lua realm, security, and performance conventions.
+
 ## Stack and project guidance
 
 - **Lua** for Garry's Mod entities, players, services, networking, and tools.
@@ -71,6 +74,8 @@ See [Console commands](commands.md) and [Configuration](configuration.md).
 6. Test spatial listener entry/exit and client proximity attenuation.
 7. Test duplication and restoration in Sandbox.
 8. Check failure paths: malformed URL, missing metadata, provider error, browser exhaustion, disconnect, and entity removal.
+
+---
 
 ## Related
 

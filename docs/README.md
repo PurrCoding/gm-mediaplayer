@@ -8,6 +8,7 @@ This directory contains the versioned documentation for the addon. Start here ra
 |---|---|
 | [Installation](installation.md) | Workshop/manual installation and troubleshooting |
 | [Usage](usage.md) | Screens, request UI, queue, playlists, and duplication |
+| [FAQ](faq.md) | Common playback, YouTube, network, controls, and server questions |
 | [Configuration](configuration.md) | Server/client ConVars and config table |
 | [Permissions](permissions.md) | Ownership, CAMI privileges, and admin controls |
 | [Spatial Media](spatial-media.md) | Spatial audio anchors, tool, and listener radius |

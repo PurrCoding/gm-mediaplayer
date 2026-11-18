@@ -124,6 +124,20 @@ Listeners without immediate skip privileges can vote to skip the currently playi
 
 For example, 3 listeners require 2 votes; 4 listeners require 3 votes.
 
+## Client settings
+
+Hold **C** while looking at a media player to open its sidebar, then open the settings panel. Available options include:
+
+| Setting | Effect |
+|---|---|
+| **Volume** | Adjust playback volume on your client. |
+| **3D Spatial Audio** | Enable or disable distance-based volume falloff. |
+| **Proximity Min / Max Distance** | Set the distances used for the local proximity-volume curve. |
+| **Mute When Unfocused** | Automatically mute playback while the game window is not focused. |
+| **Show Proximity Radius** | Show or hide the visual range indicator around supported sources. |
+
+The proximity settings affect local volume presentation; they are separate from the server-side listener radius used by Spatial Media. See [Spatial Media](spatial-media.md).
+
 ## Fullscreen
 
 The client ConVar `mediaplayer_fullscreen` and the player UI control local fullscreen presentation. Other viewers continue watching the shared screen normally.
@@ -140,3 +154,4 @@ Sandbox duplication is supported through `lua/autorun/sandbox/mediaplayer_dupe.l
 - [Configuration](configuration.md)
 - [Permissions](permissions.md)
 - [Spatial Media](spatial-media.md)
+- [Mimic tool](mimic.md)

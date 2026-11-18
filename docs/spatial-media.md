@@ -11,13 +11,14 @@ Find **Media Player → Spatial Media Player** in the tool menu.
 
 | Action | Effect |
 |---|---|
-| Left click | Create a spatial source on a supported traced entity |
+| Left click | Create a spatial source on a supported prop |
 | Right click | Remove a spatial source you are allowed to control |
+| Reload (R) | Reopen the request UI for an existing spatial source |
 | Hold C | Open the player sidebar/request UI while looking at the anchor or its parent prop |
 
-The tool validates targets and uses a `mediaplayer_spatial_anchor` entity parented to the selected prop. The anchor follows its parent and is removed with it. The tool does not support placing anchors directly on the world. Tool-created entities participate in undo and cleanup.
+The tool creates a `mediaplayer_spatial_anchor` entity parented to the selected prop. The anchor follows its parent and is removed with it. The tool does not support placing anchors directly on the world. Tool-created entities participate in undo and cleanup.
 
-The world, players, NPCs, ragdolls, and existing media-player screens are rejected as targets. Use a supported prop or similar entity.
+Spatial sources can be attached to props, but not to ragdolls, players, NPCs, or existing media-player screens. After placing a source, look at its prop and hold **C** to open the sidebar and request media just as you would on a regular screen.
 
 ## Spatial anchor lifecycle
 

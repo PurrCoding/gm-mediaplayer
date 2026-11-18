@@ -32,11 +32,18 @@ The `browser` and `res` services are abstract base classes used by concrete prov
 
 ## Spatial compatibility
 
-Spatial players use a whitelist in `lua/mediaplayer/players/spatial/shared.lua`. The currently registered service IDs that are actually present in that list are:
+Spatial players initialize a `ServiceWhitelist` in `lua/mediaplayer/players/spatial/shared.lua`. The current default list in code is:
 
-`yt`, `bili`, `sc`, `twl`, `dm`, `ia`, `odysee`, `gd`, and `af`.
+```lua
+{
+    "yt", "bili", "sc", "twl", "dm", "ia",
+    "odysee", "tt", "gd", "h5v", "af"
+}
+```
 
-The whitelist also contains legacy IDs `tt` and `h5v`, but no services with those IDs are registered by the current loader. Conversely, current direct media (`dm5`) and SHOUTcast (`scr`) services are not in the spatial whitelist. Do not assume every built-in service can be used on spatial anchors. Administrators with `MediaPlayer_BypassWhitelist` can bypass the whitelist.
+The current registered providers that match this list are YouTube (`yt`), Bilibili (`bili`), SoundCloud (`sc`), Twitch (`twl`), Dailymotion (`dm`), Internet Archive (`ia`), Odysee (`odysee`), Google Drive (`gd`), and audio files (`af`). The IDs `tt` and `h5v` remain in the default list but are not registered by the current service loader.
+
+Other registered providers—including Rumble, Kick, OK, VK Video, MEGA, BitChute, direct media (`dm5`), and SHOUTcast (`scr`)—are not included in the spatial default whitelist. Do not assume every built-in provider works on spatial anchors. The server-side whitelist can be bypassed by a player with `MediaPlayer_BypassWhitelist` (or the general `MediaPlayer_Admin` privilege). See [Permissions](permissions.md#service-whitelist) for custom whitelist behavior.
 
 ## Provider limitations
 

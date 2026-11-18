@@ -43,7 +43,7 @@ Attach an audio source to supported props or place a world-positioned anchor wit
 
 ## Requirements
 
-- Garry's Mod; the **x86-64 branch is recommended** for HTML/Chromium playback.
+- Garry's Mod. The **x64 mode** is recommended for broader HTML/Chromium compatibility; x86 mode is also available. Both modes are selectable in the main branch—no separate x86-64 branch is required.
 - [GMod CEF Codec Fix](https://github.com/solsticegamestudios/GModCEFCodecFix) is recommended for broader codec support.
 - SoundCloud may require [GModPatchTool](https://github.com/BeepIsla/GModPatchTool) to update the embedded browser.
 - Some providers require access to their service, compatible codecs, or media that is publicly playable.

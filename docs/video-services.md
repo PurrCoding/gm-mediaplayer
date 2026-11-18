@@ -2,6 +2,9 @@
 
 The service loader is defined in `lua/mediaplayer/sh_services.lua`. It registers the providers below and matches URLs against their service-specific rules. Matching is based on URL shape, not a guarantee that a provider will play every item.
 
+> [!WARNING]
+> A recognized URL format does not guarantee that the media will play. Provider availability, privacy settings, regional restrictions, network access, and the installed CEF codecs can all affect playback.
+
 ## Registered providers
 
 | Provider | Service ID | Typical supported URL/content |
@@ -59,6 +62,8 @@ This allows otherwise-unmatched URLs to fall back to the generic webpage service
 ## Adding a provider
 
 See [Custom video service](custom-video-service.md).
+
+---
 
 ## Related
 

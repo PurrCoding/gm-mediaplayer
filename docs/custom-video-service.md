@@ -2,6 +2,9 @@
 
 Media services live under `lua/mediaplayer/services/`. The service loader in `lua/mediaplayer/sh_services.lua` uses an explicit ordered list: creating a folder does **not** register it automatically.
 
+> [!IMPORTANT]
+> Adding a provider requires an explicit entry in the service loader. A new folder by itself is not enough to make a service available in-game.
+
 ## Service loading sequence
 
 The loader uses an explicit ordered list. It includes each service's shared/server/client implementation and then registers the resulting `SERVICE` table; a directory by itself is not discovered automatically.
@@ -133,6 +136,8 @@ The current whitelist contains stale IDs that do not all map to registered servi
 - Assuming every browser exposes the same JavaScript player API.
 - Adding a service to the spatial whitelist without verifying its actual ID and audio behavior.
 - Enabling generic webpage playback as a substitute for a first-class provider.
+
+---
 
 ## Related
 
